@@ -4,8 +4,9 @@
   "description": "JS lib for Loop54 easy frontend implementation. Requires jQuery 2.x.x.",
   "main": "src/index.js",
   "scripts": {
+    "server": "node server.js",
     "watch": "watch 'npm run babelify' ./src",
-    "babelify": "browserify src/index.js -o bin/Scripts/loop54-plugin-1.0.0.js -t [ babelify --presets [ es2015 ] ]",
+    "babelify": "browserify src/index.js -o bin/Scripts/loop54-lib-1.0.0.js -t [ babelify --presets [ es2015 ] ]",
     "test": "jtest"
   },
   "keywords": [
@@ -16,6 +17,7 @@
   "dependencies": {
     "babel-preset-es2015": "^6.1.18",
     "babelify": "^7.2.0",
-    "browserify": "^12.0.1"
+    "browserify": "^12.0.1",
+    "express": "^4.13.3"
   }
 }
