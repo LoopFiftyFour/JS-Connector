@@ -956,76 +956,95 @@ process.umask = function() { return 0; };
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var compabillityFunctions = {
 
-    convertV22Response: function convertV22Response(responseObj) {
+  convertV22Response: function convertV22Response(responseObj) {
 
-        var data = responseObj.data;
+    var data = responseObj.data;
 
-        for (var objKey in data) {
+    for (var objKey in data) {
 
-            var arr = data[objKey];
+      var arr = data[objKey];
 
-            if (arr.constructor === Array) {
+      if (arr.constructor === Array) {
 
-                for (var i = 0; i < arr.length; i++) {
-                    var item = arr[i];
+        for (var i = 0; i < arr.length; i++) {
+          var item = arr[i];
 
-                    if (item.String) item.Key = item.String;
+          if (item.String) {
+            item.Key = item.String;
+          }
 
-                    if (item.Entity) item.Key = item.Entity;
-                }
-            }
+          if (item.Entity) {
+            item.Key = item.Entity;
+          }
         }
+      }
     }
+  }
 };
 
 exports.default = compabillityFunctions;
 
 },{}],16:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 // could be replaced by std lib
 
 var cookies = {
-    set: function set(name, value, days) {
-        var expires;
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-            expires = "; expires=" + date.toGMTString();
-        } else {
-            expires = "";
-        }
-        document.cookie = name + "=" + value + expires + "; path=/";
-    },
+  set: function set(name, value, days) {
+    var expires;
 
-    get: function get(c_name) {
-        if (document.cookie.length > 0) {
-            var c_start = document.cookie.indexOf(c_name + "=");
-            if (c_start != -1) {
-                c_start = c_start + c_name.length + 1;
-                var c_end = document.cookie.indexOf(";", c_start);
-                if (c_end == -1) {
-                    c_end = document.cookie.length;
-                }
-                return unescape(document.cookie.substring(c_start, c_end));
-            }
-        }
-        return "";
+    if (typeof document === 'undefined') {
+      return;
     }
+
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = '; expires=' + date.toGMTString();
+    } else {
+      expires = '';
+    }
+
+    document.cookie = name + '=' + value + expires + '; path=/';
+  },
+
+  get: function get(cName) {
+    if (typeof document !== 'undefined' && document.cookie.length > 0) {
+
+      var cStart = document.cookie.indexOf(cName + '=');
+
+      if (cStart !== -1) {
+        cStart = cStart + cName.length + 1;
+        var cEnd = document.cookie.indexOf(';', cStart);
+
+        if (cEnd === -1) {
+          cEnd = document.cookie.length;
+        }
+
+        return unescape(document.cookie.substring(cStart, cEnd));
+      }
+    }
+    return '';
+  }
 };
 
 exports.default = cookies;
 
 },{}],17:[function(require,module,exports){
+(function (global){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _main = require('./main.js');
 
@@ -1033,8 +1052,13 @@ var _main2 = _interopRequireDefault(_main);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-window.Loop54 = _main2.default;
+// vanilla JS compabillity
+global.Loop54 = _main2.default;
 
+// module compabillity
+exports.default = _main2.default;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./main.js":18}],18:[function(require,module,exports){
 'use strict';
 
@@ -1061,12 +1085,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Loop54 = {
 
   config: {
+    libVersion: '1.0.0',
     use25Url: false,
     url: 'No URL set for Loop54 server.'
   },
 
   setConfig: function setConfig(conf) {
-    undefined.config = _extends({ conf: conf }, undefined.config);
+    this.config = _extends({}, this.config, conf);
   },
 
   getRandomUserId: function getRandomUserId() {
@@ -1092,30 +1117,44 @@ var Loop54 = {
     return this.getRandomUserId();
   },
 
-  getResponse: function getResponse(req, params, questName) {
+  getRequestObj: function getRequestObj(req, params) {
 
-    var v25Url = undefined.use25Url;
+    var requestObj = {};
 
     if (!undefined.CreateUserId && !params.UserId && !params.userId) {
       params.UserId = Loop54.GetUserId();
     }
 
-    var requestObj = {};
-
     //legacy mode for engines that expect the quest name to be in the JSON data
-    if (undefined.v25Url) {
+    if (undefined.config.use25Url) {
       requestObj[questName] = params;
     } else {
       requestObj = params;
     }
 
-    var engineUrl = undefined.config.url;
+    return JSON.stringify(requestObj);
+  },
 
-    if (!undefined.v25Url) {
-      engineUrl = undefined.config.url + "/" + req.questName;
+  getEngineUrl: function getEngineUrl(req) {
+
+    var url = this.config.url;
+    url = url + (url[url.length - 1] === '/' ? '' : '/');
+
+    if (!this.config.use25Url) {
+      return url + req.questName;
     }
 
-    var promise = _axios2.default.post(engineUrl, JSON.stringify(requestObj)).then(function (response) {
+    return url;
+  },
+
+  getResponse: function getResponse(req, params) {
+
+    var v25Url = undefined.use25Url;
+
+    var requestObj = getRequestObj(req, params);
+    var engineUrl = getEngineUrl(req);
+
+    var promise = _axios2.default.post(engineUrl, requestObj).then(function (response) {
 
       var data = response.data;
       var responseObj = {

@@ -1,15 +1,18 @@
 ﻿var config;
 var demoConfig;
 
+// {
+//     "AdminApiUrl": "http://loop54-adminapi-dev.azurewebsites.net/"
+// }
+
 var Demo = {
-    AutoCompleteQueries: [],
+  AutoCompleteQueries: [],
     FetchingAutoComplete: false,
 
     InstantTimer: null,
 
     RunningACRequests:0,
 
-	
     Keyup: function (e) {
 
         clearTimeout(Demo.InstantTimer);
@@ -101,8 +104,9 @@ var Demo = {
 
             Demo.FetchingAutoComplete = true;
 
-			var options = new Loop54.RequestOptions(!demoConfig.Use26Request);
-            var request = new Loop54.Request(demoConfig.AutoCompleteQuest,options);
+			Loop54.setConfig({use25Url: !demoConfig.Use26Request});
+
+            var request = new Loop54.Request(demoConfig.AutoCompleteQuest, options);
 			
 
             if (demoConfig.AutoCompletePageSize > 0) {

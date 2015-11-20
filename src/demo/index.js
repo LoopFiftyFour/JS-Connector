@@ -1,3 +1,5 @@
+'use strict';
+
 var config;
 var demoConfig;
 
@@ -7,9 +9,8 @@ var Demo = {
 
     InstantTimer: null,
 
-    RunningACRequests:0,
+    RunningACRequests: 0,
 
-  
     Keyup: function (e) {
 
         clearTimeout(Demo.InstantTimer);

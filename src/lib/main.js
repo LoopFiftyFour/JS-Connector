@@ -7,12 +7,13 @@ import comp from './combabillity.js';
 let Loop54 = {
 
     config: {
+      libVersion: '1.0.0',
       use25Url: false,
       url: 'No URL set for Loop54 server.'
     },
 
-    setConfig: (conf) => {
-      this.config = {conf, ...this.config};
+    setConfig: function (conf) {
+      this.config = {...this.config, ...conf};
     },
 
     getRandomUserId: () => {
@@ -40,31 +41,46 @@ let Loop54 = {
       return this.getRandomUserId();
     },
     
+    getRequestObj: (req, params) => {
 
-    getResponse: (req, params, questName) => {
-
-      var v25Url = this.use25Url;
+      let requestObj = {};
 
       if (!this.CreateUserId && !params.UserId && !params.userId) {
           params.UserId = Loop54.GetUserId();
       }
 
-      var requestObj = {};
-      
       //legacy mode for engines that expect the quest name to be in the JSON data
-      if (this.v25Url) {
+      if (this.config.use25Url) {
         requestObj[questName] = params;
       } else {
         requestObj = params;
       }
 
-      var engineUrl = this.config.url;
+      return JSON.stringify(requestObj);
 
-      if(!this.v25Url) {
-        engineUrl = this.config.url + "/" + req.questName;
+    },
+
+    getEngineUrl: function (req) {
+
+      let url = this.config.url;
+      url = url + (url[url.length - 1] === '/' ? '' : '/') ;
+
+      if(!this.config.use25Url) {
+        return url + req.questName;
       }
 
-      let promise = axios.post(engineUrl, JSON.stringify(requestObj) )
+      return url;
+ 
+    },
+     
+    getResponse: (req, params) => {
+
+      const v25Url = this.use25Url;
+
+      const requestObj = getRequestObj(req, params);
+      const engineUrl = getEngineUrl(req);
+
+      let promise = axios.post(engineUrl, requestObj)
         .then(function (response) {
 
           var data = response.data;
@@ -98,7 +114,7 @@ let Loop54 = {
           responseObj.errorMessage = "Connection could not be established.";
 
           comp.convertV22Response(responseObj);
-          
+
           return responseObj;
 
         });

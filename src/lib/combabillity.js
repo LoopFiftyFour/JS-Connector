@@ -2,28 +2,30 @@
 
 let compabillityFunctions = {
 
-    convertV22Response: (responseObj) => {
+  convertV22Response: (responseObj) => {
 
-        var data = responseObj.data;
+    var data = responseObj.data;
 
-        for (var objKey in data) {
+    for (var objKey in data) {
 
-            var arr = data[objKey];
-            
-            if (arr.constructor === Array) {
+      var arr = data[objKey];
 
-                for (var i = 0; i < arr.length; i++) {
-                    var item = arr[i];
+      if (arr.constructor === Array) {
 
-                    if (item.String)
-                        item.Key = item.String;
+        for (var i = 0; i < arr.length; i++) {
+          var item = arr[i];
 
-                    if (item.Entity)
-                        item.Key = item.Entity;
-                }
-            }
+          if (item.String){
+            item.Key = item.String;
+          }
+
+          if (item.Entity){
+            item.Key = item.Entity;
+          }
         }
+      }
     }
+  }
 };
 
 
