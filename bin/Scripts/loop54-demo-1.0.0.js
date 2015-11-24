@@ -1,8 +1,56 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-'use strict';
+'use strict'
 
-var config;
-var demoConfig;
+// ES5 style javascript: include lib on page and assume script is imported and in global scope: global.Loop54
+// var lib = global.Loop54;
+
+// ES6 or using requre.js: import/require lib and use
+
+;
+var guiConfig = {
+    inputSearch: 'input#search',
+    filtersContainer: 'div#filters-wrapper',
+    autocompleteContainer: 'div#autocomplete',
+    searchButtonContainer: 'div.form-search button',
+    directResultsContainer: 'div#products-wrapper',
+    directResultsContainerId: 'products-wrapper',
+    breadCrumbsContainer: '#breadcrumbs-wrapper',
+    queryInBreadCrumb: '#breadcrumbs-wrapper div.breadcrumbs div.block.search.current strong span'
+};
+
+var serverConfig = {
+    'Name': 'Netrauta',
+    'Url': 'http://netrauta-dev.54proxy.com',
+    'AutoCompleteQuest': 'AutoComplete',
+    'SearchQuest': 'Search',
+    'SimilarProductsQuest': 'SimilarProducts',
+    'CreateEventsQuest': 'CreateEvents',
+    'Filters': [{
+        'Name': 'Tuoteryhmät',
+        'RequestParameter': 'Faceting.Categories',
+        'ResponseParameter': 'Categories'
+    }, {
+        'Name': 'Tuotemerkit',
+        'RequestParameter': 'Faceting.Brands',
+        'ResponseParameter': 'Brands'
+    }],
+    'AutoCompletePageSize': 8,
+    'DirectResultsPageSize': 24,
+    'RecommendedResultsPageSize': 12,
+    'ContinousScrolling': false,
+    'InstantSearch': false,
+    'DevMode': false,
+    'CacheAutoComplete': false,
+    'AutoCompleteFacetingParameter': 'Faceting.Categories',
+    'ProductTitleAttribute': 'Title',
+    'ProductDescriptionAttribute': 'Description',
+    'ProductImageUrlAttributes': ['ImageUrl'],
+    'ProductImageUrl': '$1',
+    'Use26Request': true,
+    'Id': '18eb1533-a1f7-4ec8-9211-a561dcf43597'
+};
+
+var render = require('./render.js')(guiConfig);
 
 var Demo = {
     AutoCompleteQueries: [],
@@ -818,40 +866,54 @@ var Demo = {
     }
 };
 
-$(document).ready(function () {
+},{"./render.js":2}],2:[function(require,module,exports){
+'use strict';
 
-    $("input#search").addClass("gray").bind("focus", function () {
-        if ($(this).val() === "What are you looking for?") $(this).val('').removeClass("gray");
-    }).bind("blur", function () {
-        if ($(this).val() === "") $(this).val("What are you looking for?").addClass("gray");
-    });
-
-    $("input#search").bind("keyup", Demo.Keyup);
-
-    $("a#user").click(function () {
-        Loop54.RandomizeUserId();
-    });
-
-    $("a#searchbutton").click(function () {
-
-        Demo.ClearFilters();
-        Demo.Search($("input#search").val(), false, false, 0);
-    });
-
-    $(window).hashchange(function (e, data) {
-
-        Demo.HashChanged(data.before.replace("#", ""), data.after.replace("#", ""));
-    });
-
-    $(document).click(function (event) {
-
-        if (!$(event.target).is("div#autocomplete") && !$(event.target).is("div#autocomplete *")) Demo.ClearSuggestions();
-    });
-
-    Demo.LoadConfig(function () {
-
-        Demo.HashChanged(null, location.hash.replace("#", ""));
-    });
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
+
+// requires jQuery to be in global scope
+
+var render = function render(config) {
+
+    $(document).ready(function () {
+
+        $(inputSearch).addClass('gray').bind('focus', function () {
+            if ($(this).val() === 'What are you looking for?') $(this).val('').removeClass('gray');
+        }).bind('blur', function () {
+            if ($(this).val() === '') $(this).val('What are you looking for?').addClass('gray');
+        });
+
+        $('input#search').bind('keyup', Demo.Keyup);
+
+        $('a#user').click(function () {
+            Loop54.RandomizeUserId();
+        });
+
+        $('a#searchbutton').click(function () {
+
+            Demo.ClearFilters();
+            Demo.Search($('input#search').val(), false, false, 0);
+        });
+
+        $(window).hashchange(function (e, data) {
+
+            Demo.HashChanged(data.before.replace('#', ''), data.after.replace('#', ''));
+        });
+
+        $(document).click(function (event) {
+
+            if (!$(event.target).is('div#autocomplete') && !$(event.target).is('div#autocomplete *')) Demo.ClearSuggestions();
+        });
+
+        Demo.LoadConfig(function () {
+
+            Demo.HashChanged(null, location.hash.replace('#', ''));
+        });
+    });
+};
+
+exports.default = render;
 
 },{}]},{},[1]);

@@ -4,7 +4,7 @@
   "description": "JS lib for Loop54 easy frontend implementation. Requires jQuery 2.x.x.",
   "main": "src/index.js",
   "scripts": {
-    "dev": "npm run watch:lib && npm run watch:demo && npm run server",
+    "dev": "npm run watch:lib & npm run watch:demo & npm run server",
     "server": "node server.js",
     "watch:lib": "watch 'npm run compile:lib' ./src/lib/ ./test/",
     "watch:demo": "watch 'npm run babelify:demo' ./src/demo",
