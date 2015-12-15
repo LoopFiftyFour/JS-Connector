@@ -284,7 +284,7 @@ var demo = {
     //   query: query
     // });
 
-    //$(guiConfig.inputSearch).val(options.query).removeClass('gray');
+    $(guiConfig.inputSearch).val(options.query);
 
     lib.getResponse(req).then( function(response) {
 
@@ -297,21 +297,21 @@ var demo = {
         render.clearSearch(isContinuation);
 
         if (!response.data.MakesSense) {
-          render.showMakesNoSense(response.data.DirectResults, response.data.SpellingSuggestions, options.query, self.search);
+          render.showMakesNoSense(response.data.DirectResults, response.data.SpellingSuggestions, options.query, self.search.bind(self));
         }
 
         if (response.data.ReSearchQueryString) {
-          render.showReSearch(response.data.ReSearchQueryString, options.query, self.search);
+          render.showReSearch(response.data.ReSearchQueryString, options.query, self.search.bind(self));
         }
 
         if (response.data.RelatedQueries && response.data.RelatedQueries.length > 0) {
-          render.addRelated(response.data.RelatedQueries, self.search);
+          render.addRelated(response.data.RelatedQueries, self.search.bind(self));
         }
 
         if (response.data.DirectResults && response.data.DirectResults.length > 0) {
           render.directResults(response.data.DirectResults, response.data.DirectResults_TotalItems, isContinuation);
         }
-        debugger;
+
         if (response.data.RecommendedResults && response.data.RecommendedResults.length > 0) {
           render.recommendedResults(response.data.RecommendedResults, isContinuation);
         } else if (options.page < 1) {
