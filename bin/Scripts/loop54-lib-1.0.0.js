@@ -1117,16 +1117,16 @@ var Loop54 = {
     return this.getRandomUserId();
   },
 
-  getRequestObj: function getRequestObj(req, params) {
+  getRequestObj: function getRequestObj(params) {
 
     var requestObj = {};
 
-    if (!undefined.CreateUserId && !params.UserId && !params.userId) {
-      params.UserId = Loop54.GetUserId();
+    if (!this.CreateUserId && !params.UserId && !params.userId) {
+      params.UserId = this.getUserId();
     }
 
     //legacy mode for engines that expect the quest name to be in the JSON data
-    if (undefined.config.use25Url) {
+    if (this.config.use25Url) {
       requestObj[questName] = params;
     } else {
       requestObj = params;
@@ -1141,18 +1141,18 @@ var Loop54 = {
     url = url + (url[url.length - 1] === '/' ? '' : '/');
 
     if (!this.config.use25Url) {
-      return url + req.questName;
+      return url + req.QuestName;
     }
 
     return url;
   },
 
-  getResponse: function getResponse(req, params) {
+  getResponse: function getResponse(req) {
 
-    var v25Url = undefined.use25Url;
+    var v25Url = this.config.use25Url;
 
-    var requestObj = getRequestObj(req, params);
-    var engineUrl = getEngineUrl(req);
+    var requestObj = this.getRequestObj(req);
+    var engineUrl = this.getEngineUrl(req);
 
     var promise = _axios2.default.post(engineUrl, requestObj).then(function (response) {
 

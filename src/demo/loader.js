@@ -28,9 +28,9 @@ let loader = {
     $.ajax({
       dataType: 'json',
       url: config.AdminApiUrl + '/api/Demos/actions/GetByName?name=' + configName,
-      success: function(data){
+      success: function (data) {
       
-        demoConfig=data;
+        config=data;
         
         Demo.InitFacetting();
         

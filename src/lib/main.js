@@ -41,12 +41,12 @@ let Loop54 = {
       return this.getRandomUserId();
     },
     
-    getRequestObj: (req, params) => {
+    getRequestObj: function (params) {
 
       let requestObj = {};
 
       if (!this.CreateUserId && !params.UserId && !params.userId) {
-          params.UserId = Loop54.GetUserId();
+          params.UserId = this.getUserId();
       }
 
       //legacy mode for engines that expect the quest name to be in the JSON data
@@ -66,19 +66,19 @@ let Loop54 = {
       url = url + (url[url.length - 1] === '/' ? '' : '/') ;
 
       if(!this.config.use25Url) {
-        return url + req.questName;
+        return url + req.QuestName;
       }
 
       return url;
  
     },
      
-    getResponse: (req, params) => {
+    getResponse: function (req) {
 
-      const v25Url = this.use25Url;
+      let v25Url = this.config.use25Url;
 
-      const requestObj = getRequestObj(req, params);
-      const engineUrl = getEngineUrl(req);
+      const requestObj = this.getRequestObj(req);
+      const engineUrl = this.getEngineUrl(req);
 
       let promise = axios.post(engineUrl, requestObj)
         .then(function (response) {
@@ -140,7 +140,7 @@ let Loop54 = {
       this.options = requestOptions;
     },
     
-    Event: function(type,entity,quantity,revenue,orderId) {
+    Event: function(type, entity,quantity,revenue,orderId) {
       this.Type = type;
       this.Entity = entity;
       this.Quantity = quantity;

@@ -49,7 +49,7 @@ describe('Lib', function() {
         url,
         questName
       });
-      expect(lib.getEngineUrl({ questName })).to.equal(url + questName);
+      expect(lib.getEngineUrl({ QuestName: questName })).to.equal(url + questName);
     });
 
 
