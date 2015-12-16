@@ -27,9 +27,9 @@ var guiConfig = {
   buttonSearch: 'a#searchbutton',
   inputSearchText: 'You search, now',
   filtersContainer: 'div#filters-wrapper',
-  autocompleteContainer: 'div#autocomplete',
-  searchButtonContainer: 'div.form-search button',
-  directResultsContainer: 'div#products-wrapper',
+  //autocompleteContainer: 'div#autocomplete',
+  //searchButtonContainer: 'div.form-search button',
+  //directResultsContainer: 'div#products-wrapper',
   recommendedResults: 'div#recommendedresults',
   //directResultsContainerId: 'products-wrapper',
   directResults: 'div#directresults',
@@ -64,7 +64,7 @@ var config = {
   recommendedResultsPageSize: 12,
   continousScrolling: false,
   instantSearch: false,
-  devMode: false,
+  devMode: true,
   cacheAutoComplete: false,
   autoCompleteFacetingParameter: 'Faceting.Categories',
   productTitleAttribute: 'productName',
@@ -84,24 +84,19 @@ $(document).ready(function () {
   //   lib.getRandomUserId();
   // });
 
-  $(guiConfig.buttonSearch).click(function () {
-    demo.search({
-      query: $(guiConfig.inputSearch).val(),
-      clearFilters: true,
-      instant: false,
-      preventReSearch: false,
-      page: 0
-    });
-  }).on('keyup', function (event) {
-    debugger;
-    demo.search({
-      query: $(guiConfig.inputSearch).val(),
-      clearFilters: true,
-      instant: false,
-      preventReSearch: false,
-      page: 0
-    });
-  });
+  function doSearch(event) {
+    if (event.keyCode === 13) {
+      demo.search({
+        query: $(guiConfig.inputSearch).val(),
+        clearFilters: true,
+        clearSearch: true,
+        preventReSearch: false,
+        instant: false,
+        page: 0
+      });
+      $(guiConfig.inputSearch).autocomplete('close');
+    }
+  }
 
   render.initFacetting();
 
@@ -111,11 +106,17 @@ $(document).ready(function () {
     },
     minLength: 2,
     select: function select(event, ui) {
+      $(guiConfig.inputSearch).unbind('keyup', doSearch);
       demo.search({
+        clearFilters: true,
+        instant: false,
         clearSearch: true,
         query: ui.item.value,
         facet: ui.item.facet
       });
+    },
+    response: function response(event, ui) {
+      $(guiConfig.inputSearch).bind('keyup', doSearch);
     },
     open: function open() {
       $(this).removeClass("ui-corner-all").addClass("ui-corner-top");
@@ -125,6 +126,8 @@ $(document).ready(function () {
     }
   });
 
+  $(guiConfig.buttonSearch).click(doSearch);
+  $(guiConfig.inputSearch).bind('keyup', doSearch);
   $(guiConfig.inputSearch).focus();
 });
 
@@ -140,6 +143,24 @@ var demo = {
   filters: {},
   autocompleteCache: {},
 
+  createEvent: function createEvent(entity, eventType) {
+
+    var req = {
+      EntityType: entity.EntityType,
+      ExternalId: entity.ExternalId,
+      Events: [event],
+      QuestName: config.createEventsQuest,
+      Type: eventType
+    };
+
+    lib.getResponse(req, function (response) {
+
+      if (!response.success && config.devMode) {
+        console.log(response.errorMessage);
+      }
+    });
+  },
+
   getAutoCompeteRequest: function getAutoCompeteRequest(options) {
 
     var req = {
@@ -152,7 +173,6 @@ var demo = {
       req.AutoComplete_ToIndex = config.autoCompletePageSize;
     }
 
-    // returns promise
     return req;
   },
 
@@ -174,6 +194,8 @@ var demo = {
 
       if (data.AutoComplete.length > 0) {
         res(self.formatAutoCompleteData(data));
+      } else {
+        res([]);
       }
     }
 
@@ -326,7 +348,11 @@ var demo = {
 
       // updateFilters();
 
-      // updateContinousScroll();
+      if (config.continousScrolling) {
+        this.displayMore();
+      } else if (response.data.DirectResults_TotalItems > config.directResultsPageSize) {
+        self.updatePaging(response.data.DirectResults_TotalItems, options.page, options.preventReSearch, self.search.bind(this));
+      }
     });
     // .catch( function (err) {
     //         console.log('Error when processing response:')
@@ -334,147 +360,141 @@ var demo = {
     //       });
   },
 
-  updateContinousScroll: function updateContinousScroll() {
+  updatePaging: function updatePaging(totalItems, page, preventReSearch, searchCallback) {
 
-    //check to automatically display more if continousscrolling, otherwise just show paging buttons
-    if (demoConfig.ContinousScrolling) Demo.DisplayMore();else if (response.data.DirectResults_TotalItems > demoConfig.DirectResultsPageSize) {
-      var showPage = function showPage(p) {
-        if (p < 2) return "show";
+    function showPage(p) {
+      if (p < 2) return "show";
 
-        if (p > pages - 3) return "show";
+      if (p > pages - 3) return "show";
 
-        if (p > page - 2 && p < page + 2) return "show";
+      if (p > page - 2 && p < page + 2) return "show";
 
-        if (p == 2) return "dots";
+      if (p == 2) return "dots";
 
-        if (p == pages - 3 && page != 0 && page != pages - 1) return "dots";
+      if (p == pages - 3 && page != 0 && page != pages - 1) return "dots";
 
-        return "hide";
-      };
+      return "hide";
+    }
 
-      var pages = Math.ceil(response.data.DirectResults_TotalItems / demoConfig.DirectResultsPageSize);
+    var pages = Math.ceil(totalItems / config.directResultsPageSize);
 
-      var pagesDiv = $("<div/>").addClass("pages").appendTo($("div#directresults"));
+    var pagesDiv = $("<div/>").addClass("pages").appendTo($("div#directresults"));
 
-      for (var i = 0; i < pages; i++) {
+    var i = 0;
+    for (i; i < pages; i++) {
 
-        var show = showPage(i);
+      var show = showPage(i);
 
-        if (show == "show") {
+      if (show == "show") {
 
-          $("<a/>").html(i + 1).data("page", i).addClass(page == i ? "selected" : "").click(function () {
+        $("<a/>").html(i + 1).data("page", i).addClass(page == i ? "selected" : "").click(function () {
 
-            Demo.Search(query, false, preventReSearch, $(this).data("page"));
-          }).appendTo(pagesDiv);
-        } else if (show == "dots") {
-          $("<span>...</span>").appendTo(pagesDiv);
-        }
+          searchCallback({
+            query: query,
+            instant: false,
+            clearSearch: true,
+            preventReSearch: preventReSearch,
+            page: $(this).data("page")
+          });
+        }).appendTo(pagesDiv);
+      } else if (show == "dots") {
+        $("<span>...</span>").appendTo(pagesDiv);
       }
     }
   },
 
-  updateFilters: function updateFilters() {
+  displayMore: function displayMore() {
+    //there are more results available
 
-    for (var i = 0; i < config.filters.length; i++) {
+    var ps = this.previousSearch;
 
-      $("div#filter_" + config.filters[i].Name).empty();
+    if (this.isBottomVisible()) {
 
-      var data = response.data[config.filters[i].ResponseParameter];
-
-      if (data && data.length > 0) {
-
-        var filterArray = this.filters[config.filters[i].RequestParameter];
-        if (!filterArray) filterArray = [];
-
-        var filterDiv = $("div#filter_" + config.filters[i].Name);
-
-        var div = $("<div/>").addClass("alwaysvisible").appendTo(filterDiv);
-
-        for (var j = 0; j < data.length; j++) {
-
-          if (j == 5) {
-
-            div = $("<div/>").addClass("hideable").appendTo(filterDiv);
-
-            if (Demo.VisibleFilterDivs[config.filters[i].Name]) div.show();
-
-            $("<a/>").html(Demo.VisibleFilterDivs[config.filters[i].Name] ? "Hide" : "Show all").addClass("showhide").data("div", div).data("filterName", config.filters[i].Name).click(function () {
-
-              if ($(this).data("div").is(":visible")) {
-
-                Demo.VisibleFilterDivs[$(this).data("filterName")] = false;
-
-                $(this).data("div").hide();
-                $(this).html("Show all");
-              } else {
-
-                Demo.VisibleFilterDivs[$(this).data("filterName")] = true;
-
-                $(this).data("div").show();
-                $(this).html("Hide");
-              }
-            }).appendTo(filterDiv);
-          }
-
-          div.append($("<a/>").html(data[j].Key + " (" + data[j].Value + ")").data("filterkey", config.filters[i].RequestParameter).data("filtervalue", data[j].Key).click(function () {
-            if (!$(this).hasClass("selected")) {
-              Demo.AddFilter($(this).data("filterkey"), $(this).data("filtervalue"));
-              $(this).addClass("selected");
-              Demo.SearchAgain();
-            } else {
-              Demo.RemoveFilter($(this).data("filterkey"), $(this).data("filtervalue"));
-              $(this).removeClass("selected");
-              Demo.SearchAgain();
-            }
-          }).addClass(filterArray.indexOf(data[j].Key) > -1 ? "selected" : ""));
-        }
+      if (ps.totalItems > (ps.page + 1) * config.directResultsPageSize) {
+        this.search({
+          query: ps.Query,
+          instant: false,
+          preventReSearch: ps.PreventReSearch,
+          page: ps.Page + 1
+        });
+      } else if (ps.otalItems > config.directResultsPageSize && $(config.directResults).find('div.endofresults').length === 0) {
+        $(config.directResults).append($('<div/>').addClass('endofresults').html('No more results'));
       }
     }
   },
 
-  // SearchAgain: function() {
-  //     Demo.Search(Demo.PreviousSearch.Query,false,Demo.PreviousSearch.PreventReSearch,0);
-  // },
+  // updateFilters: function () {
 
-  // AddFilter: function(requestParameter, value) {
+  //       for (var i = 0; i < config.filters.length; i++) {
 
-  //     if (!Demo.Filters[requestParameter])
-  //         Demo.Filters[requestParameter] = [];
+  //           $("div#filter_" + config.filters[i].Name).empty();
 
-  //     Demo.Filters[requestParameter].push(value);
+  //           var data = response.data[config.filters[i].ResponseParameter];
 
-  // },
+  //           if (data && data.length > 0) {
 
-  // RemoveFilter: function (requestParameter, value) {
+  //               var filterArray = this.filters[config.filters[i].RequestParameter];
+  //               if (!filterArray)
+  //                   filterArray = [];
 
-  //     if (!Demo.Filters[requestParameter])
-  //         Demo.Filters[requestParameter] = [];
+  //               var filterDiv = $("div#filter_" + config.filters[i].Name);
 
-  //     var index = Demo.Filters[requestParameter].indexOf(value);
+  //               var div = $("<div/>").addClass("alwaysvisible").appendTo(filterDiv);
 
-  //     if (index > -1) {
-  //         Demo.Filters[requestParameter].splice(index, 1);
-  //     }
+  //               for (var j = 0; j < data.length; j++) {
 
-  // },
+  //                   if (j == 5) {
 
-  // CreateEvent: function(entity, eventType) {
+  //                       div = $("<div/>").addClass("hideable").appendTo(filterDiv);
 
-  //   var event = new Loop54.Event(eventType, new Loop54.Entity(entity.EntityType, entity.ExternalId), 1, 0);
+  //                       if (Demo.VisibleFilterDivs[config.filters[i].Name])
+  //                           div.show();
 
-  //   var options = new Loop54.RequestOptions(!demoConfig.Use26Request);
-  //   var request = new Loop54.Request('CreateEvents',options);
-  //   request.setValue('Events', [event]);
+  //                       $("<a/>").html(Demo.VisibleFilterDivs[config.filters[i].Name]?"Hide":"Show all").addClass("showhide").data("div", div).data("filterName",config.filters[i].Name).click(function() {
 
-  //   request.getResponse(demoConfig.Url, function(response) {
+  //                           if ($(this).data("div").is(":visible")) {
 
-  //     if (!response.success && config.DevMode) {
-  //       console.log(response.errorMessage);
-  //     }
+  //                               Demo.VisibleFilterDivs[$(this).data("filterName")] = false;
 
-  //   });
+  //                               $(this).data("div").hide();
+  //                               $(this).html("Show all");
+  //                           }
+  //                           else {
 
-  // },
+  //                               Demo.VisibleFilterDivs[$(this).data("filterName")] = true;
+
+  //                               $(this).data("div").show();
+  //                               $(this).html("Hide");
+  //                           }
+
+  //                       }).appendTo(filterDiv);
+
+  //                   }
+
+  //                   div.append(
+  //                       $("<a/>")
+  //                           .html(data[j].Key + " (" + data[j].Value + ")")
+  //                           .data("filterkey", config.filters[i].RequestParameter)
+  //                           .data("filtervalue", data[j].Key)
+  //                           .click(function () {
+  //                               if (!$(this).hasClass("selected")) {
+  //                                   Demo.AddFilter($(this).data("filterkey"), $(this).data("filtervalue"));
+  //                                   $(this).addClass("selected");
+  //                                   Demo.SearchAgain();
+  //                               } else {
+  //                                   Demo.RemoveFilter($(this).data("filterkey"), $(this).data("filtervalue"));
+  //                                   $(this).removeClass("selected");
+  //                                   Demo.SearchAgain();
+  //                               }
+  //                           })
+  //                           .addClass(filterArray.indexOf(data[j].Key) > -1 ? "selected" : "")
+  //                   );
+  //               }
+
+  //           }
+  //       }
+
+  //   },
 
   // JustSetHash: null,
 
@@ -483,28 +503,14 @@ var demo = {
   //   location.hash = '#' + newHash;
   // },
 
-  // isBottomVisible: function() {
-  //   var scroll = $(window).scrollTop();
-  //   var windowHeight = $(window).height();
+  isBottomVisible: function isBottomVisible() {
+    var scroll = $(window).scrollTop();
+    var windowHeight = $(window).height();
 
-  //   var height = $(config.directResultsContainer).outerHeight() + $(config.directResultsContainer).offset().top;
+    var height = $(config.directResults).outerHeight() + $(config.directResults).offset().top;
 
-  //   return (scroll + windowHeight) >= height;
-  // },
-
-  // displayMore: function() {
-
-  //   //there are more results available
-  //   if (this.isBottomVisible()) {
-
-  //     if (this.PreviousSearch.TotalItems > (this.PreviousSearch.Page + 1) * config.DirectResultsPageSize) {
-  //       this.search(this.PreviousSearch.Query, false, this.PreviousSearch.PreventReSearch, this.PreviousSearch.Page + 1);
-  //     }
-  //     else if (this.PreviousSearch.TotalItems > config.DirectResultsPageSize && $(config.directResultsContainer).fing('div.endofresults').length === 0) {
-  //       $(config.directResultsContainer).append($('<div/>').addClass('endofresults').html('No more results'));
-  //     }
-  //   }
-  // },
+    return scroll + windowHeight >= height;
+  },
 
   // hashChanged: function(previousHash, currentHash) {
 
@@ -593,6 +599,7 @@ var render = function render(config, guiConfig) {
 
   function initFacetting() {
 
+    debugger;
     var $filters = $(guiConfig.filters);
 
     $filters.empty();
@@ -776,7 +783,7 @@ var render = function render(config, guiConfig) {
           entityTitle = getEntityTitle(entity);
 
       var div = $('<div/>').addClass('entity').data('entity', entity).data('value', value).click(function () {
-        //this.showEntity($(this).data('entity'), $(this).data('value'));
+        this.showEntity($(this).data('entity'), $(this).data('value'));
       });
 
       if (config.showValues) {
@@ -801,65 +808,59 @@ var render = function render(config, guiConfig) {
       div.appendTo($(element));
     },
 
-    // ShowEntity: function(entity, value) {
+    showEntity: function showEntity(entity, value, createEventCallback) {
 
-    //     Demo.SetHash("config=" + demoConfig.Name + "&page=entity&id=" + entity.ExternalId);
+      // Demo.SetHash("config=" + demoConfig.Name + "&page=entity&id=" + entity.ExternalId);
 
-    //     Demo.CreateEvent(entity, "click");
+      createEventCallback(entity, 'click');
 
-    //     $("div#popupbg").show();
+      $('div#popupbg').show();
+      $('div.entitypopup').remove();
 
-    //     $("div.entitypopup").remove();
+      var div = $('<div/>').addClass('entitypopup').appendTo($('body')).css('top', $(window).scrollTop() + 100);
 
-    //     var div = $("<div/>").addClass("entitypopup").appendTo($("body")).css("top",$(window).scrollTop()+100);
+      $('<a/>').addClass('close').html('X').click(function () {
+        $('div#popupbg').hide();
+        $('div.entitypopup').remove();
+      }).appendTo(div);
 
-    //     $("<a/>").addClass("close").html("X").click(function () {
-    //         $("div#popupbg").hide();
-    //         $("div.entitypopup").remove();
-    //     }).appendTo(div);
+      //main stuff
 
-    //     //main stuff
+      $('<img/>').attr('src', replaceImageUrl(entity)).appendTo(div).on('error', function () {
+        $(this).remove();
+      });
 
-    //     $("<img/>")
-    //         .attr("src", utils.replaceImageUrl(entity))
-    //         .appendTo(div)
-    //         .on("error", function () {
-    //             $(this).remove();
-    //         });
+      $('<h2/>').html(getEntityTitle(entity)).appendTo(div);
 
-    //     $("<h2/>").html(Demo.GetEntityTitle(entity)).appendTo(div);
+      $('<div/>').addClass('description').html(getEntityDescription(entity)).appendTo(div);
 
-    //     $("<div/>").addClass("description").html(Demo.GetEntityDescription(entity)).appendTo(div);
+      $('<a/>').addClass('button').html('Purchase').click(function () {
+        createEventCallback(entity, 'purchase');
+        $(this).off('click').addClass('inactive');
+      }).appendTo(div);
 
-    //     $("<a/>").addClass("button").html("Purchase").click(function () {
-    //         Demo.CreateEvent(entity, "purchase");
-    //         $(this).off("click").addClass("inactive");
-    //     }).appendTo(div);
+      //extra info
+      if (!config.devMode) {
+        $('<a/>').html('Show all attributes').addClass('showhide').appendTo(div).click(function () {
+          $('div.entitypopup div.moreinfo').show();
+          $(this).remove();
+        });
+      }
 
-    //     //extra info
-    //     if (!demoConfig.DevMode)
-    //     {
-    //         $("<a/>").html("Show all attributes").addClass("showhide").appendTo(div).click(function() {
-    //             $("div.entitypopup div.moreinfo").show();
-    //             $(this).remove();
-    //         });
-    //     }
+      var hiddenDiv = $('<div/>').addClass('moreinfo').appendTo(div);
 
-    //     var hiddenDiv = $("<div/>").addClass("moreinfo").appendTo(div);
+      $('<span/>').html('<b>EntityType</b>: ' + entity.EntityType).appendTo(hiddenDiv);
+      $('<span/>').html('<b>ExternalId</b>: ' + entity.ExternalId).appendTo(hiddenDiv);
+      $('<span/>').html('<b>Value</b>: ' + value).appendTo(hiddenDiv);
 
-    //     $("<span/>").html("<b>EntityType</b>: " + entity.EntityType).appendTo(hiddenDiv);
-    //     $("<span/>").html("<b>ExternalId</b>: " + entity.ExternalId).appendTo(hiddenDiv);
-    //     $("<span/>").html("<b>Value</b>: " + value).appendTo(hiddenDiv);
+      for (var key in entity.Attributes) {
+        $('<span/>').html('<b>' + key + '</b>: ' + entity.Attributes[key]).appendTo(hiddenDiv);
+      }
 
-    //     for (var key in entity.Attributes)
-    //     {
-    //         $("<span/>").html("<b>" + key + "</b>: " + entity.Attributes[key]).appendTo(hiddenDiv);
-    //     }
-
-    //     if (demoConfig.DevMode)
-    //         hiddenDiv.show();
-
-    // },
+      if (config.DevMode) {
+        hiddenDiv.show();
+      }
+    },
 
     initFacetting: initFacetting
 

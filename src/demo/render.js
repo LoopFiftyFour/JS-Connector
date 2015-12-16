@@ -11,6 +11,7 @@ let render = function (config, guiConfig) {
 
   function initFacetting() {
 
+debugger;
     let $filters = $(guiConfig.filters);
 
     $filters.empty();
@@ -229,7 +230,7 @@ debugger;
         .data('entity', entity)
         .data('value', value)
         .click(function() {
-          //this.showEntity($(this).data('entity'), $(this).data('value'));
+          this.showEntity($(this).data('entity'), $(this).data('value'));
         });
 
       if (config.showValues) {
@@ -258,67 +259,65 @@ debugger;
       div.appendTo($(element));
     },
 
-    // ShowEntity: function(entity, value) {
+    showEntity: function(entity, value, createEventCallback) {
 
-    //     Demo.SetHash("config=" + demoConfig.Name + "&page=entity&id=" + entity.ExternalId);
+        // Demo.SetHash("config=" + demoConfig.Name + "&page=entity&id=" + entity.ExternalId);
 
-    //     Demo.CreateEvent(entity, "click");
+      createEventCallback(entity, 'click');
 
-    //     $("div#popupbg").show();
+      $('div#popupbg').show();
+      $('div.entitypopup').remove();
 
-    //     $("div.entitypopup").remove();
+      var div = $('<div/>').addClass('entitypopup').appendTo($('body')).css('top', $(window).scrollTop() + 100);
 
-    //     var div = $("<div/>").addClass("entitypopup").appendTo($("body")).css("top",$(window).scrollTop()+100);
-
-    //     $("<a/>").addClass("close").html("X").click(function () {
-    //         $("div#popupbg").hide();
-    //         $("div.entitypopup").remove();
-    //     }).appendTo(div);
-        
-
-    //     //main stuff
-
-    //     $("<img/>")
-    //         .attr("src", utils.replaceImageUrl(entity))
-    //         .appendTo(div)
-    //         .on("error", function () {
-    //             $(this).remove();
-    //         });
-        
-    //     $("<h2/>").html(Demo.GetEntityTitle(entity)).appendTo(div);
-        
-    //     $("<div/>").addClass("description").html(Demo.GetEntityDescription(entity)).appendTo(div);
-
-    //     $("<a/>").addClass("button").html("Purchase").click(function () {
-    //         Demo.CreateEvent(entity, "purchase");
-    //         $(this).off("click").addClass("inactive");
-    //     }).appendTo(div);
+      $('<a/>').addClass('close').html('X').click(function () {
+        $('div#popupbg').hide();
+        $('div.entitypopup').remove();
+      }).appendTo(div);
 
 
-    //     //extra info
-    //     if (!demoConfig.DevMode)
-    //     {
-    //         $("<a/>").html("Show all attributes").addClass("showhide").appendTo(div).click(function() {
-    //             $("div.entitypopup div.moreinfo").show();
-    //             $(this).remove();
-    //         });
-    //     }
+      //main stuff
 
-    //     var hiddenDiv = $("<div/>").addClass("moreinfo").appendTo(div);
-        
-    //     $("<span/>").html("<b>EntityType</b>: " + entity.EntityType).appendTo(hiddenDiv);
-    //     $("<span/>").html("<b>ExternalId</b>: " + entity.ExternalId).appendTo(hiddenDiv);
-    //     $("<span/>").html("<b>Value</b>: " + value).appendTo(hiddenDiv);
+      $('<img/>')
+        .attr('src', replaceImageUrl(entity))
+        .appendTo(div)
+        .on('error', function () {
+          $(this).remove();
+        });
 
-    //     for (var key in entity.Attributes)
-    //     {
-    //         $("<span/>").html("<b>" + key + "</b>: " + entity.Attributes[key]).appendTo(hiddenDiv);
-    //     }
+      $('<h2/>').html(getEntityTitle(entity)).appendTo(div);
 
-    //     if (demoConfig.DevMode)
-    //         hiddenDiv.show();
+      $('<div/>').addClass('description').html(getEntityDescription(entity)).appendTo(div);
 
-    // },
+      $('<a/>').addClass('button').html('Purchase').click(function () {
+        createEventCallback(entity, 'purchase');
+        $(this).off('click').addClass('inactive');
+      }).appendTo(div);
+
+
+      //extra info
+      if (!config.devMode)
+      {
+        $('<a/>').html('Show all attributes').addClass('showhide').appendTo(div).click(function() {
+          $('div.entitypopup div.moreinfo').show();
+          $(this).remove();
+        });
+      }
+
+      var hiddenDiv = $('<div/>').addClass('moreinfo').appendTo(div);
+
+      $('<span/>').html('<b>EntityType</b>: ' + entity.EntityType).appendTo(hiddenDiv);
+      $('<span/>').html('<b>ExternalId</b>: ' + entity.ExternalId).appendTo(hiddenDiv);
+      $('<span/>').html('<b>Value</b>: ' + value).appendTo(hiddenDiv);
+
+      for (var key in entity.Attributes) {
+        $('<span/>').html('<b>' + key + '</b>: ' + entity.Attributes[key]).appendTo(hiddenDiv);
+      }
+
+      if (config.DevMode) {
+        hiddenDiv.show();
+      }
+    },
 
     initFacetting
 

@@ -17,9 +17,9 @@ var guiConfig = {
   buttonSearch: 'a#searchbutton',
   inputSearchText: 'You search, now',
   filtersContainer: 'div#filters-wrapper',
-  autocompleteContainer: 'div#autocomplete',
-  searchButtonContainer: 'div.form-search button',
-  directResultsContainer: 'div#products-wrapper',
+  //autocompleteContainer: 'div#autocomplete',
+  //searchButtonContainer: 'div.form-search button',
+  //directResultsContainer: 'div#products-wrapper',
   recommendedResults: 'div#recommendedresults',
   //directResultsContainerId: 'products-wrapper',
   directResults: 'div#directresults',
@@ -54,7 +54,7 @@ var config = {
   recommendedResultsPageSize: 12,
   continousScrolling: false,
   instantSearch: false,
-  devMode: false,
+  devMode: true,
   cacheAutoComplete: false,
   autoCompleteFacetingParameter: 'Faceting.Categories',
   productTitleAttribute: 'productName',
@@ -74,25 +74,20 @@ $(document).ready(function () {
   // $('a#user').click(function() {
   //   lib.getRandomUserId();
   // });
-
-  $(guiConfig.buttonSearch).click( function() {
-    demo.search({
+  
+  function doSearch(event) {
+    if (event.keyCode === 13) {
+      demo.search({
         query: $(guiConfig.inputSearch).val(),
         clearFilters: true,
-        instant: false,
+        clearSearch: true,
         preventReSearch: false,
+        instant: false,
         page: 0
       });
-  }).on('keyup', function (event) {
-    debugger;
-    demo.search({
-      query: $(guiConfig.inputSearch).val(),
-      clearFilters: true,
-      instant: false,
-      preventReSearch: false,
-      page: 0
-    });
-  });
+      $(guiConfig.inputSearch).autocomplete('close');
+    }
+  }
 
   render.initFacetting();
 
@@ -102,11 +97,17 @@ $(document).ready(function () {
     },
     minLength: 2,
     select: function( event, ui ) {
+      $(guiConfig.inputSearch).unbind('keyup', doSearch);
       demo.search({
+        clearFilters: true,
+        instant: false,
         clearSearch: true,
         query: ui.item.value,
         facet: ui.item.facet
       });
+    },
+    response: function( event, ui ) {
+      $(guiConfig.inputSearch).bind('keyup', doSearch);
     },
     open: function() {
       $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
@@ -116,7 +117,9 @@ $(document).ready(function () {
     }
   });
 
-  $( guiConfig.inputSearch ).focus();
+  $(guiConfig.buttonSearch).click(doSearch);
+  $(guiConfig.inputSearch).bind('keyup', doSearch);
+  $(guiConfig.inputSearch).focus();
 
 
 });
@@ -134,6 +137,27 @@ var demo = {
   filters: {},
   autocompleteCache: {},
 
+
+  createEvent: function(entity, eventType) {
+
+    var req = {
+      EntityType: entity.EntityType, 
+      ExternalId: entity.ExternalId,
+      Events: [event],
+      QuestName: config.createEventsQuest,
+      Type: eventType
+    };
+
+    lib.getResponse(req, function(response) {
+
+      if (!response.success && config.devMode) {
+        console.log(response.errorMessage);
+      }
+
+    });
+
+  },
+
   getAutoCompeteRequest: function (options) {
 
     var req = {
@@ -146,9 +170,7 @@ var demo = {
         req.AutoComplete_ToIndex = config.autoCompletePageSize;
     }
 
-    // returns promise
     return (req);
-
   },
 
   previousSearch: {},
@@ -169,6 +191,8 @@ var demo = {
 
       if (data.AutoComplete.length > 0) {
         res(self.formatAutoCompleteData(data));
+      } else {
+        res([]);
       }
     }
 
@@ -320,7 +344,12 @@ var demo = {
 
         // updateFilters();
 
-        // updateContinousScroll();
+        if (config.continousScrolling) {
+          this.displayMore();
+        } else if (response.data.DirectResults_TotalItems > config.directResultsPageSize) {
+          self.updatePaging(response.data.DirectResults_TotalItems, options.page, options.preventReSearch, self.search.bind(this));
+        }
+
       });
 // .catch( function (err) {
 //         console.log('Error when processing response:')
@@ -329,181 +358,157 @@ var demo = {
 
   },
 
-  updateContinousScroll: function () {
-    
-        //check to automatically display more if continousscrolling, otherwise just show paging buttons
-        if(demoConfig.ContinousScrolling)
-            Demo.DisplayMore();
-        else if (response.data.DirectResults_TotalItems > demoConfig.DirectResultsPageSize) {
+  updatePaging: function (totalItems, page, preventReSearch, searchCallback) {
 
-            var pages = Math.ceil(response.data.DirectResults_TotalItems / demoConfig.DirectResultsPageSize);
+    function showPage(p) {
+      if (p < 2)
+          return "show";
 
-            function showPage(p) {
-                if (p < 2)
-                    return "show";
+      if (p > pages - 3)
+          return "show";
 
-                if (p > pages - 3)
-                    return "show";
+      if (p > page - 2 && p < page + 2)
+          return "show";
 
-                if (p > page - 2 && p < page + 2)
-                    return "show";
+      if (p == 2)
+          return "dots";
+      
+      if (p == pages - 3 && page != 0 && page != pages-1)
+          return "dots";
 
-                if (p == 2)
-                    return "dots";
-                
-                if (p == pages - 3 && page != 0 && page != pages-1)
-                    return "dots";
+      return "hide";
+    }
 
-                return "hide";
-            }
 
-            
+    var pages = Math.ceil(totalItems / config.directResultsPageSize);
 
-            var pagesDiv = $("<div/>").addClass("pages").appendTo($("div#directresults"));
+    var pagesDiv = $("<div/>").addClass("pages").appendTo($("div#directresults"));
 
-            for (var i = 0; i < pages; i++) {
+    var i = 0;
+    for ( i; i < pages; i++) {
 
-                var show = showPage(i);
+      var show = showPage(i);
 
-                if (show == "show") {
+      if (show == "show") {
 
-                    $("<a/>").html((i + 1)).data("page", i).addClass(page==i?"selected":"").click(function() {
+        $("<a/>").html((i + 1)).data("page", i).addClass(page==i?"selected":"").click(function() {
 
-                        Demo.Search(query, false, preventReSearch, $(this).data("page"));
+            searchCallback({
+              query, 
+              instant: false, 
+              clearSearch: true,
+              preventReSearch, 
+              page: $(this).data("page")
+            });
 
-                    }).appendTo(pagesDiv);
-                }
-                else if (show == "dots") {
-                    $("<span>...</span>").appendTo(pagesDiv);
-                }
-            }
+        }).appendTo(pagesDiv);
+      } else if (show == "dots") {
+          $("<span>...</span>").appendTo(pagesDiv);
+      }
+    }
 
-        }
   },
 
+  displayMore: function() {
+      //there are more results available
+      
+      var ps = this.previousSearch;
 
+      if (this.isBottomVisible()) {
 
-  updateFilters: function () {
-
-        for (var i = 0; i < config.filters.length; i++) {
-
-            $("div#filter_" + config.filters[i].Name).empty();
-
-            var data = response.data[config.filters[i].ResponseParameter];
-
-            if (data && data.length > 0) {
-
-                var filterArray = this.filters[config.filters[i].RequestParameter];
-                if (!filterArray)
-                    filterArray = [];
-
-                var filterDiv = $("div#filter_" + config.filters[i].Name);
-
-                var div = $("<div/>").addClass("alwaysvisible").appendTo(filterDiv);
-
-                for (var j = 0; j < data.length; j++) {
-                    
-                    if (j == 5) {
-
-                        div = $("<div/>").addClass("hideable").appendTo(filterDiv);
-
-                        if (Demo.VisibleFilterDivs[config.filters[i].Name])
-                            div.show();
-
-                        $("<a/>").html(Demo.VisibleFilterDivs[config.filters[i].Name]?"Hide":"Show all").addClass("showhide").data("div", div).data("filterName",config.filters[i].Name).click(function() {
-
-                            if ($(this).data("div").is(":visible")) {
-
-                                Demo.VisibleFilterDivs[$(this).data("filterName")] = false;
-
-                                $(this).data("div").hide();
-                                $(this).html("Show all");
-                            }
-                            else {
-                                
-                                Demo.VisibleFilterDivs[$(this).data("filterName")] = true;
-
-                                $(this).data("div").show();
-                                $(this).html("Hide");
-                            }
-                            
-                            
-
-                        }).appendTo(filterDiv);
-
-    
-                        
-                        
-                    }
-
-                    div.append(
-                        $("<a/>")
-                            .html(data[j].Key + " (" + data[j].Value + ")")
-                            .data("filterkey", config.filters[i].RequestParameter)
-                            .data("filtervalue", data[j].Key)
-                            .click(function () {
-                                if (!$(this).hasClass("selected")) {
-                                    Demo.AddFilter($(this).data("filterkey"), $(this).data("filtervalue"));
-                                    $(this).addClass("selected");
-                                    Demo.SearchAgain();
-                                } else {
-                                    Demo.RemoveFilter($(this).data("filterkey"), $(this).data("filtervalue"));
-                                    $(this).removeClass("selected");
-                                    Demo.SearchAgain();
-                                }
-                            })
-                            .addClass(filterArray.indexOf(data[j].Key) > -1 ? "selected" : "")
-                    );
-                }
-
-            }
+        if (ps.totalItems > (ps.page + 1) * config.directResultsPageSize) {
+          this.search({
+            query: ps.Query, 
+            instant: false, 
+            preventReSearch: ps.PreventReSearch, 
+            page: ps.Page + 1
+          });
         }
-
+        else if (ps.otalItems > config.directResultsPageSize && $(config.directResults).find('div.endofresults').length === 0) {
+          $(config.directResults).append($('<div/>').addClass('endofresults').html('No more results'));
+        }
+      }
     },
 
-    // SearchAgain: function() {
-    //     Demo.Search(Demo.PreviousSearch.Query,false,Demo.PreviousSearch.PreventReSearch,0);
-    // },
+  // updateFilters: function () {
 
-    // AddFilter: function(requestParameter, value) {
+  //       for (var i = 0; i < config.filters.length; i++) {
 
-    //     if (!Demo.Filters[requestParameter])
-    //         Demo.Filters[requestParameter] = [];
+  //           $("div#filter_" + config.filters[i].Name).empty();
 
-    //     Demo.Filters[requestParameter].push(value);
-        
-    // },
+  //           var data = response.data[config.filters[i].ResponseParameter];
+
+  //           if (data && data.length > 0) {
+
+  //               var filterArray = this.filters[config.filters[i].RequestParameter];
+  //               if (!filterArray)
+  //                   filterArray = [];
+
+  //               var filterDiv = $("div#filter_" + config.filters[i].Name);
+
+  //               var div = $("<div/>").addClass("alwaysvisible").appendTo(filterDiv);
+
+  //               for (var j = 0; j < data.length; j++) {
+                    
+  //                   if (j == 5) {
+
+  //                       div = $("<div/>").addClass("hideable").appendTo(filterDiv);
+
+  //                       if (Demo.VisibleFilterDivs[config.filters[i].Name])
+  //                           div.show();
+
+  //                       $("<a/>").html(Demo.VisibleFilterDivs[config.filters[i].Name]?"Hide":"Show all").addClass("showhide").data("div", div).data("filterName",config.filters[i].Name).click(function() {
+
+  //                           if ($(this).data("div").is(":visible")) {
+
+  //                               Demo.VisibleFilterDivs[$(this).data("filterName")] = false;
+
+  //                               $(this).data("div").hide();
+  //                               $(this).html("Show all");
+  //                           }
+  //                           else {
+                                
+  //                               Demo.VisibleFilterDivs[$(this).data("filterName")] = true;
+
+  //                               $(this).data("div").show();
+  //                               $(this).html("Hide");
+  //                           }
+                            
+                            
+
+  //                       }).appendTo(filterDiv);
+
     
-    // RemoveFilter: function (requestParameter, value) {
+                        
+                        
+  //                   }
 
-    //     if (!Demo.Filters[requestParameter])
-    //         Demo.Filters[requestParameter] = [];
-        
-    //     var index = Demo.Filters[requestParameter].indexOf(value);
-        
-    //     if (index > -1) {
-    //         Demo.Filters[requestParameter].splice(index, 1);
-    //     }
+  //                   div.append(
+  //                       $("<a/>")
+  //                           .html(data[j].Key + " (" + data[j].Value + ")")
+  //                           .data("filterkey", config.filters[i].RequestParameter)
+  //                           .data("filtervalue", data[j].Key)
+  //                           .click(function () {
+  //                               if (!$(this).hasClass("selected")) {
+  //                                   Demo.AddFilter($(this).data("filterkey"), $(this).data("filtervalue"));
+  //                                   $(this).addClass("selected");
+  //                                   Demo.SearchAgain();
+  //                               } else {
+  //                                   Demo.RemoveFilter($(this).data("filterkey"), $(this).data("filtervalue"));
+  //                                   $(this).removeClass("selected");
+  //                                   Demo.SearchAgain();
+  //                               }
+  //                           })
+  //                           .addClass(filterArray.indexOf(data[j].Key) > -1 ? "selected" : "")
+  //                   );
+  //               }
 
-    // },
+  //           }
+  //       }
 
-    // CreateEvent: function(entity, eventType) {
+  //   },
 
-    //   var event = new Loop54.Event(eventType, new Loop54.Entity(entity.EntityType, entity.ExternalId), 1, 0);
 
-    //   var options = new Loop54.RequestOptions(!demoConfig.Use26Request);
-    //   var request = new Loop54.Request('CreateEvents',options);
-    //   request.setValue('Events', [event]);
-
-    //   request.getResponse(demoConfig.Url, function(response) {
-
-    //     if (!response.success && config.DevMode) {
-    //       console.log(response.errorMessage);
-    //     }
-
-    //   });
-
-    // },
 
     // JustSetHash: null,
 
@@ -513,28 +518,16 @@ var demo = {
     // },
 
 
-    // isBottomVisible: function() {
-    //   var scroll = $(window).scrollTop();
-    //   var windowHeight = $(window).height();
+    isBottomVisible: function() {
+      var scroll = $(window).scrollTop();
+      var windowHeight = $(window).height();
 
-    //   var height = $(config.directResultsContainer).outerHeight() + $(config.directResultsContainer).offset().top;
+      var height = $(config.directResults).outerHeight() + $(config.directResults).offset().top;
 
-    //   return (scroll + windowHeight) >= height;
-    // },
+      return (scroll + windowHeight) >= height;
+    },
 
-    // displayMore: function() {
-
-    //   //there are more results available
-    //   if (this.isBottomVisible()) {
-
-    //     if (this.PreviousSearch.TotalItems > (this.PreviousSearch.Page + 1) * config.DirectResultsPageSize) {
-    //       this.search(this.PreviousSearch.Query, false, this.PreviousSearch.PreventReSearch, this.PreviousSearch.Page + 1);
-    //     }
-    //     else if (this.PreviousSearch.TotalItems > config.DirectResultsPageSize && $(config.directResultsContainer).fing('div.endofresults').length === 0) {
-    //       $(config.directResultsContainer).append($('<div/>').addClass('endofresults').html('No more results'));
-    //     }
-    //   }
-    // },
+  
 
 
 
