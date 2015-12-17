@@ -11,7 +11,6 @@ let render = function (config, guiConfig) {
 
   function initFacetting() {
 
-debugger;
     let $filters = $(guiConfig.filters);
 
     $filters.empty();
@@ -165,26 +164,26 @@ debugger;
 
     },
 
-    directResults: function (directResults, totalItems, isContinuation) {
+    directResults: function (directResults, totalItems, isContinuation, createEventCallback) {
 
       if(!isContinuation) {
         $(guiConfig.directResults).append($('<h2>We found ' + totalItems + ' results</h2>'));
       }
 
       for (var i = 0; i < directResults.length; i++) {
-        this.renderEntity(guiConfig.directResults, directResults[i].Key, directResults[i].Value);
+        this.renderEntity(guiConfig.directResults, directResults[i].Key, directResults[i].Value, createEventCallback);
       }
 
     },
 
-    recommendedResults: function (recommendedResults, isContinuation) {
+    recommendedResults: function (recommendedResults, isContinuation, createEventCallback) {
 
       if (!isContinuation) {
         $(guiConfig.recommendedResults).append($('<h2>You might also like</h2>'));
       }
 
       for (var i = 0; i < recommendedResults.length; i++) {
-        this.renderEntity(guiConfig.recommendedResults, recommendedResults[i].Key, recommendedResults[i].Value);
+        this.renderEntity(guiConfig.recommendedResults, recommendedResults[i].Key, recommendedResults[i].Value, createEventCallback);
       }
 
     },
@@ -199,9 +198,9 @@ debugger;
     clearSearch: function (keepResults) {
 
       if (!keepResults) {
-        $(guiConfig.directResultsContainer).empty().removeClass('fillout');
+        $(guiConfig.directResults).empty().removeClass('fillout');
 
-        $(guiConfig.recommendedResultsContainer).empty().show();
+        $(guiConfig.recommendedResults).empty().show();
       }
 
       $(guiConfig.makesSense).hide();
@@ -220,17 +219,18 @@ debugger;
       $('div#autocomplete').hide();
     },
 
-    renderEntity: function(element, entity, value) {
+    renderEntity: function(element, entity, value, createEventCallback) {
 
       var imgUrl = replaceImageUrl(entity),
           entityTitle = getEntityTitle(entity);
+      var self = this;
 
       var div = $('<div/>')
         .addClass('entity')
         .data('entity', entity)
         .data('value', value)
         .click(function() {
-          this.showEntity($(this).data('entity'), $(this).data('value'));
+          self.showEntity($(this).data('entity'), $(this).data('value'), createEventCallback);
         });
 
       if (config.showValues) {

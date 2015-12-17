@@ -26,7 +26,7 @@ var guiConfig = {
   inputSearch: 'input#search',
   buttonSearch: 'a#searchbutton',
   inputSearchText: 'You search, now',
-  filtersContainer: 'div#filters-wrapper',
+  filters: 'div#filters',
   //autocompleteContainer: 'div#autocomplete',
   //searchButtonContainer: 'div.form-search button',
   //directResultsContainer: 'div#products-wrapper',
@@ -71,7 +71,8 @@ var config = {
   productDescriptionAttribute: 'Description',
   productImageUrlAttributes: ['imageURL'],
   productImageUrl: '$1',
-  use26Request: true
+  use26Request: true,
+  showValues: true
 };
 
 var render = (0, _render2.default)(config, guiConfig);
@@ -119,10 +120,10 @@ $(document).ready(function () {
       $(guiConfig.inputSearch).bind('keyup', doSearch);
     },
     open: function open() {
-      $(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+      $(this).removeClass('ui-corner-all').addClass('ui-corner-top');
     },
     close: function close() {
-      $(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+      $(this).removeClass('ui-corner-top').addClass('ui-corner-all');
     }
   });
 
@@ -142,6 +143,8 @@ var demo = {
   activeIndex: -1,
   filters: {},
   autocompleteCache: {},
+  visibleFilterDivs: {},
+  previousSearch: {},
 
   createEvent: function createEvent(entity, eventType) {
 
@@ -262,8 +265,8 @@ var demo = {
     }
 
     for (var i = 0; i < config.filters.length; i++) {
-      if (this.filters[config.filters[i].requestParameter]) {
-        req[config.filters[i].requestParameter] = this.filters[config.filters[i].requestParameter];
+      if (this.filters[config.filters[i].RequestParameter]) {
+        req[config.filters[i].RequestParameter] = this.filters[config.filters[i].RequestParameter];
       }
     }
 
@@ -320,38 +323,40 @@ var demo = {
         alert(response.errorMessage);
       }
 
-      self.previousSearch.totalItems = response.data.DirectResults_TotalItems;
+      var data = response.data;
+
+      self.previousSearch.totalItems = data.DirectResults_TotalItems;
 
       render.clearSearch(isContinuation);
 
-      if (!response.data.MakesSense) {
-        render.showMakesNoSense(response.data.DirectResults, response.data.SpellingSuggestions, options.query, self.search.bind(self));
+      if (!data.MakesSense) {
+        render.showMakesNoSense(data.DirectResults, data.SpellingSuggestions, options.query, self.search.bind(self));
       }
 
-      if (response.data.ReSearchQueryString) {
-        render.showReSearch(response.data.ReSearchQueryString, options.query, self.search.bind(self));
+      if (data.ReSearchQueryString) {
+        render.showReSearch(data.ReSearchQueryString, options.query, self.search.bind(self));
       }
 
-      if (response.data.RelatedQueries && response.data.RelatedQueries.length > 0) {
-        render.addRelated(response.data.RelatedQueries, self.search.bind(self));
+      if (data.RelatedQueries && data.RelatedQueries.length > 0) {
+        render.addRelated(data.RelatedQueries, self.search.bind(self));
       }
 
-      if (response.data.DirectResults && response.data.DirectResults.length > 0) {
-        render.directResults(response.data.DirectResults, response.data.DirectResults_TotalItems, isContinuation);
+      if (data.DirectResults && data.DirectResults.length > 0) {
+        render.directResults(data.DirectResults, data.DirectResults_TotalItems, isContinuation, self.createEvent);
       }
 
-      if (response.data.RecommendedResults && response.data.RecommendedResults.length > 0) {
-        render.recommendedResults(response.data.RecommendedResults, isContinuation);
+      if (data.RecommendedResults && data.RecommendedResults.length > 0) {
+        render.recommendedResults(data.RecommendedResults, isContinuation, self.createEvent);
       } else if (options.page < 1) {
         render.noRecommendedResults();
       }
 
-      // updateFilters();
+      self.updateFilters(data);
 
       if (config.continousScrolling) {
         this.displayMore();
-      } else if (response.data.DirectResults_TotalItems > config.directResultsPageSize) {
-        self.updatePaging(response.data.DirectResults_TotalItems, options.page, options.preventReSearch, self.search.bind(this));
+      } else if (data.DirectResults_TotalItems > config.directResultsPageSize) {
+        self.updatePaging(data.DirectResults_TotalItems, self.previousSearch, self.search.bind(self));
       }
     });
     // .catch( function (err) {
@@ -360,45 +365,43 @@ var demo = {
     //       });
   },
 
-  updatePaging: function updatePaging(totalItems, page, preventReSearch, searchCallback) {
+  updatePaging: function updatePaging(totalItems, prevSearch, searchCallback) {
+
+    var page = prevSearch.page;
 
     function showPage(p) {
-      if (p < 2) return "show";
+      if (p < 2) return 'show';
 
-      if (p > pages - 3) return "show";
+      if (p > pages - 3) return 'show';
 
-      if (p > page - 2 && p < page + 2) return "show";
+      if (p > page - 2 && p < page + 2) return 'show';
 
-      if (p == 2) return "dots";
+      if (p == 2) return 'dots';
 
-      if (p == pages - 3 && page != 0 && page != pages - 1) return "dots";
+      if (p == pages - 3 && page != 0 && page != pages - 1) return 'dots';
 
-      return "hide";
+      return 'hide';
     }
 
     var pages = Math.ceil(totalItems / config.directResultsPageSize);
 
-    var pagesDiv = $("<div/>").addClass("pages").appendTo($("div#directresults"));
+    var pagesDiv = $('<div/>').addClass('pages').appendTo($('div#directresults'));
 
     var i = 0;
     for (i; i < pages; i++) {
 
       var show = showPage(i);
 
-      if (show == "show") {
+      if (show == 'show') {
 
-        $("<a/>").html(i + 1).data("page", i).addClass(page == i ? "selected" : "").click(function () {
+        $('<a/>').html(i + 1).data('page', i).addClass(page == i ? 'selected' : '').click(function () {
 
-          searchCallback({
-            query: query,
-            instant: false,
-            clearSearch: true,
-            preventReSearch: preventReSearch,
-            page: $(this).data("page")
-          });
+          searchCallback(_extends({
+            page: $(this).data('page')
+          }, prevSearch));
         }).appendTo(pagesDiv);
-      } else if (show == "dots") {
-        $("<span>...</span>").appendTo(pagesDiv);
+      } else if (show == 'dots') {
+        $('<span>...</span>').appendTo(pagesDiv);
       }
     }
   },
@@ -423,78 +426,70 @@ var demo = {
     }
   },
 
-  // updateFilters: function () {
+  updateFilters: function updateFilters(data) {
 
-  //       for (var i = 0; i < config.filters.length; i++) {
+    var self = this;
 
-  //           $("div#filter_" + config.filters[i].Name).empty();
+    for (var i = 0; i < config.filters.length; i++) {
 
-  //           var data = response.data[config.filters[i].ResponseParameter];
+      $('div#filter_' + config.filters[i].Name).empty();
 
-  //           if (data && data.length > 0) {
+      var data = data[config.filters[i].ResponseParameter];
 
-  //               var filterArray = this.filters[config.filters[i].RequestParameter];
-  //               if (!filterArray)
-  //                   filterArray = [];
+      if (data && data.length > 0) {
 
-  //               var filterDiv = $("div#filter_" + config.filters[i].Name);
+        var filterArray = this.filters[config.filters[i].RequestParameter];
 
-  //               var div = $("<div/>").addClass("alwaysvisible").appendTo(filterDiv);
+        if (!filterArray) {
+          filterArray = [];
+        }
 
-  //               for (var j = 0; j < data.length; j++) {
+        var filterDiv = $('div#filter_' + config.filters[i].Name);
+        var div = $('<div/>').addClass('alwaysvisible').appendTo(filterDiv);
 
-  //                   if (j == 5) {
+        for (var j = 0; j < data.length; j++) {
 
-  //                       div = $("<div/>").addClass("hideable").appendTo(filterDiv);
+          if (j == 5) {
 
-  //                       if (Demo.VisibleFilterDivs[config.filters[i].Name])
-  //                           div.show();
+            div = $('<div/>').addClass('hideable').appendTo(filterDiv);
 
-  //                       $("<a/>").html(Demo.VisibleFilterDivs[config.filters[i].Name]?"Hide":"Show all").addClass("showhide").data("div", div).data("filterName",config.filters[i].Name).click(function() {
+            if (this.visibleFilterDivs[config.filters[i].Name]) {
+              div.show();
+            }
 
-  //                           if ($(this).data("div").is(":visible")) {
+            $('<a/>').html(self.visibleFilterDivs[config.filters[i].Name] ? 'Hide' : 'Show all').addClass('showhide').data('div', div).data('filterName', config.filters[i].Name).click(function () {
 
-  //                               Demo.VisibleFilterDivs[$(this).data("filterName")] = false;
+              if ($(this).data('div').is(':visible')) {
 
-  //                               $(this).data("div").hide();
-  //                               $(this).html("Show all");
-  //                           }
-  //                           else {
+                self.visibleFilterDivs[$(this).data('filterName')] = false;
 
-  //                               Demo.VisibleFilterDivs[$(this).data("filterName")] = true;
+                $(this).data('div').hide();
+                $(this).html('Show all');
+              } else {
 
-  //                               $(this).data("div").show();
-  //                               $(this).html("Hide");
-  //                           }
+                self.visibleFilterDivs[$(this).data('filterName')] = true;
 
-  //                       }).appendTo(filterDiv);
+                $(this).data('div').show();
+                $(this).html('Hide');
+              }
+            }).appendTo(filterDiv);
+          }
 
-  //                   }
-
-  //                   div.append(
-  //                       $("<a/>")
-  //                           .html(data[j].Key + " (" + data[j].Value + ")")
-  //                           .data("filterkey", config.filters[i].RequestParameter)
-  //                           .data("filtervalue", data[j].Key)
-  //                           .click(function () {
-  //                               if (!$(this).hasClass("selected")) {
-  //                                   Demo.AddFilter($(this).data("filterkey"), $(this).data("filtervalue"));
-  //                                   $(this).addClass("selected");
-  //                                   Demo.SearchAgain();
-  //                               } else {
-  //                                   Demo.RemoveFilter($(this).data("filterkey"), $(this).data("filtervalue"));
-  //                                   $(this).removeClass("selected");
-  //                                   Demo.SearchAgain();
-  //                               }
-  //                           })
-  //                           .addClass(filterArray.indexOf(data[j].Key) > -1 ? "selected" : "")
-  //                   );
-  //               }
-
-  //           }
-  //       }
-
-  //   },
+          div.append($('<a/>').html(data[j].Key + ' (' + data[j].Value + ')').data('filterkey', config.filters[i].RequestParameter).data('filtervalue', data[j].Key).click(function () {
+            if (!$(this).hasClass('selected')) {
+              self.addFilter($(this).data('filterkey'), $(this).data('filtervalue'));
+              $(this).addClass('selected');
+              self.searchAgain();
+            } else {
+              self.removeFilter($(this).data('filterkey'), $(this).data('filtervalue'));
+              $(this).removeClass('selected');
+              self.searchAgain();
+            }
+          }).addClass(filterArray.indexOf(data[j].Key) > -1 ? 'selected' : ''));
+        }
+      }
+    }
+  },
 
   // JustSetHash: null,
 
@@ -551,13 +546,14 @@ var demo = {
 
   searchAgain: function searchAgain() {
     //    Demo.Search(Demo.PreviousSearch.Query, false, Demo.PreviousSearch.PreventReSearch, 0);
-    this.search(this.previousSearch);
+    this.search(_extends({ clearSearch: true }, this.previousSearch));
   },
 
   addFilter: function addFilter(key, value) {
-    var param = this.filters[key];
 
-    param = param || [];
+    if (!this.filters[key]) {
+      this.filters[key] = [];
+    }
 
     this.filters[key].push(value);
   },
@@ -599,7 +595,6 @@ var render = function render(config, guiConfig) {
 
   function initFacetting() {
 
-    debugger;
     var $filters = $(guiConfig.filters);
 
     $filters.empty();
@@ -727,25 +722,25 @@ var render = function render(config, guiConfig) {
       $(guiConfig.related).show();
     },
 
-    directResults: function directResults(_directResults, totalItems, isContinuation) {
+    directResults: function directResults(_directResults, totalItems, isContinuation, createEventCallback) {
 
       if (!isContinuation) {
         $(guiConfig.directResults).append($('<h2>We found ' + totalItems + ' results</h2>'));
       }
 
       for (var i = 0; i < _directResults.length; i++) {
-        this.renderEntity(guiConfig.directResults, _directResults[i].Key, _directResults[i].Value);
+        this.renderEntity(guiConfig.directResults, _directResults[i].Key, _directResults[i].Value, createEventCallback);
       }
     },
 
-    recommendedResults: function recommendedResults(_recommendedResults, isContinuation) {
+    recommendedResults: function recommendedResults(_recommendedResults, isContinuation, createEventCallback) {
 
       if (!isContinuation) {
         $(guiConfig.recommendedResults).append($('<h2>You might also like</h2>'));
       }
 
       for (var i = 0; i < _recommendedResults.length; i++) {
-        this.renderEntity(guiConfig.recommendedResults, _recommendedResults[i].Key, _recommendedResults[i].Value);
+        this.renderEntity(guiConfig.recommendedResults, _recommendedResults[i].Key, _recommendedResults[i].Value, createEventCallback);
       }
     },
 
@@ -757,9 +752,9 @@ var render = function render(config, guiConfig) {
     clearSearch: function clearSearch(keepResults) {
 
       if (!keepResults) {
-        $(guiConfig.directResultsContainer).empty().removeClass('fillout');
+        $(guiConfig.directResults).empty().removeClass('fillout');
 
-        $(guiConfig.recommendedResultsContainer).empty().show();
+        $(guiConfig.recommendedResults).empty().show();
       }
 
       $(guiConfig.makesSense).hide();
@@ -777,13 +772,14 @@ var render = function render(config, guiConfig) {
       $('div#autocomplete').hide();
     },
 
-    renderEntity: function renderEntity(element, entity, value) {
+    renderEntity: function renderEntity(element, entity, value, createEventCallback) {
 
       var imgUrl = replaceImageUrl(entity),
           entityTitle = getEntityTitle(entity);
+      var self = this;
 
       var div = $('<div/>').addClass('entity').data('entity', entity).data('value', value).click(function () {
-        this.showEntity($(this).data('entity'), $(this).data('value'));
+        self.showEntity($(this).data('entity'), $(this).data('value'), createEventCallback);
       });
 
       if (config.showValues) {

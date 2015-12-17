@@ -16,7 +16,7 @@ var guiConfig = {
   inputSearch: 'input#search',
   buttonSearch: 'a#searchbutton',
   inputSearchText: 'You search, now',
-  filtersContainer: 'div#filters-wrapper',
+  filters: 'div#filters',
   //autocompleteContainer: 'div#autocomplete',
   //searchButtonContainer: 'div.form-search button',
   //directResultsContainer: 'div#products-wrapper',
@@ -62,6 +62,7 @@ var config = {
   productImageUrlAttributes: ['imageURL'],
   productImageUrl: '$1',
   use26Request: true,
+  showValues: true
 };
 
 let render = renderFunc(config, guiConfig);
@@ -110,10 +111,10 @@ $(document).ready(function () {
       $(guiConfig.inputSearch).bind('keyup', doSearch);
     },
     open: function() {
-      $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+      $( this ).removeClass( 'ui-corner-all' ).addClass( 'ui-corner-top' );
     },
     close: function() {
-      $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+      $( this ).removeClass( 'ui-corner-top' ).addClass( 'ui-corner-all' );
     }
   });
 
@@ -136,6 +137,8 @@ var demo = {
   activeIndex: -1,
   filters: {},
   autocompleteCache: {},
+  visibleFilterDivs: {},
+  previousSearch: {},
 
 
   createEvent: function(entity, eventType) {
@@ -258,8 +261,8 @@ var demo = {
     }
 
     for (var i = 0; i < config.filters.length; i++) {
-      if (this.filters[config.filters[i].requestParameter]) {
-        req[config.filters[i].requestParameter] = this.filters[config.filters[i].requestParameter];
+      if (this.filters[config.filters[i].RequestParameter]) {
+        req[config.filters[i].RequestParameter] = this.filters[config.filters[i].RequestParameter];
       }
     }
 
@@ -316,38 +319,40 @@ var demo = {
           alert(response.errorMessage);
         }
 
-        self.previousSearch.totalItems = response.data.DirectResults_TotalItems;
+        var data = response.data;
+
+        self.previousSearch.totalItems = data.DirectResults_TotalItems;
 
         render.clearSearch(isContinuation);
 
-        if (!response.data.MakesSense) {
-          render.showMakesNoSense(response.data.DirectResults, response.data.SpellingSuggestions, options.query, self.search.bind(self));
+        if (!data.MakesSense) {
+          render.showMakesNoSense(data.DirectResults, data.SpellingSuggestions, options.query, self.search.bind(self));
         }
 
-        if (response.data.ReSearchQueryString) {
-          render.showReSearch(response.data.ReSearchQueryString, options.query, self.search.bind(self));
+        if (data.ReSearchQueryString) {
+          render.showReSearch(data.ReSearchQueryString, options.query, self.search.bind(self));
         }
 
-        if (response.data.RelatedQueries && response.data.RelatedQueries.length > 0) {
-          render.addRelated(response.data.RelatedQueries, self.search.bind(self));
+        if (data.RelatedQueries && data.RelatedQueries.length > 0) {
+          render.addRelated(data.RelatedQueries, self.search.bind(self));
         }
 
-        if (response.data.DirectResults && response.data.DirectResults.length > 0) {
-          render.directResults(response.data.DirectResults, response.data.DirectResults_TotalItems, isContinuation);
+        if (data.DirectResults && data.DirectResults.length > 0) {
+          render.directResults(data.DirectResults, data.DirectResults_TotalItems, isContinuation, self.createEvent);
         }
 
-        if (response.data.RecommendedResults && response.data.RecommendedResults.length > 0) {
-          render.recommendedResults(response.data.RecommendedResults, isContinuation);
+        if (data.RecommendedResults && data.RecommendedResults.length > 0) {
+          render.recommendedResults(data.RecommendedResults, isContinuation, self.createEvent);
         } else if (options.page < 1) {
           render.noRecommendedResults();
         }
 
-        // updateFilters();
+        self.updateFilters(data);
 
         if (config.continousScrolling) {
           this.displayMore();
-        } else if (response.data.DirectResults_TotalItems > config.directResultsPageSize) {
-          self.updatePaging(response.data.DirectResults_TotalItems, options.page, options.preventReSearch, self.search.bind(this));
+        } else if (data.DirectResults_TotalItems > config.directResultsPageSize) {
+          self.updatePaging(data.DirectResults_TotalItems, self.previousSearch, self.search.bind(self));
         }
 
       });
@@ -358,155 +363,149 @@ var demo = {
 
   },
 
-  updatePaging: function (totalItems, page, preventReSearch, searchCallback) {
+  updatePaging: function (totalItems, prevSearch, searchCallback) {
+
+    var page = prevSearch.page;
 
     function showPage(p) {
       if (p < 2)
-          return "show";
+          return 'show';
 
       if (p > pages - 3)
-          return "show";
+          return 'show';
 
       if (p > page - 2 && p < page + 2)
-          return "show";
+          return 'show';
 
       if (p == 2)
-          return "dots";
+          return 'dots';
       
       if (p == pages - 3 && page != 0 && page != pages-1)
-          return "dots";
+          return 'dots';
 
-      return "hide";
+      return 'hide';
     }
-
 
     var pages = Math.ceil(totalItems / config.directResultsPageSize);
 
-    var pagesDiv = $("<div/>").addClass("pages").appendTo($("div#directresults"));
+    var pagesDiv = $('<div/>').addClass('pages').appendTo($('div#directresults'));
 
     var i = 0;
     for ( i; i < pages; i++) {
 
       var show = showPage(i);
 
-      if (show == "show") {
+      if (show == 'show') {
 
-        $("<a/>").html((i + 1)).data("page", i).addClass(page==i?"selected":"").click(function() {
+        $('<a/>').html((i + 1)).data('page', i).addClass(page==i?'selected':'').click(function() {
 
             searchCallback({
-              query, 
-              instant: false, 
-              clearSearch: true,
-              preventReSearch, 
-              page: $(this).data("page")
+              page: $(this).data('page'),
+              ...prevSearch
             });
 
         }).appendTo(pagesDiv);
-      } else if (show == "dots") {
-          $("<span>...</span>").appendTo(pagesDiv);
+      } else if (show == 'dots') {
+          $('<span>...</span>').appendTo(pagesDiv);
       }
     }
 
   },
 
   displayMore: function() {
-      //there are more results available
-      
-      var ps = this.previousSearch;
+    //there are more results available
+    
+    var ps = this.previousSearch;
 
-      if (this.isBottomVisible()) {
+    if (this.isBottomVisible()) {
 
-        if (ps.totalItems > (ps.page + 1) * config.directResultsPageSize) {
-          this.search({
-            query: ps.Query, 
-            instant: false, 
-            preventReSearch: ps.PreventReSearch, 
-            page: ps.Page + 1
-          });
+      if (ps.totalItems > (ps.page + 1) * config.directResultsPageSize) {
+        this.search({
+          query: ps.Query, 
+          instant: false, 
+          preventReSearch: ps.PreventReSearch, 
+          page: ps.Page + 1
+        });
+      }
+      else if (ps.otalItems > config.directResultsPageSize && $(config.directResults).find('div.endofresults').length === 0) {
+        $(config.directResults).append($('<div/>').addClass('endofresults').html('No more results'));
+      }
+    }
+  },
+
+  updateFilters: function (data) {
+
+    var self = this;
+
+    for (var i = 0; i < config.filters.length; i++) {
+
+      $('div#filter_' + config.filters[i].Name).empty();
+
+      var data = data[config.filters[i].ResponseParameter];
+
+      if (data && data.length > 0) {
+
+        var filterArray = this.filters[config.filters[i].RequestParameter];
+
+        if (!filterArray) {
+          filterArray = [];
         }
-        else if (ps.otalItems > config.directResultsPageSize && $(config.directResults).find('div.endofresults').length === 0) {
-          $(config.directResults).append($('<div/>').addClass('endofresults').html('No more results'));
+
+        var filterDiv = $('div#filter_' + config.filters[i].Name);
+        var div = $('<div/>').addClass('alwaysvisible').appendTo(filterDiv);
+
+        for (var j = 0; j < data.length; j++) {
+          
+          if (j == 5) {
+
+            div = $('<div/>').addClass('hideable').appendTo(filterDiv);
+
+            if (this.visibleFilterDivs[config.filters[i].Name]) {
+              div.show();
+            }
+
+            $('<a/>').html(self.visibleFilterDivs[config.filters[i].Name]?'Hide':'Show all').addClass('showhide').data('div', div).data('filterName',config.filters[i].Name).click(function() {
+
+              if ($(this).data('div').is(':visible')) {
+
+                self.visibleFilterDivs[$(this).data('filterName')] = false;
+
+                $(this).data('div').hide();
+                $(this).html('Show all');
+
+              } else {
+
+                self.visibleFilterDivs[$(this).data('filterName')] = true;
+
+                $(this).data('div').show();
+                $(this).html('Hide');
+              }
+            })
+            .appendTo(filterDiv);
+          }
+
+          div.append(
+            $('<a/>')
+              .html(data[j].Key + ' (' + data[j].Value + ')')
+              .data('filterkey', config.filters[i].RequestParameter)
+              .data('filtervalue', data[j].Key)
+              .click(function () {
+                if (!$(this).hasClass('selected')) {
+                  self.addFilter($(this).data('filterkey'), $(this).data('filtervalue'));
+                  $(this).addClass('selected');
+                  self.searchAgain();
+                } else {
+                  self.removeFilter($(this).data('filterkey'), $(this).data('filtervalue'));
+                  $(this).removeClass('selected');
+                  self.searchAgain();
+                }
+              })
+              .addClass(filterArray.indexOf(data[j].Key) > -1 ? 'selected' : '')
+          );
         }
       }
-    },
-
-  // updateFilters: function () {
-
-  //       for (var i = 0; i < config.filters.length; i++) {
-
-  //           $("div#filter_" + config.filters[i].Name).empty();
-
-  //           var data = response.data[config.filters[i].ResponseParameter];
-
-  //           if (data && data.length > 0) {
-
-  //               var filterArray = this.filters[config.filters[i].RequestParameter];
-  //               if (!filterArray)
-  //                   filterArray = [];
-
-  //               var filterDiv = $("div#filter_" + config.filters[i].Name);
-
-  //               var div = $("<div/>").addClass("alwaysvisible").appendTo(filterDiv);
-
-  //               for (var j = 0; j < data.length; j++) {
-                    
-  //                   if (j == 5) {
-
-  //                       div = $("<div/>").addClass("hideable").appendTo(filterDiv);
-
-  //                       if (Demo.VisibleFilterDivs[config.filters[i].Name])
-  //                           div.show();
-
-  //                       $("<a/>").html(Demo.VisibleFilterDivs[config.filters[i].Name]?"Hide":"Show all").addClass("showhide").data("div", div).data("filterName",config.filters[i].Name).click(function() {
-
-  //                           if ($(this).data("div").is(":visible")) {
-
-  //                               Demo.VisibleFilterDivs[$(this).data("filterName")] = false;
-
-  //                               $(this).data("div").hide();
-  //                               $(this).html("Show all");
-  //                           }
-  //                           else {
-                                
-  //                               Demo.VisibleFilterDivs[$(this).data("filterName")] = true;
-
-  //                               $(this).data("div").show();
-  //                               $(this).html("Hide");
-  //                           }
-                            
-                            
-
-  //                       }).appendTo(filterDiv);
-
-    
-                        
-                        
-  //                   }
-
-  //                   div.append(
-  //                       $("<a/>")
-  //                           .html(data[j].Key + " (" + data[j].Value + ")")
-  //                           .data("filterkey", config.filters[i].RequestParameter)
-  //                           .data("filtervalue", data[j].Key)
-  //                           .click(function () {
-  //                               if (!$(this).hasClass("selected")) {
-  //                                   Demo.AddFilter($(this).data("filterkey"), $(this).data("filtervalue"));
-  //                                   $(this).addClass("selected");
-  //                                   Demo.SearchAgain();
-  //                               } else {
-  //                                   Demo.RemoveFilter($(this).data("filterkey"), $(this).data("filtervalue"));
-  //                                   $(this).removeClass("selected");
-  //                                   Demo.SearchAgain();
-  //                               }
-  //                           })
-  //                           .addClass(filterArray.indexOf(data[j].Key) > -1 ? "selected" : "")
-  //                   );
-  //               }
-
-  //           }
-  //       }
-
-  //   },
+    }
+  },
 
 
 
@@ -518,18 +517,16 @@ var demo = {
     // },
 
 
-    isBottomVisible: function() {
-      var scroll = $(window).scrollTop();
-      var windowHeight = $(window).height();
+  isBottomVisible: function() {
+    var scroll = $(window).scrollTop();
+    var windowHeight = $(window).height();
 
-      var height = $(config.directResults).outerHeight() + $(config.directResults).offset().top;
+    var height = $(config.directResults).outerHeight() + $(config.directResults).offset().top;
 
-      return (scroll + windowHeight) >= height;
-    },
+    return (scroll + windowHeight) >= height;
+  },
 
   
-
-
 
   // hashChanged: function(previousHash, currentHash) {
 
@@ -564,21 +561,25 @@ var demo = {
   //   }
   // }
 
+
+
   clearFilters: function() {
     this.filters = {};
   },
 
   searchAgain: function() {
 //    Demo.Search(Demo.PreviousSearch.Query, false, Demo.PreviousSearch.PreventReSearch, 0);
-    this.search(this.previousSearch);
+    this.search({clearSearch: true, ...this.previousSearch});
   },
 
   addFilter: function(key, value) {
-    var param = this.filters[key];
 
-    param = param || [];
+    if (!this.filters[key]) {
+      this.filters[key] = [];
+    }
 
     this.filters[key].push(value);
+
   },
 
   removeFilter: function(key, value) {
