@@ -62,7 +62,7 @@ var config = {
   autoCompletePageSize: 8,
   directResultsPageSize: 24,
   recommendedResultsPageSize: 12,
-  continousScrolling: false,
+  continousScrolling: true,
   instantSearch: false,
   devMode: true,
   cacheAutoComplete: false,
@@ -107,6 +107,7 @@ $(document).ready(function () {
     },
     minLength: 2,
     select: function select(event, ui) {
+      event.preventDefault();
       $(guiConfig.inputSearch).unbind('keyup', doSearch);
       demo.search({
         clearFilters: true,
@@ -117,6 +118,7 @@ $(document).ready(function () {
       });
     },
     response: function response(event, ui) {
+      event.stopPropagation();
       $(guiConfig.inputSearch).bind('keyup', doSearch);
     },
     open: function open() {
@@ -130,6 +132,10 @@ $(document).ready(function () {
   $(guiConfig.buttonSearch).click(doSearch);
   $(guiConfig.inputSearch).bind('keyup', doSearch);
   $(guiConfig.inputSearch).focus();
+
+  $(window).bind("scroll", function () {
+    demo.displayMore();
+  });
 });
 
 var utils = require('./utils.js');
@@ -354,9 +360,9 @@ var demo = {
       self.updateFilters(data);
 
       if (config.continousScrolling) {
-        this.displayMore();
+        self.displayMore();
       } else if (data.DirectResults_TotalItems > config.directResultsPageSize) {
-        self.updatePaging(data.DirectResults_TotalItems, self.previousSearch, self.search.bind(self));
+        self.updatePaging(data.DirectResults_TotalItems, options.page, self.previousSearch, self.search.bind(self));
       }
     });
     // .catch( function (err) {
@@ -365,9 +371,7 @@ var demo = {
     //       });
   },
 
-  updatePaging: function updatePaging(totalItems, prevSearch, searchCallback) {
-
-    var page = prevSearch.page;
+  updatePaging: function updatePaging(totalItems, page, prevSearch, searchCallback) {
 
     function showPage(p) {
       if (p < 2) return 'show';
@@ -415,12 +419,12 @@ var demo = {
 
       if (ps.totalItems > (ps.page + 1) * config.directResultsPageSize) {
         this.search({
-          query: ps.Query,
+          query: ps.query,
           instant: false,
-          preventReSearch: ps.PreventReSearch,
+          preventReSearch: ps.preventReSearch,
           page: ps.Page + 1
         });
-      } else if (ps.otalItems > config.directResultsPageSize && $(config.directResults).find('div.endofresults').length === 0) {
+      } else if (ps.otalItems > config.directResultsPageSize && $(guiConfig.directResults).find('div.endofresults').length === 0) {
         $(config.directResults).append($('<div/>').addClass('endofresults').html('No more results'));
       }
     }
@@ -502,7 +506,7 @@ var demo = {
     var scroll = $(window).scrollTop();
     var windowHeight = $(window).height();
 
-    var height = $(config.directResults).outerHeight() + $(config.directResults).offset().top;
+    var height = $(guiConfig.directResults).outerHeight() + $(guiConfig.directResults).offset().top;
 
     return scroll + windowHeight >= height;
   },
