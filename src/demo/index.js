@@ -32,6 +32,7 @@ var guiConfig = {
   related: 'div#related',
 };
 
+
 var config = {
   id: '18eb1533-a1f7-4ec8-9211-a561dcf43597',
   name: 'Netrauta',
@@ -427,16 +428,16 @@ var demo = {
           query: ps.query, 
           instant: false, 
           preventReSearch: ps.preventReSearch, 
-          page: ps.Page + 1
+          page: ps.page + 1
         });
       }
-      else if (ps.otalItems > config.directResultsPageSize && $(guiConfig.directResults).find('div.endofresults').length === 0) {
-        $(config.directResults).append($('<div/>').addClass('endofresults').html('No more results'));
+      else if (ps.totalItems > config.directResultsPageSize && $(guiConfig.directResults).find('div.endofresults').length === 0) {
+        $(guiConfig.directResults).append($('<div/>').addClass('endofresults').html('No more results'));
       }
     }
   },
 
-  updateFilters: function (data) {
+  updateFilters: function (res) {
 
     var self = this;
 
@@ -444,7 +445,7 @@ var demo = {
 
       $('div#filter_' + config.filters[i].Name).empty();
 
-      var data = data[config.filters[i].ResponseParameter];
+      var data = res[config.filters[i].ResponseParameter];
 
       if (data && data.length > 0) {
 
@@ -571,8 +572,7 @@ var demo = {
   },
 
   searchAgain: function() {
-//    Demo.Search(Demo.PreviousSearch.Query, false, Demo.PreviousSearch.PreventReSearch, 0);
-    this.search({clearSearch: true, ...this.previousSearch});
+    this.search({clearSearch: true, page: 0, ...this.previousSearch});
   },
 
   addFilter: function(key, value) {
