@@ -285,7 +285,7 @@ div#autocomplete a span {
     font-weight: bold;
 }
 
-div#autocomplete a span.facet {
+span.facet {
     font-weight: normal;
     color: #e26a4b;
 }

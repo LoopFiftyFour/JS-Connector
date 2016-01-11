@@ -50,7 +50,7 @@ var config = {
   autoCompletePageSize: 8,
   directResultsPageSize: 24,
   recommendedResultsPageSize: 12,
-  continousScrolling: true,
+  continousScrolling: false,
   instantSearch: false,
   devMode: true,
   cacheAutoComplete: false,
@@ -116,16 +116,28 @@ $(document).ready(function () {
     close: function() {
       $( this ).removeClass( 'ui-corner-top' ).addClass( 'ui-corner-all' );
     }
-  });
+  })
+  .autocomplete( 'instance' )._renderItem = function( ul, item ) {
+    var label = item.value;
+
+    if (item.facet) {
+      label = item.value + ' in ' + '<span class="facet">' + item.facet + '</span>';
+    }
+
+    return $( '<li>' )
+      .append( '<a>' + label + '</a>' )
+      .appendTo( ul );
+  };
 
   $(guiConfig.buttonSearch).click(doSearch);
   $(guiConfig.inputSearch).bind('keyup', doSearch);
   $(guiConfig.inputSearch).focus();
 
-  $(window).bind("scroll", function() {
-    demo.displayMore();
-  });
-
+  if (config.continousScrolling) {
+    $(window).bind('scroll', function() {
+      demo.displayMore();
+    });
+  } 
 });
 
 
@@ -233,7 +245,7 @@ var demo = {
 
     facets = data.AutoCompleteFacets.map( x => { 
       return {
-        label: data.AutoCompleteFacetingString + ' ' + 'in' + ' ' + x.Key,
+        label: data.AutoCompleteFacetingString,
         value: data.AutoCompleteFacetingString, 
         facet: x.Key
       };
@@ -279,8 +291,12 @@ var demo = {
       self = this,
       isContinuation;
 
-    if (options.clearFilters) {
+    if (options.clearFilters || options.facet) {
       this.clearFilters();
+    }
+
+    if (options.facet) {
+      this.addFilter(config.autoCompleteFacetingParameter, options.facet);
     }
 
     if (options.clearSearch) {

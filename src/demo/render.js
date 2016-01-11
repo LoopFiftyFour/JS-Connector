@@ -270,11 +270,18 @@ debugger;
 
       var div = $('<div/>').addClass('entitypopup').appendTo($('body')).css('top', $(window).scrollTop() + 100);
 
-      $('<a/>').addClass('close').html('X').click(function () {
+      function closePopup() {
         $('div#popupbg').hide();
         $('div.entitypopup').remove();
-      }).appendTo(div);
+      }
 
+      $('<a/>').addClass('close').html('X').click(closePopup).appendTo(div);
+      $('div#popupbg').click(closePopup);
+      $(window).bind('keydown', function (event) {
+        if (event.which === 27 && $('div#popupbg').is(':visible')) {
+          closePopup();
+        }
+      });
 
       //main stuff
 
