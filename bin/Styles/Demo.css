@@ -176,7 +176,7 @@ div#header input#search {
     font-size: 22px;
 }
 
-div#header a#searchbutton {
+div#header a#search-button {
     position: absolute;
     top: 16px;
     left: 50%;
@@ -192,7 +192,7 @@ div#header a#searchbutton {
     text-align: center;
 }
 
-div#header a#user {
+div#header a#new-user-button {
     float: right;
 }
 

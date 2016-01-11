@@ -14,14 +14,11 @@ import renderFunc from './render.js';
 
 var guiConfig = {
   inputSearch: 'input#search',
-  buttonSearch: 'a#searchbutton',
+  buttonSearch: 'a#search-button',
+  buttonNewUser: 'a#new-user-button',
   inputSearchText: 'You search, now',
   filters: 'div#filters',
-  //autocompleteContainer: 'div#autocomplete',
-  //searchButtonContainer: 'div.form-search button',
-  //directResultsContainer: 'div#products-wrapper',
   recommendedResults: 'div#recommendedresults',
-  //directResultsContainerId: 'products-wrapper',
   directResults: 'div#directresults',
   breadCrumbsContainer: '#breadcrumbs-wrapper',
   queryInBreadCrumb: '#breadcrumbs-wrapper div.breadcrumbs div.block.search.current strong span',
@@ -73,12 +70,12 @@ lib.setConfig({url: config.url});
 $(document).ready(function () {
   
 
-  // $('a#user').click(function() {
-  //   lib.getRandomUserId();
-  // });
+  $(guiConfig.buttonNewUser).click(function() {
+    lib.getRandomUserId();
+  });
   
   function doSearch(event) {
-    if (event.keyCode === 13) {
+    if (event.keyCode === 13 || event.type === "click") {
       demo.search({
         query: $(guiConfig.inputSearch).val(),
         clearFilters: true,

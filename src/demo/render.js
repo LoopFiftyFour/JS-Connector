@@ -314,7 +314,7 @@ debugger;
         $('<span/>').html('<b>' + key + '</b>: ' + entity.Attributes[key]).appendTo(hiddenDiv);
       }
 
-      if (config.DevMode) {
+      if (config.devMode) {
         hiddenDiv.show();
       }
     },
