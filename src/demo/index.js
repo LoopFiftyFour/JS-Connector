@@ -417,8 +417,8 @@ var demo = {
         $('<a/>').html((i + 1)).data('page', i).addClass(page==i?'selected':'').click(function() {
 
             searchCallback({
-              page: $(this).data('page'),
-              ...prevSearch
+              ...prevSearch,
+              page: $(this).data('page')
             });
 
         }).appendTo(pagesDiv);
