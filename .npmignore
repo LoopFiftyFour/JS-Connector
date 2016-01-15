@@ -1,6 +1,8 @@
 src
 .gitignore
+.npmignore
 tools
 liveconfig.json
-democonfig.json
+devconfig.json
 try.js
+node_modules
