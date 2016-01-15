@@ -1,5 +1,5 @@
 
-import lib from '../src/lib/index.js';
+import lib from '../lib/index.js';
 
 import {assert, expect} from 'chai';
 

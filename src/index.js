@@ -107,7 +107,6 @@ let Loop54 = {
           return responseObj;
         })
         .catch(function (response) {
-          debugger;
           
           var responseObj = {};
           responseObj.success = false;
@@ -123,35 +122,8 @@ let Loop54 = {
     },
 
 
-// ----------------
-
-    Entity: function(entityType, externalId) {
-      this.EntityType = entityType;
-      this.ExternalId = externalId;
-    },
-    
-    RequestOptions: function(use25Url){
-      this.use25Url = use25Url;
-    },
-
-    Request: function(questName,requestOptions) {
-      this.parameters = {};
-      this.questName = questName;
-      this.options = requestOptions;
-    },
-    
-    Event: function(type, entity,quantity,revenue,orderId) {
-      this.Type = type;
-      this.Entity = entity;
-      this.Quantity = quantity;
-      this.Revenue = revenue;
-      this.OrderId = orderId;
-    },
-    
-
 };
 
 
-
-export default Loop54;
+module.exports = Loop54;
 

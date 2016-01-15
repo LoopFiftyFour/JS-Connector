@@ -1,32 +1,32 @@
 {
-  "name": "Loop54JSPlugin",
-  "version": "1.0.0",
-  "description": "JS lib for Loop54 easy frontend implementation. Requires jQuery 2.x.x.",
-  "main": "src/index.js",
+  "name": "loop54-js-lib",
+  "version": "0.0.4",
+  "description": "JS lib for Loop54 easy frontend implementation.",
+  "main": "lib/index.js",
   "scripts": {
-    "dev": "npm run watch:lib & npm run watch:demo & npm run server",
-    "server": "node server.js",
-    "watch:lib": "watch 'npm run compile:lib' ./src/lib/ ./test/",
-    "watch:demo": "watch 'npm run babelify:demo' ./src/demo",
-    "compile:lib": "npm run test:lib && npm run babelify:lib",
-    "babelify:lib": "browserify src/lib/index.js -o bin/Scripts/loop54-lib-1.0.0.js -t [ babelify --presets [ es2015 stage-2 ] ]",
-    "babelify:demo": "browserify src/demo/index.js -o bin/Scripts/loop54-demo-1.0.0.js -t [ babelify --presets [ es2015 stage-2 ] ]",
-    "test:lib": "mocha --require mocha-babel.js ./test/lib-test.js"
-  },
+    "compile": "npm run babelify && npm run browserify && npm run test",
+    "babelify": "./node_modules/.bin/babel src -d lib",
+    "browserify": "browserify src/browser.js -o lib/loop54-js-lib.js -t [ babelify --presets [ es2015 stage-2 ] ]",
+    "test": "mocha --require mocha-babel.js ./test/lib-test.js"
+  }, 
+  "test": "mocha --require mocha-babel.js ./test/lib-test.js",
   "keywords": [
-    "Loop54"
+    "Loop54",
+    "SaaS",
+    "Search"
   ],
-  "author": "Loop54 Team",
+  "author": "Loop54",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.7.0",
+    "axios": "^0.7.0"
+  },
+  "devDependencies": {
     "babel": "^6.1.18",
     "babel-core": "^6.2.1",
     "babel-preset-es2015": "^6.1.18",
     "babel-preset-stage-2": "^6.1.18",
     "babelify": "^7.2.0",
     "browserify": "^12.0.1",
-    "chai": "^3.4.1",
-    "express": "^4.13.3"
+    "chai": "^3.4.1"
   }
 }
