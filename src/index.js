@@ -51,9 +51,11 @@ let Loop54 = {
 
       //legacy mode for engines that expect the quest name to be in the JSON data
       if (this.config.use25Url) {
-        requestObj[questName] = params;
+        requestObj[params.QuestName] = {...params};
+        delete requestObj[params.QuestName].QuestName;
       } else {
-        requestObj = params;
+        requestObj = {...params};
+        delete requestObj.QuestName;
       }
 
       return JSON.stringify(requestObj);

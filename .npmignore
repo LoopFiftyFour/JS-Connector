@@ -6,3 +6,4 @@ liveconfig.json
 devconfig.json
 try.js
 node_modules
+*.log
