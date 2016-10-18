@@ -8,7 +8,7 @@
     "babelify": "./node_modules/.bin/babel src -d lib",
     "browserify": "browserify src/browser.js -o lib/loop54-js-lib.js -t [ babelify --presets [ es2015 stage-2 ] ]",
     "test": "mocha --require mocha-babel.js ./test/lib-test.js"
-  }, 
+  },
   "test": "mocha --require mocha-babel.js ./test/lib-test.js",
   "keywords": [
     "Loop54",
@@ -21,7 +21,7 @@
     "axios": "^0.7.0"
   },
   "devDependencies": {
-    "babel": "^6.1.18",
+    "babel-cli": "^6.16.0",
     "babel-core": "^6.2.1",
     "babel-preset-es2015": "^6.1.18",
     "babel-preset-stage-2": "^6.1.18",

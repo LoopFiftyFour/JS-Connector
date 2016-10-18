@@ -22,7 +22,6 @@ let cookies = {
 
   get: function(cName) {
     if (typeof document !== 'undefined' && document.cookie.length > 0) {
-
       var cStart = document.cookie.indexOf(cName + '=');
 
       if (cStart !== -1) {
