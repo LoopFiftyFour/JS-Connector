@@ -7,13 +7,13 @@ describe('Lib', function() {
       assert.isDefined(lib.config);
     });
 
-    it('should be possible to set new config options', function() {
+    it('should be possible change config options', function() {
       lib.setConfig({ test: 14 });
       expect(lib.config.test).to.equal(14);
     });
   });
 
-  describe('Base utils', function() {
+  describe('Base utilities', function() {
     it('should generate a random userId', function() {
       expect(lib.getRandomUserId()).to.not.equal(lib.getRandomUserId());
     });

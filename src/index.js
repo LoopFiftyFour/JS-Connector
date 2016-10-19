@@ -4,6 +4,7 @@ import cookies from './cookies.js';
 let Loop54 = {
   config: {
     libVersion: '1.1.0',
+    apiVersion: 'V26',
     url: 'No URL set for Loop54 server.'
   },
 
@@ -31,7 +32,7 @@ let Loop54 = {
 
   getRequestObj: function(params) {
     let requestObj = {};
-    if (!this.CreateUserId && !params.UserId && !params.userId) {
+    if (!params.UserId && !params.userId) {
       params.UserId = this.getUserId();
     }
 
@@ -49,8 +50,12 @@ let Loop54 = {
   getResponse: function(req) {
     const requestObj = this.getRequestObj(req);
     const engineUrl = this.getEngineUrl(req);
+    const config = { headers: {
+      'api-version': this.config.apiVersion,
+      'lib-version': 'jslib:' + this.config.libVersion,
+    }};
 
-    let promise = axios.post(engineUrl, requestObj)
+    let promise = axios.post( engineUrl, requestObj, config )
     .then(function(response) {
       var data = response.data;
       var responseObj = {
