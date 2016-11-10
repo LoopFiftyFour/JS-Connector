@@ -3,7 +3,7 @@ import cookies from './cookies.js';
 
 let Loop54 = {
   config: {
-    libVersion: '1.1.0',
+    libVersion: '0.1.6',
     apiVersion: 'V26',
     url: 'No URL set for Loop54 server.'
   },
