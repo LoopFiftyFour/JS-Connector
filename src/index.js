@@ -51,8 +51,8 @@ let Loop54 = {
     const requestObj = this.getRequestObj(req);
     const engineUrl = this.getEngineUrl(req);
     const config = { headers: {
-      'api-version': this.config.apiVersion,
-      'lib-version': 'jslib:' + this.config.libVersion,
+      'Api-Version': this.config.apiVersion,
+      'Lib-Version': 'js:' + this.config.libVersion,
     }};
 
     let promise = axios.post( engineUrl, requestObj, config )
