@@ -2,8 +2,5 @@ src
 .gitignore
 .npmignore
 tools
-liveconfig.json
-devconfig.json
-try.js
 node_modules
 *.log
