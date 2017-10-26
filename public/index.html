@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Loop54</title>
+  <style>
+    #searchResult {
+      font-size: 9px;
+      font-family: monospace;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Loop54-js-lib Testing environment</h1>
+  <hr />
+
+  <h1>Search</h1>
+  <form id="searchForm" onsubmit="return doSearch()">
+    <p>
+      <input type="text" name="searchField" value="boll" />
+    </p><p>
+      <textarea name="searchOptions" cols=60 rows=10>{facets: [{name: 'Category', attribute: 'Category1', type: 'distinct'},{name: 'Category2', attribute: 'Category2', type: 'distinct'}]}</textarea>
+    </p><p>
+      <input type="submit" value="search" />
+    </p>
+  </form>
+  <h2>facets</h2>
+  <form id="facetsForm" onchange="return doFaceting()">
+  </form>
+  <hr />
+  <h1>autocomplete</h1>
+  <form id="autocompleteForm" onsubmit="return false">
+    <input type="text" name="autocompleteField" onkeyup="return doAutocomplete()" />
+  </form>
+  <hr />
+  <h1>Result (<span id="resultCount"></span>)</h1>
+  <pre id="searchResult"></pre>
+  <script src="loop54-js-lib.js"></script>
+  <script type="text/javascript">
+    console.log(Loop54)
+    // Loop54.setConfig({facets: [{name: 'Category', attribute: 'Category1', type: 'distinct'}]})
+    var state = {
+      selectedFacets: {}
+    }
+    function doAutocomplete() {
+      var options = {}
+
+      Loop54.autocomplete(document.getElementById('autocompleteForm').elements['autocompleteField'].value, options, printResponse)
+      return false;
+    }
+
+    function doSearch(selectedFacets) {
+      var options = {}
+      var str = document.getElementById('searchForm').elements['searchOptions'].value
+      if(str.length > 0) {
+        str = str.trim()
+        str = str.slice(1, -1)
+        options = eval('({' + str + '})')
+      }
+
+      if(selectedFacets) {
+        options = {...options, selectedFacets: selectedFacets}
+      }
+      Loop54.search(document.getElementById('searchForm').elements['searchField'].value, options, printResponse)
+      return false;
+    }
+
+    function doFaceting() {
+      var facetsFormElements = document.getElementById('facetsForm').elements
+      var selectedFacets = {}
+      for(var i=0; i<facetsFormElements.length; i++) {
+        var facet = facetsFormElements[i]
+        if(facet.checked) {
+          if(!selectedFacets[facet.name]) { selectedFacets[facet.name] = [] }
+          selectedFacets[facet.name].push(facet.value)
+        }
+      }
+
+      state.selectedFacets = selectedFacets
+
+      doSearch(selectedFacets)
+      return false;
+    }
+
+    function printResponse(response) {
+      console.log('response', response);
+      document.getElementById('resultCount').innerText = response.data.results ? response.data.results.count : response.data.queries.count
+      var str = JSON.stringify(response, null, 2)
+      document.getElementById('searchResult').innerText = str
+      var facetsForm = document.getElementById('facetsForm')
+      facetsForm.innerHTML = ''
+      if(response.data.results && response.data.results.facets.length > 0) {
+        for(var i=0;i<response.data.results.facets.length; i++) {
+          var facet = response.data.results.facets[i]
+          var title = document.createElement('h3')
+          title.innerText = facet.name
+          var list = document.createElement('div')
+          for(var y=0; y<facet.items.length; y++) {
+            var listItem = document.createElement('div')
+            var isChecked = null
+            if(state.selectedFacets[facet.name]) {
+              if(state.selectedFacets[facet.name].includes(facet.items[y].item)) {
+                isChecked = 'checked'
+              }
+            }
+            listItem.innerHTML = '<input type="checkbox" id="'+facet.name+'-'+y+'" name="'+facet.name+'" value="'+facet.items[y].item+'" '+isChecked+' /><label for="facets-'+y+'">'+facet.items[y].item+' ('+facet.items[y].count+')</label>'
+            list.appendChild(listItem)
+          }
+          facetsForm.appendChild(title)
+          facetsForm.appendChild(list)
+        }
+      }
+    }
+  </script>
+</body>
+</html>
