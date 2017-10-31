@@ -1,38 +1,93 @@
-```
-888                             888888888     d8888 
-888                             888          d8P888 
-888                             888         d8P 888 
-888      .d88b.  .d88b. 88888b. 8888888b.  d8P  888 
-888     d88""88bd88""88b888 "88b     "Y88bd88   888 
-888     888  888888  888888  888       8888888888888
-888     Y88..88PY88..88P888 d88PY88b  d88P      888 
-88888888 "Y88P"  "Y88P" 88888P"  "Y8888P"       888 
-                        888                         
-                        888                         
-                        888                         
-```
-
-
-# Loop54 API library - javascript edition 
-
-* Easier implementation of the Loop54 API
-* Uses axios for communication
-* Uses cookies to follow user behavior
+# Loop54 API library - javascript edition
 
 ## Installation:
 
-You need to have the node package manager, npm, installed:
+Using Node Package Manager (NPM):
 
-`npm install --save loop54-js-lib`
+1. install the package with `npm install --save loop54-js-lib`
 
-## Usage:
+2. require it in your project with `require('loop54-js-lib')`
 
-When you want to use it you have to require it:
+3. you should now have access to the global variable `Loop54`
 
-`var Loop54 = require('loop54-js-lib');`
+## Usage
 
-## Example implementation:
+### features
 
-We have an example implementation using the API library that you can use as reference of how to implement our API library.
+* Search
+* Autocomplete
+* GetEntities
+* RelatedEntities
+* TrackEvent(s)
 
-The example implementation can be found on github: https://github.com/LoopFiftyFour/loop54-js-demo.git
+### Configure
+
+All configuration options are optional, but for it to work with your engine you will need to set the endpoint to match the one you will get from Loop54.
+
+**Configuration Example**
+```
+Loop54.setConfig({
+  endpoint: URL_TO_LOOP54_ENDPOINT,
+  facets: [
+      {
+        name: 'Category',
+        attribute: 'Category1',
+        type: 'distinct'
+      },{
+        name: 'price',
+        attribute: 'price',
+        facetType: 'range',
+      }
+    ]
+})
+```
+
+### Search
+**Returning Promise**
+```
+var search = Loop54.search('apple')
+search.then(function(response) {
+  console.log(response)
+})
+```
+
+or
+
+```
+Loop54.search('apple').then(function(response) {
+  console.log(response)
+})
+```
+
+**Using callback**
+```
+Loop54.search('apple', function(response) {
+  console.log(response)
+})
+```
+
+**Passing in options with your search**
+```
+Loop54.search('apple', {selectedFacets: [{'Category': ['Fruit', 'Vegetables']}]}, function(response) {
+  console.log(response)
+})
+```
+
+**Options**
+
+| Argument        | Type  | Value |
+| ----------      | ----- | ----- |
+| SelectedFacets  | Array | Should be an array containing objects that has the Name of the facet as Key and an array or object with the selected facets as value |
+
+### Autocomplete
+
+
+## Development
+
+`npm run dev` to start the webserver, open up http://localhost:3001 and try out the basic features
+
+## Tests
+
+`npm run test` to do check if the tests passes
+
+All tests are located in the `test` folder
