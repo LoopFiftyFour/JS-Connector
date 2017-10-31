@@ -2,11 +2,18 @@
 <html>
 <head>
   <title>Loop54</title>
+  <link href="nouislider.min.css" rel="stylesheet" />
   <style>
     #searchResult {
       font-size: 9px;
       font-family: monospace;
       max-width: 100%;
+    }
+
+    .range-slider {
+      max-width: 50%;
+      margin-left: 20px;
+      margin-right: 20px;
     }
   </style>
 </head>
@@ -19,7 +26,7 @@
     <p>
       <input type="text" name="searchField" value="boll" />
     </p><p>
-      <textarea name="searchOptions" cols=60 rows=10>{facets: [{name: 'Category', attribute: 'Category1', type: 'distinct'},{name: 'Category2', attribute: 'Category2', type: 'distinct'}]}</textarea>
+      <textarea name="searchOptions" cols=60 rows=10>{facets: [{name: 'Category', attribute: 'Category1', type: 'distinct'},{name: 'Category2', attribute: 'Category2', type: 'distinct'}, {name: 'Price', attribute: 'PriceSaleExclVat', type: 'range'}]}</textarea>
     </p><p>
       <input type="submit" value="search" />
     </p>
@@ -35,6 +42,7 @@
   <hr />
   <h1>Result (<span id="resultCount"></span>)</h1>
   <pre id="searchResult"></pre>
+  <script src="nouislider.min.js"></script>
   <script src="loop54-js-lib.js"></script>
   <script type="text/javascript">
     console.log(Loop54)
@@ -42,6 +50,7 @@
     var state = {
       selectedFacets: {}
     }
+
     function doAutocomplete() {
       var options = {}
 
@@ -79,7 +88,15 @@
       state.selectedFacets = selectedFacets
 
       doSearch(selectedFacets)
-      return false;
+      return false
+    }
+
+    function doRangeFaceting(range, name) {
+      var selectedFacets = state.selectedFacets ? state.selectedFacets : {}
+      selectedFacets[name] = {min: range[0], max: range[1]}
+
+      state.selectedFacets = selectedFacets
+      doSearch(selectedFacets)
     }
 
     function printResponse(response) {
@@ -94,20 +111,49 @@
           var facet = response.data.results.facets[i]
           var title = document.createElement('h3')
           title.innerText = facet.name
-          var list = document.createElement('div')
-          for(var y=0; y<facet.items.length; y++) {
-            var listItem = document.createElement('div')
-            var isChecked = null
-            if(state.selectedFacets[facet.name]) {
-              if(state.selectedFacets[facet.name].includes(facet.items[y].item)) {
-                isChecked = 'checked'
-              }
-            }
-            listItem.innerHTML = '<input type="checkbox" id="'+facet.name+'-'+y+'" name="'+facet.name+'" value="'+facet.items[y].item+'" '+isChecked+' /><label for="facets-'+y+'">'+facet.items[y].item+' ('+facet.items[y].count+')</label>'
-            list.appendChild(listItem)
-          }
           facetsForm.appendChild(title)
-          facetsForm.appendChild(list)
+          var list = document.createElement('div')
+          if(facet.type == 'distinct') {
+            for(var y=0; y<facet.items.length; y++) {
+              var listItem = document.createElement('div')
+              var isChecked = null
+              if(state.selectedFacets[facet.name]) {
+                if(state.selectedFacets[facet.name].includes(facet.items[y].item)) {
+                  isChecked = 'checked'
+                }
+              }
+              listItem.innerHTML = '<input type="checkbox" id="'+facet.name+'-'+y+'" name="'+facet.name+'" value="'+facet.items[y].item+'" '+isChecked+' /><label for="facets-'+y+'">'+facet.items[y].item+' ('+facet.items[y].count+')</label>'
+              list.appendChild(listItem)
+              facetsForm.appendChild(list)
+            }
+          } else if(facet.type == 'range') {
+            var listItem = document.createElement('div')
+            listItem.id = facet.name
+            listItem.className = 'range-slider range-slider-' + i
+            list.appendChild(listItem)
+            facetsForm.appendChild(list)
+
+            var selectedFacet = state.selectedFacets[facet.name]
+            var min = selectedFacet ? selectedFacet.min : facet.min
+            var max = selectedFacet ? selectedFacet.max : facet.max
+
+            noUiSlider.create(listItem, {
+              connect: true,
+            	behaviour: 'tap',
+              start: [ min, max],
+              tooltips: true,
+            	range: {
+            		// Starting at 500, step the value by 500,
+            		// until 4000 is reached. From there, step by 1000.
+            		'min': [ facet.min ],
+            		'max': [ facet.max ]
+            	}
+            })
+
+            listItem.noUiSlider.on('change', function(data) {
+            	doRangeFaceting(data, listItem.id)
+            })
+          }
         }
       }
     }

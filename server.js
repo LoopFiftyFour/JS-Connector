@@ -4,6 +4,7 @@ var express = require('express'),
   httpServer = http.Server(app);
 
 app.use(express.static(__dirname + '/lib'));
+app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) {
   res.sendfile(__dirname + '/public/index.html');
