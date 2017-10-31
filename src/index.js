@@ -2,9 +2,12 @@ import axios from 'axios';
 import cookies from './cookies.js';
 
 global.Loop54 = (function() {
-  var config = {
+  var versions = {
     libVersion: '1.0.0',
-    apiVersion: 'V26',
+    apiVersion: 'V26'
+  }
+
+  var config = {
     endpoint: 'newapi-test.54proxy.com',
     facets: null
   }
@@ -34,7 +37,9 @@ global.Loop54 = (function() {
       method: method ? method : 'post',
       url: 'https://' + config.endpoint + path,
       headers: {
-        'user-id': userId
+        'user-id': userId,
+        'lib-version': versions.libVersion,
+        'api-version': versions.apiVersion,
       },
       responseType: 'stream',
       data: body
