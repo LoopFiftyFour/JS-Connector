@@ -16,9 +16,10 @@ Using Node Package Manager (NPM):
 
 * Search
 * Autocomplete
+* TrackEvent
+* TrackEvents
 * GetEntities
 * RelatedEntities
-* TrackEvent(s)
 
 ### Configure
 
@@ -40,6 +41,12 @@ Loop54.setConfig({
       }
     ]
 })
+```
+
+If you want to read the config, you can use the following function
+```
+var config = Loop54.getConfig()
+console.log(config)
 ```
 
 -----------------------
@@ -204,6 +211,18 @@ __Default:__ Empty or Facets from global "Config" if present
 
 ##### filter [ Object ]
 
+It is possible to filter your __Search__ result by passing a __filter__ Object with your request.  
+
+Read more about __Filter__ under the __How To__ section about __Filter__ further down in this document.
+
+__Default:__ Empty
+
+```
+{
+  filter: {}
+}
+```
+
 ##### relatedResults [ Object ]
 
 Passing options for __relatedResults__ lets you control how your related results list will behave.  
@@ -222,7 +241,7 @@ __Default:__ Empty
 
 ##### relatedQueries [ Object ]
 
-Control how relatedQueries will behave.
+Control how __relatedQueries__ will behave.
 
 _Sorting relatedQueries is a bit different from the normal results. You have the option to sort by __relevance__, __popularity__ and __alphabetic___
 
@@ -240,7 +259,7 @@ __Default:__ Empty
 
 ##### spellingSuggestions [ Object ]
 
-Control how spellingSuggestions will behave.
+Control how __spellingSuggestions__ will behave.
 
 _Sorting spellingSuggestions is a bit different from the normal results. You have the option to sort by __relevance__, __popularity__ and __alphabetic___
 
@@ -248,7 +267,7 @@ __Default:__ Empty
 
 ```
 {
-  relatedQueries: {
+  spellingSuggestions: {
     from: 0,
     to: 10,
     sortBy: []
@@ -304,7 +323,7 @@ This is an example of how a __Search response__ object will be structured.
 						"type": "string",
 						"values": [
 							"Fruit",
-							"Vegeables"
+							"Vegetables"
 						]
 					},
 					{
@@ -330,8 +349,347 @@ This is an example of how a __Search response__ object will be structured.
 
 ### Autocomplete
 
+This is used to send a Autocomplete request to the API.  
+Below are some basic example of how to use this function, you can also add extra options to customize your search results to fit your needs.
+
+The search function can take 3 arguments.  
+`Loop54.autocomplete(<searchString>, <options|callback>, <callback>)`
+
+__Required:__ searchString  
+__Optional:__ options and callback
+
+If you don't include a callback it will return a Promise, but if you include a callback it will use that and will not return a Promise.
+
+__Returning a Promise__
+```
+var autocomplete = Loop54.autocomplete('appl')
+autocomplete.then(function(response) {
+  console.log(response)
+})
+```
+
+or
+
+```
+Loop54.autocomplete('appl').then(function(response) {
+  console.log(response)
+})
+```
+
+__Using callback__
+```
+Loop54.autocomplete('appl', function(response) {
+  console.log(response)
+})
+```
+
+__Passing in options with your autocomplete
+```
+Loop54.autocomplete('appl', {queries: {from: 0, to: 10}]}, function(response) {
+  console.log(response)
+})
+```
 
 #### Options
+
+Options for autocomplete needs to be scoped under a __queries__ Object as seen below.  
+If you want to use more than one option you just put them in the same __queries__ Object.
+
+##### from [ Integer ]
+
+A number representing from which index/item you want to get results.
+
+__Default:__ `{ from: 0 }` (index starts at 0)
+```
+{
+  queries: {
+    from: 10
+  }
+}
+```
+
+##### to [ Integer ]
+
+A number representing to which index/item you want to get results.
+
+__Default:__ `{ to: 4 }`
+```
+{
+  queries: {
+    to: 19
+  }
+}
+```
+
+##### sortBy [ Array ]
+
+It's possible to change the sorting of results by adding an Array of Object(s) with either an __relevance__, __popularity__ or __alphabetic___.  
+When you add more then one Object, they will be sorted in the order of importance.
+
+_It's optional to include __order__ in each Object._
+
+__Default:__ `[{ type: 'relevance', order: 'desc' }]`
+
+```
+{
+  queries: {
+    sortBy: [
+      {
+        type: 'alphabetic',
+        order: 'asc'
+      },
+      {
+        type: 'relevance',
+        order: 'desc'
+      },
+      {
+        type: 'popularity',
+        order: 'asc'
+      }
+    ]
+  }
+}
+```
+
+#### Response Schema
+
+All responses consists of two Objects, one __scopedQueries__ and one __queries__ Object.
+
+__scopedQuery__: the most relevant query with scopes (categories) it can facet on.   
+__queries__: all matching queries in an Array, they are sorted by relevance by default, see __Options__ if you need to change that behavior.
+
+```
+{
+	"scopedQuery": {
+		"query": "Apple",
+		"scopes": [
+			"Fruit",
+			"Vegetables"
+		]
+	},
+	"queries": {
+		"count": 2,
+		"items": [
+			{ "query": "Apple" },
+			{ "query": "Apple pie" }
+		]
+	}
+}
+```
+
+-----------------------
+
+### trackEvent
+
+This function sends a single event to the API.  
+_If you want to send multiple events at the same time you need to look at trackEvents._
+
+trackEvent can track the following events by default, but if requested it may support custom events as well.
+
+#### Click  
+To track a click event you will have to use the following format
+```
+// Loop54.trackEvent(eventType, type, id)
+
+Loop54.trackEvent('click', 'Product', '1234')
+```
+__'click'__: the type of Event you are sending  
+__'Product'__: the type of entity you are tracking, normally it's 'Product' but could be any other type  
+__'1234'__: the ID of the entity (Product in this case) that has been clicked on
+
+#### AddToCart  
+To track a addToCart event you will have to use the following format
+```
+// Loop54.trackEvent(eventType, type, id)
+
+Loop54.trackEvent('addtocart', 'Product', '1234')
+```
+__'addtocart'__: the type of Event you are sending  
+__'Product'__: the type of entity you are tracking, normally it's 'Product' but could be any other type  
+__'1234'__: the ID of the entity (Product in this case) that has been clicked on
+
+#### Purchase  
+To track a purchase event you will have to use the following format
+```
+// Loop54.trackEvent(eventType, type, id, orderId, quantity, revenue)
+
+Loop54.trackEvent('purchase', 'Product', '1234', '9999', '23', '1021.5')
+```
+__'purchase'__: the __type of Event__ you are sending  
+__'Product'__: the __type of entity__ you are tracking, normally it's 'Product' but could be any other type  
+__'1234'__: the __Id__ of the entity (Product in this case) that has been clicked on  
+__'9999'__: (_Optional_) the __orderId__ of the order to which the purchase belongs  
+__'23'__: (_Optional_) the __quantity__  
+__'1021.5'__: (_Optional_) the __revenue__ gained from this entity
+
+#### Response
+
+A successful trackEvent will return a HTTP status `204` (No Content).
+
+-----------------------
+
+### trackEvents
+
+TrackEvents lets you track multiple events in one API call, this is useful for instance when you want to add purchase events for a whole shopping cart at once.
+
+_If you want to track a single event you are better off using __trackEvent__, which helps you make it less complicated._
+
+__trackEvents__ accepts an Object with an "events" Array, see the following example for an idea of how it can be used.
+```
+Loop54.trackEvents({
+  events: [
+    {
+      type: 'click',
+      entity: {
+        type: 'Product',
+        id: '1234'
+      }
+    },
+    {
+      type: 'addtocart',
+      entity: {
+        type: 'Product',
+        id: '1234'
+      }
+    },
+    {
+      type: 'purchase',
+      orderId: '9999', // optional
+      quantity: '23', // optional
+      revenue: '1021.5', // optional
+      entity: {
+        type: 'Product',
+        id: '1234'
+      }
+    }
+  ]
+})
+```
+
+#### Response
+
+A successful trackEvents will return a HTTP status `204` (No Content).
+
+-----------------------
+
+### getEntities
+
+Used to get a list of Entities from the API. To use this function effectively you will need to know how Filters work. To read more about Filter see the __How To__ section about __Filter__ below.
+
+The getEntities function can take 2 arguments.  
+`Loop54.getEntities(<options>, <callback>)`
+
+__Required:__ none  
+__Optional:__ options and callback
+
+If you don't include a callback it will return a Promise, but if you include a callback it will use that and will not return a Promise.
+
+__Returning a Promise__
+```
+var getEntities = Loop54.getEntities({})
+getEntities.then(function(response) {
+  console.log(response)
+})
+```
+
+or
+
+```
+Loop54.getEntities({}).then(function(response) {
+  console.log(response)
+})
+```
+
+__Using callback__
+```
+Loop54.getEntities({}, function(response) {
+  console.log(response)
+})
+```
+
+__Passing in options with your search__
+```
+Loop54.getEntities({from: 10, to: 100, filter: {}}, function(response) {
+  console.log(response)
+})
+```
+
+-----------------------
+
+### relatedEntities
+
+The relatedEntities function can take 2 arguments.  
+`Loop54.relatedEntities(<entity>, <options|callback>, <callback>)`
+
+__Required:__ entity  
+__Optional:__ options and callback
+
+If you don't include a callback it will return a Promise, but if you include a callback it will use that and will not return a Promise.
+
+__Returning a Promise__
+```
+var relatedEntities = Loop54.relatedEntities({type: 'Product', id: '1234'})
+relatedEntities.then(function(response) {
+  console.log(response)
+})
+```
+
+or
+
+```
+Loop54.relatedEntities({type: 'Product', id: '1234'}).then(function(response) {
+  console.log(response)
+})
+```
+
+__Using callback__
+```
+Loop54.relatedEntities({type: 'Product', id: '1234'}, function(response) {
+  console.log(response)
+})
+```
+
+__Passing in options with your search__
+```
+Loop54.relatedEntities({type: 'Product', id: '1234'}, {results: {from: 10, to: 100}, function(response) {
+  console.log(response)
+})
+```
+
+## How To
+
+### Filter
+
+```
+// type == 'Product' AND (ManufacturerName != 'Alf' OR ManufacturerName != 'alga')
+
+{
+	filter: {
+		and: [
+			{
+				type: 'type',
+				value: 'Product'
+			},
+			{
+				not: {
+					or: [
+						{
+							type: 'attribute',
+							attribute: 'ManufacturerName',
+							value: 'Alf'
+						},
+						{
+							type: 'attribute',
+							attribute: 'ManufacturerName',
+							value: 'alga'
+						}
+					]
+				}
+			}
+		]
+	}
+}
+```
 
 ## Development
 
