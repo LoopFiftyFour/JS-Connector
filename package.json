@@ -7,7 +7,7 @@
     "dev": "node launch-dev.js",
     "watch": "watchify src/index.js -o lib/loop54-js-lib.js -t [ babelify --presets [ es2015 stage-2 ] ]",
     "server": "node server.js",
-    "bundle": "browserify src/index.js -o lib/loop54-js-lib.js -t [ babelify --presets [ es2015 stage-2 ] ]",
+    "bundle": "browserify src/index.js -o lib/loop54-js-lib.js -t [ babelify --presets [ es2015 stage-2 ] ] | uglifyjs lib/loop54-js-lib.js -o lib/loop54-js-lib.min.js",
     "test": "mocha --require mocha-babel.js ./test/lib-test.js"
   },
   "test": "mocha --require mocha-babel.js ./test/lib-test.js",
@@ -38,6 +38,7 @@
     "nock": "^9.0.22",
     "npm-run-all": "^4.1.1",
     "sinon": "^4.0.1",
+    "uglify-js": "^3.1.7",
     "watchify": "^3.9.0"
   }
 }
