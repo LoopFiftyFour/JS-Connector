@@ -4,13 +4,13 @@ import chai, {assert, expect} from 'chai'
 import nock from 'nock'
 import searchResponse from './mocks/search-response-ok'
 import autocompleteResponse from './mocks/autocomplete-response-ok'
-import relatedEntitiesResponse from './mocks/relatedEntities-response-ok'
+import getRelatedEntitiesResponse from './mocks/getRelatedEntities-response-ok'
 import getEntitiesResponse from './mocks/getEntities-response-ok'
 
 describe('Loop54', function() {
   describe('Config', function() {
     it('should have pre-set config options at init', function() {
-      expect(Loop54.getConfig()).to.include({apiVersion: 'V26'})
+      expect(Loop54.getConfig()).to.include({endpoint: 'newapi-test.54proxy.com'})
     })
   })
   describe('.setConfig', function() {
@@ -100,16 +100,16 @@ describe('Loop54', function() {
     })
   })
 
-  describe('.relatedEntities', function() {
+  describe('.getRelatedEntities', function() {
     let sandbox
     beforeEach(() => {
       Loop54.setConfig({ endpoint: 'test.loop54.se' })
-      nock('https://test.loop54.se').post('/getRelatedEntities').reply(200, relatedEntitiesResponse)
+      nock('https://test.loop54.se').post('/getRelatedEntities').reply(200, getRelatedEntitiesResponse)
     })
 
     it('Returns a Promise when no callback is set', function() {
       Loop54.setConfig({ endpoint: 'test.loop54.se' })
-      return Loop54.relatedEntities({type: "Product", id: "26707104"}).then(response => {
+      return Loop54.getRelatedEntities({type: "Product", id: "26707104"}).then(response => {
         expect(response.status).to.equal(200)
         expect(response.data.results.count).to.equal(15)
       })
@@ -117,14 +117,14 @@ describe('Loop54', function() {
 
     it('Accepts options as second argument without a callback', function() {
       Loop54.setConfig({ endpoint: 'test.loop54.se' })
-      return Loop54.relatedEntities({type: "Product", id: "26707104"}, {}).then(response => {
+      return Loop54.getRelatedEntities({type: "Product", id: "26707104"}, {}).then(response => {
         expect(response.status).to.equal(200)
         expect(response.data.results.count).to.equal(15)
       })
     })
 
     it('Uses callback when given one', function(done) {
-      Loop54.relatedEntities({type: "Product", id: "26707104"}, function(response) {
+      Loop54.getRelatedEntities({type: "Product", id: "26707104"}, function(response) {
         setTimeout(function() {
           expect(response.status).to.equal(200)
           expect(response.data.results.count).to.equal(15)
@@ -134,7 +134,7 @@ describe('Loop54', function() {
     })
 
     it('Returns error if arguments are wrongly formatted', function() {
-      expect(Loop54.relatedEntities({type: "Product", id: "26707104"}, [])).to.include.keys('error')
+      expect(Loop54.getRelatedEntities({type: "Product", id: "26707104"}, [])).to.include.keys('error')
     })
   })
 

@@ -19,7 +19,7 @@ Using Node Package Manager (NPM):
 * TrackEvent
 * TrackEvents
 * GetEntities
-* RelatedEntities
+* GetRelatedEntities
 
 ### Configure
 
@@ -616,10 +616,10 @@ Loop54.getEntities({from: 10, to: 100, filter: {}}, function(response) {
 
 -----------------------
 
-### relatedEntities
+### getRelatedEntities
 
-The relatedEntities function can take 2 arguments.  
-`Loop54.relatedEntities(<entity>, <options|callback>, <callback>)`
+The getRelatedEntities function can take 2 arguments.  
+`Loop54.getRelatedEntities(<entity>, <options|callback>, <callback>)`
 
 __Required:__ entity  
 __Optional:__ options and callback
@@ -628,8 +628,8 @@ If you don't include a callback it will return a Promise, but if you include a c
 
 __Returning a Promise__
 ```
-var relatedEntities = Loop54.relatedEntities({type: 'Product', id: '1234'})
-relatedEntities.then(function(response) {
+var getRelatedEntities = Loop54.getRelatedEntities({type: 'Product', id: '1234'})
+getRelatedEntities.then(function(response) {
   console.log(response)
 })
 ```
@@ -637,21 +637,21 @@ relatedEntities.then(function(response) {
 or
 
 ```
-Loop54.relatedEntities({type: 'Product', id: '1234'}).then(function(response) {
+Loop54.getRelatedEntities({type: 'Product', id: '1234'}).then(function(response) {
   console.log(response)
 })
 ```
 
 __Using callback__
 ```
-Loop54.relatedEntities({type: 'Product', id: '1234'}, function(response) {
+Loop54.getRelatedEntities({type: 'Product', id: '1234'}, function(response) {
   console.log(response)
 })
 ```
 
 __Passing in options with your search__
 ```
-Loop54.relatedEntities({type: 'Product', id: '1234'}, {results: {from: 10, to: 100}, function(response) {
+Loop54.getRelatedEntities({type: 'Product', id: '1234'}, {results: {from: 10, to: 100}, function(response) {
   console.log(response)
 })
 ```

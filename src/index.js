@@ -171,7 +171,7 @@ global.Loop54 = (function() {
     _call('/createEvents', {events: events})
   }
 
-  var relatedEntities = function(entity, callback) {
+  var getRelatedEntities = function(entity, callback) {
     /*
     *
     *     same as similar products
@@ -274,7 +274,7 @@ global.Loop54 = (function() {
     setConfig: setConfig,
     getConfig: getConfig,
     autocomplete: autocomplete,
-    relatedEntities: relatedEntities,
+    getRelatedEntities: getRelatedEntities,
     getEntities: getEntities,
     search: search,
     trackEvent: trackEvent,
