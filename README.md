@@ -48,11 +48,11 @@ Loop54.setConfig({
   facets: [
       {
         name: 'Category',
-        attribute: 'Category1',
+        attributeName: 'Category1',
         type: 'distinct'
       },{
         name: 'price',
-        attribute: 'price',
+        attributeName: 'price',
         facetType: 'range',
       }
     ]
@@ -104,7 +104,7 @@ Loop54.search('apple', function(response) {
 
 __Passing in options with your search__
 ```
-Loop54.search('apple', {selectedFacets: [{'Category': ['Fruit', 'Vegetables']}]}, function(response) {
+Loop54.search('apple', {selectedFacets: {'Category': ['Fruit', 'Vegetables']}}, function(response) {
   console.log(response)
 })
 ```
@@ -183,7 +183,7 @@ __Default:__ `[{ type: 'relevance', order: 'desc' }]`
   sortBy: [
     {
       type: 'attribute',
-      attribute: 'name', // Can be any attribute that your products have
+      attributeName: 'name', // Can be any attribute that your products have
       order: 'asc'
     },
     {
@@ -217,12 +217,12 @@ __Default:__ Empty or Facets from global "Config" if present
   facets: [
     {
       name: 'Category',
-      attribute: 'Category1',
+      attributeName: 'Category1',
       type: 'distinct'
     },
     {
       name: 'Price',
-      attribute: 'PriceInclVat',
+      attributeName: 'PriceInclVat',
       type: 'range'
     }
   ]
@@ -695,12 +695,12 @@ Loop54.getRelatedEntities({type: 'Product', id: '1234'}, {results: {skip: 10, ta
 					or: [
 						{
 							type: 'attribute',
-							attribute: 'ManufacturerName',
+							attributeName: 'ManufacturerName',
 							value: 'Alf'
 						},
 						{
 							type: 'attribute',
-							attribute: 'ManufacturerName',
+							attributeName: 'ManufacturerName',
 							value: 'alga'
 						}
 					]
