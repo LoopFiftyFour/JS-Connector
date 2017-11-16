@@ -4,7 +4,7 @@ import cookies from './cookies.js';
 global.Loop54 = (function() {
   var versions = {
     libVersion: '1.0.0',
-    apiVersion: 'V26'
+    apiVersion: 'default'
   }
 
   var config = {
@@ -242,6 +242,14 @@ global.Loop54 = (function() {
 
       if(options.filter) {
         parameters['results'] = {...parameters['results'], filter: options.filter}
+      }
+
+      if(options.take) {
+        parameters['results'] = {...parameters['results'], take: options.take}
+      }
+
+      if(options.skip) {
+        parameters['results'] = {...parameters['results'], skip: options.skip}
       }
 
       if(options.facets && Array.isArray(options.facets)) {
