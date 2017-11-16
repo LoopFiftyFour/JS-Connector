@@ -1,6 +1,6 @@
 # Loop54 API library - javascript edition
 
-## Installation:
+## Installation
 
 Using Node Package Manager (NPM):
 
@@ -9,6 +9,22 @@ Using Node Package Manager (NPM):
 2. require it in your project with `require('loop54-js-lib')`
 
 3. you should now have access to the global variable `Loop54`
+
+## Development
+
+1. Git clone this repository  
+2. in the folder, run `npm install` to install all dependencies  
+3. run `npm run dev` to start the webserver, open up http://localhost:3001 and try out the basic features
+
+## Build
+
+run `npm run build` to build the source code into /lib folder
+
+## Tests
+
+`npm run test` to do check if the tests passes
+
+All tests are located in the `test` folder
 
 ## Usage
 
@@ -126,25 +142,29 @@ Distinct facet example:
 }
 ```
 
-##### from [ Integer ]
+##### skip [ Integer ]
 
-A number representing from which index/item you want to get results.
+A number representing how many items to skip.
 
-__Default:__ `{ from: 0 }` (index starts at 0)
+__Default:__ Empty
+
+If you want to get item 9 to 14 (index starts at 0) you will have to add the following as an option
 ```
 {
-  from: 10
+  skip: 10
 }
 ```
 
-##### to [ Integer ]
+##### take [ Integer ]
 
-A number representing to which index/item you want to get results.
+A number representing how many items to take.
 
-__Default:__ `{ to: 4 }`
+__Default:__ `{ take: 5 }`
+
+If you want to get 10 items instead of the default 5, you will have to add the following as an option
 ```
 {
-  to: 19
+  take: 19
 }
 ```
 
@@ -232,8 +252,8 @@ __Default:__ Empty
 ```
 {
   relatedResults: {
-    from: 0,
-    to: 10,
+    skip: 0,
+    take: 10,
     sortBy: []
   }
 }
@@ -250,8 +270,8 @@ __Default:__ Empty
 ```
 {
   relatedQueries: {
-    from: 0,
-    to: 10,
+    skip: 0,
+    take: 10,
     sortBy: []
   }
 }
@@ -268,8 +288,8 @@ __Default:__ Empty
 ```
 {
   spellingSuggestions: {
-    from: 0,
-    to: 10,
+    skip: 0,
+    take: 10,
     sortBy: []
   }
 }
@@ -385,7 +405,7 @@ Loop54.autocomplete('appl', function(response) {
 
 __Passing in options with your autocomplete
 ```
-Loop54.autocomplete('appl', {queries: {from: 0, to: 10}]}, function(response) {
+Loop54.autocomplete('appl', {queries: {skip: 5, take: 10}]}, function(response) {
   console.log(response)
 })
 ```
@@ -395,29 +415,29 @@ Loop54.autocomplete('appl', {queries: {from: 0, to: 10}]}, function(response) {
 Options for autocomplete needs to be scoped under a __queries__ Object as seen below.  
 If you want to use more than one option you just put them in the same __queries__ Object.
 
-##### from [ Integer ]
+##### skip [ Integer ]
 
-A number representing from which index/item you want to get results.
+A number representing how many items to skip.
 
-__Default:__ `{ from: 0 }` (index starts at 0)
+__Default:__ Empty
+
+If you want to get item 9 to 14 (index starts at 0) you will have to add the following as an option
 ```
 {
-  queries: {
-    from: 10
-  }
+  skip: 10
 }
 ```
 
-##### to [ Integer ]
+##### take [ Integer ]
 
-A number representing to which index/item you want to get results.
+A number representing how many items to take.
 
-__Default:__ `{ to: 4 }`
+__Default:__ `{ take: 5 }`
+
+If you want to get 10 items instead of the default 5, you will have to add the following as an option
 ```
 {
-  queries: {
-    to: 19
-  }
+  take: 19
 }
 ```
 
@@ -609,7 +629,7 @@ Loop54.getEntities({}, function(response) {
 
 __Passing in options with your search__
 ```
-Loop54.getEntities({from: 10, to: 100, filter: {}}, function(response) {
+Loop54.getEntities({skip: 10, take: 100, filter: {}}, function(response) {
   console.log(response)
 })
 ```
@@ -651,7 +671,7 @@ Loop54.getRelatedEntities({type: 'Product', id: '1234'}, function(response) {
 
 __Passing in options with your search__
 ```
-Loop54.getRelatedEntities({type: 'Product', id: '1234'}, {results: {from: 10, to: 100}, function(response) {
+Loop54.getRelatedEntities({type: 'Product', id: '1234'}, {results: {skip: 10, take: 100}, function(response) {
   console.log(response)
 })
 ```
@@ -690,13 +710,3 @@ Loop54.getRelatedEntities({type: 'Product', id: '1234'}, {results: {from: 10, to
 	}
 }
 ```
-
-## Development
-
-`npm run dev` to start the webserver, open up http://localhost:3001 and try out the basic features
-
-## Tests
-
-`npm run test` to do check if the tests passes
-
-All tests are located in the `test` folder
