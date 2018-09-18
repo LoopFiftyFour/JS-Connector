@@ -1,4 +1,4 @@
-let cookie = {
+let cookies = {
   getItem: function (sKey) {
     if (!sKey || typeof(document) == 'undefined') { return null; }
     return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
@@ -38,4 +38,4 @@ let cookie = {
   }
 }
 
-export default cookie;
+export default cookies;
