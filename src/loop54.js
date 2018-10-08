@@ -5,15 +5,9 @@ global.Loop54 = (function() {
   var config = {
     endpoint: 'helloworld.54proxy.com'
   }
-
-  var setConfig = function(newConfig) {
-    if(!newConfig || typeof(newConfig) != 'object') { return core.returnError({ type: 'ArgumentError', data: 'Arguments missing or they have the wrong format' })}
-    if(newConfig.endpoint) { newConfig.endpoint = newConfig.endpoint.replace(/^(https?):\/\/|\/(?=[^\/]*$)/g, '') }
-    config = { ...config, ...newConfig }
-  }
-
-  var getConfig = function() {
-    return config;
+  
+  var addDistinctFacet(resultsOptions) = function(attributeName,selectedValues){
+	  return {...resultsOptions,facets=[...resultsOptions.facets,{name:f,attributeName:f,type:'distinct',selected:selectedValues}]
   }
 
   var autoComplete = function(searchTerm) {
@@ -141,20 +135,24 @@ global.Loop54 = (function() {
 	//copy over options from provided options to resultsOptionson the parameter object
 	var parameters = {};
     if(options) {
-      if(options.relatedResults) {
-        parameters = {...parameters, relatedResults: options.relatedResults}
+      if(options.relatedResultsOptions) {
+        parameters = {...parameters, relatedResultsOptions: options.relatedResultsOptions}
       }
 
-      if(options.spellingSuggestions) {
-        parameters = {...parameters, spellingSuggestions: options.spellingSuggestions}
+      if(options.spellingSuggestionsOptions) {
+        parameters = {...parameters, spellingSuggestionsOptions: options.spellingSuggestionsOptions}
+      }
+	  
+	  if(options.relatedQueriesOptions) {
+        parameters = {...parameters, relatedQueriesOptions: options.relatedQueriesOptions}
       }
 
       if(options.sortBy) {
         parameters['resultsOptions'] = {...parameters['resultsOptions'], sortBy: options.sortBy}
       }
 
-      if(options.filter) {
-        parameters['resultsOptions'] = {...parameters['resultsOptions'], filter: options.filter}
+      if(options.filters) {
+        parameters['resultsOptions'] = {...parameters['resultsOptions'], filters: options.filters}
       }
 
       if(options.take) {
@@ -165,7 +163,7 @@ global.Loop54 = (function() {
         parameters['resultsOptions'] = {...parameters['resultsOptions'], skip: options.skip}
       }
 
-      if(options.facets && Array.isArray(options.facets)) {
+      if(options.facets) {
         parameters['resultsOptions'] = {...parameters['resultsOptions'], facets: options.facets}
       }
     }
@@ -178,8 +176,6 @@ global.Loop54 = (function() {
   }
 
   return {
-    setConfig: setConfig,
-    getConfig: getConfig,
     autoComplete: autoComplete,
     getRelatedEntities: getRelatedEntities,
     getEntities: getEntities,

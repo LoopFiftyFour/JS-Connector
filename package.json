@@ -2,12 +2,12 @@
   "name": "loop54-js-lib",
   "version": "1.0.0",
   "description": "JS lib for Loop54 easy frontend implementation.",
-  "main": "lib/index.js",
+  "main": "lib/loop54.js",
   "scripts": {
     "dev": "node launch-dev.js",
-    "watch": "watchify src/index.js -o lib/loop54-js-lib.js -t [ babelify --presets [ es2015 stage-2 ] ]",
+    "watch": "watchify src/loop54.js -o lib/loop54-js-lib.js -t [ babelify --presets [ es2015 stage-2 ] ]",
     "server": "node server.js",
-    "bundle": "browserify src/index.js -o lib/loop54-js-lib.js -t [ babelify --presets [ es2015 stage-2 ] ] | uglifyjs lib/loop54-js-lib.js -o lib/loop54-js-lib.min.js",
+    "bundle": "browserify src/loop54.js -o lib/loop54-js-lib.js -t [ babelify --presets [ es2015 stage-2 ] ] | uglifyjs lib/loop54-js-lib.js -o lib/loop54-js-lib.min.js",
     "test": "mocha --require mocha-babel.js ./test/lib-test.js"
   },
   "test": "mocha --require mocha-babel.js ./test/lib-test.js",
