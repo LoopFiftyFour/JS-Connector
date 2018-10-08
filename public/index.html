@@ -4,66 +4,101 @@
   <title>Loop54</title>
   <link href="nouislider.min.css" rel="stylesheet" />
   <style>
-    #searchResult {
-      font-size: 9px;
-      font-family: monospace;
-      max-width: 100%;
-    }
-
     .range-slider {
       max-width: 50%;
       margin-left: 20px;
       margin-right: 20px;
     }
+	
+	div.input {
+		width:400px;
+	}
+	
+	div#searchResult {
+		position:absolute;
+		top:100px;
+		margin-left:400px;
+	}
+	
+	div.entity {
+		width:220px;
+		float:left;
+		border:1px solid black;
+		margin:5px;
+		padding:5px;
+		text-align:center;
+	}
+	
+	div.entity img {
+		width:220px;
+		height:220px;
+		object-fit: cover;
+	}
+	
+	h2 {
+		clear:left;
+		margin-top:0px;
+		margin-bottom:0px;
+		padding-top:10px;
+	}
   </style>
 </head>
 <body>
   <h1>Loop54-js-lib Testing environment</h1>
-  <hr />
+  
   <a href="#search">Search</a> | 
   <a href="#autocomplete">AutoComplete</a> | 
   <a href="#getentities">GetEntities</a> | 
   <a href="#getentitiesbyattribute">GetEntitiesByAttribute</a> | 
   <a href="#getrelatedentities">GetRelatedEntities</a>
-
-  <form id="form" onsubmit="return callLoop54()">
-    <p>
-      Query: <input type="text" name="query" value="meat" />
-    </p>
-	<h2>Options</h2>
-	<p>
-      Skip: <input type="text" name="skip" value="0" />
-    </p>
-	<p>
-      Take: <input type="text" name="take" value="10" />
-    </p>
-	<div id="inputFacets">
-		<h2>Define facets</h2>
-		<p>
-		  Distinct: <input type="text" name="distinctFacets" value="Manufacturer,Category" />
-		</p>
-		<p>
-		  Range: <input type="text" name="rangeFacets" value="OrgPrice" />
-		</p>
-	</div>
-	<p>
-	  <input type="submit" value="Post" />
-	</p>
-  </form>
   
   <hr />
   
-  <div id="outputFacets">
-	  <h2>Facets</h2>
-	  <form id="facetsForm" onchange="return updateFacets()">
-	  
+  <div class="input">
+  
+	  <form id="form" onsubmit="return callLoop54()">
+		<p>
+		  Query: <input type="text" name="query" value="meat" />
+		</p>
+		<h2>Options</h2>
+		<p>
+		  Skip: <input type="text" name="skip" value="0" />
+		</p>
+		<p>
+		  Take: <input type="text" name="take" value="10" />
+		</p>
+		<div id="inputFacets">
+			<h2>Define facets</h2>
+			<p>
+			  Distinct: <input type="text" name="distinctFacets" value="Manufacturer,Category" />
+			</p>
+			<p>
+			  Range: <input type="text" name="rangeFacets" value="OrgPrice" />
+			</p>
+		</div>
+		<h2>Sorting</h2>
+		<p>
+		  SortBy: <input type="text" name="sortBy" value="relevance" />
+		</p>
+		<h2>Filtering</h2>
+		<p>
+		  Filter (JSON): <textarea name="filter" value=""></textarea>
+		</p>
+		<p>
+		  <input type="submit" value="Post" />
+		</p>
 	  </form>
 	  
 	  <hr />
+	  
+	  <div id="outputFacets">
+		  <h2>Facets</h2>
+		  <form id="facetsForm" onchange="return updateFacets()"></form>
+	  </div>
+  
   </div>
 
-  <h2>Results (Count: <span id="resultCount"></span>)</h2>
-  <pre id="searchResult"></pre>
+  <div id="searchResult"></div>
   <script src="nouislider.min.js"></script>
   <script src="loop54-js-lib.js"></script>
   <script type="text/javascript">
@@ -99,13 +134,30 @@
 		options.take = document.getElementById('form').elements['take'].value;
 		
 		var distinctFacets = document.getElementById('form').elements['distinctFacets'].value.split(',').map(function(f){return {name:f,attributeName:f,type:'distinct',selected:selectedFacets[f]}});
+		
 		var rangeFacets = document.getElementById('form').elements['rangeFacets'].value.split(',').map(function(f){return {name:f,attributeName:f,type:'range',selected:selectedFacets[f]}});
 		
 		options.facets = [...distinctFacets,...rangeFacets];
+		
+		var sortBy = document.getElementById('form').elements['sortBy'].value.split(',').map(function(s){
+			if(s=="relevance")
+				return {type:"relevance"};
+				
+			return {type:"attribute",attributeName:s,order:"asc"}
+		});
+		
+		options.sortBy = sortBy;
+		
+		var filter = document.getElementById('form').elements['filter'].value;
+		
+		if(filter)
+			options.filter = JSON.parse(filter);
+		
 	
 		var operation = location.hash;
 	
 		if(operation=="#search") {
+			options.relatedResultsOptions = {...options};
 			Loop54.search(document.getElementById('form').elements['query'].value, options, printResponse);
 		}
 		else if(operation=="#autocomplete")
@@ -182,9 +234,27 @@
 
     function printResponse(response) {
 		console.log('response', response);
-		document.getElementById('resultCount').innerText = response.data.results ? response.data.results.count : response.data.queries.count;
-		var str = JSON.stringify(response, null, 2);
-		document.getElementById('searchResult').innerText = str;
+		
+		document.getElementById('searchResult').innerHTML = "";
+		
+		var mappings = {
+			"id":formatValue,
+			"makesSense":formatValue,
+			"relatedQueries":formatStringResults,
+			"spellingSuggestions":formatStringResults,
+			"queries":formatStringResults,
+			"results":formatEntityResults,
+			"relatedResults":formatEntityResults,
+		}
+		
+		for(var mapping in mappings)
+		{
+			var value = response.data[mapping];
+			
+			if(value)
+				document.getElementById('searchResult').innerHTML += "<h2>" + mapping + "</h2>" + mappings[mapping](value);
+		}
+		
 		var facetsForm = document.getElementById('facetsForm');
 		facetsForm.innerHTML = '';
 		
@@ -192,6 +262,56 @@
 			renderFacets(response.data.results.facets);
 		}
     }
+	
+	function formatStringResults(val)
+	{
+		let ret = "<b>Total number</b>:" + val.count + "<br/>";
+		
+		for(var i in val.items)
+			ret += val.items[i].query + "<br />";
+			
+		return ret;
+	}
+	
+	function formatEntityResults(val)
+	{
+		let ret = "<b>Total number</b>:" + val.count + "<br/>";
+		
+		for(var i in val.items)
+			ret += formatEntity(val.items[i]);
+			
+		return ret;
+	}
+	
+	function formatEntity(val)
+	{
+		return "<div title=\""+formatAttributes(val)+"\" class=\"entity\">" + 
+			"<img src=\""+getAttribute(val,"ImageUrl")+"\"/><br />" + 
+			"<b>" + getAttribute(val,"Title") + "</b>" + 
+		"</div>";
+	}
+	
+	function formatAttributes(val)
+	{
+		let ret = "type:" + val.type + "\nid:" + val.id + "\n";
+		for(var i in val.attributes)
+			ret += val.attributes[i].name + ":" + val.attributes[i].values[0] + "\n";
+			
+		return ret;
+	}
+	
+	function getAttribute(entity,attr)
+	{
+		if(!entity.attributes)
+			return "";
+		
+		return entity.attributes.find(function(a){return a.name==attr}).values[0];
+	}
+	
+	function formatValue(val)
+	{
+		return val;
+	}
 	
 	function renderFacets(facets) {
 		for(var i=0;i<facets.length; i++) {
