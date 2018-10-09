@@ -31,7 +31,7 @@ let core = {
 		body = {...body}
 		var request = axios({
 		  method: method ? method : 'post',
-		  url: 'https://' + endpoint + path,
+		  url: core.ensureProtocol(endpoint) + path,
 		  headers: {
 			'user-id': userId,
 			'lib-version': core.versions.libVersion,
@@ -54,6 +54,18 @@ let core = {
 		} else {
 		  return request
 		}
+	},
+	
+	ensureProtocol: function(url) {
+		
+		if(!url.startsWith("http"))
+			url = "https://" + url;
+		
+		if(!url.endsWith("/"))
+			url = url + "/";
+		
+		return url;
+		
 	},
 
 	returnError : function(debug, message, callback) {

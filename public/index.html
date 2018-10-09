@@ -125,6 +125,8 @@
 	
     function callLoop54(selectedFacets) {
 	
+		var client = Loop54.getClient("http://helloworld.54proxy.com");
+		
 		if(!selectedFacets)
 			selectedFacets = {};
 	
@@ -158,26 +160,26 @@
 	
 		if(operation=="#search") {
 			options.relatedResultsOptions = {...options};
-			Loop54.search(document.getElementById('form').elements['query'].value, options, printResponse);
+			client.search(document.getElementById('form').elements['query'].value, options, printResponse);
 		}
 		else if(operation=="#autocomplete")
 		{
 			delete options.facets;
-			Loop54.autoComplete(document.getElementById('form').elements['query'].value, options, printResponse);
+			client.autoComplete(document.getElementById('form').elements['query'].value, options, printResponse);
 		}
 		else if(operation=="#getentities")
 		{
-			Loop54.getEntities(options, printResponse);
+			client.getEntities(options, printResponse);
 		}
 		else if(operation=="#getentitiesbyattribute")
 		{
 			var nameValuePair = document.getElementById('form').elements['query'].value.split(':');
-			Loop54.getEntitiesByAttribute(nameValuePair[0],nameValuePair[1],options, printResponse);
+			client.getEntitiesByAttribute(nameValuePair[0],nameValuePair[1],options, printResponse);
 		}
 		else if(operation=="#getrelatedentities")
 		{
 			var typeIdPair = document.getElementById('form').elements['query'].value.split(':');
-			Loop54.getRelatedEntities({type:typeIdPair[0],id:typeIdPair[1]}, options, printResponse);
+			client.getRelatedEntities({type:typeIdPair[0],id:typeIdPair[1]}, options, printResponse);
 		}
 		else {
 			console.log("unknown operation " + operation);
