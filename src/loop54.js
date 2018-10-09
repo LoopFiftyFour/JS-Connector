@@ -6,10 +6,6 @@ global.Loop54 = (function() {
     endpoint: 'helloworld.54proxy.com'
   }
   
-  var addDistinctFacet(resultsOptions) = function(attributeName,selectedValues){
-	  return {...resultsOptions,facets=[...resultsOptions.facets,{name:f,attributeName:f,type:'distinct',selected:selectedValues}]
-  }
-
   var autoComplete = function(searchTerm) {
 
 	var args = core.getOptionsAndCallback(arguments,1);
@@ -176,12 +172,12 @@ global.Loop54 = (function() {
   }
 
   return {
-    autoComplete: autoComplete,
-    getRelatedEntities: getRelatedEntities,
-    getEntities: getEntities,
+	autoComplete: autoComplete,
+	getRelatedEntities: getRelatedEntities,
+	getEntities: getEntities,
 	getEntitiesByAttribute:getEntitiesByAttribute,
-    search: search,
-    trackEvent: trackEvent,
-    trackEvents: trackEvents
+	search: search,
+	trackEvent: trackEvent,
+	trackEvents: trackEvents
   }
 })();
