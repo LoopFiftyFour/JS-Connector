@@ -102,8 +102,7 @@
   <script src="nouislider.min.js"></script>
   <script src="loop54-js-lib.js"></script>
   <script type="text/javascript">
-    console.log(Loop54);
-	
+
     var state = {
       selectedFacets: {}
     }
@@ -239,6 +238,11 @@
 		
 		document.getElementById('searchResult').innerHTML = "";
 		
+		if(response.data.error)
+		{
+			document.getElementById('searchResult').innerHTML += "<pre>" + JSON.stringify(response.data.error,null,2) + "</pre>";
+		}
+
 		var mappings = {
 			"id":formatValue,
 			"makesSense":formatValue,
