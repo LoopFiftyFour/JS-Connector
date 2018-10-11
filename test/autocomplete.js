@@ -1,4 +1,4 @@
-import searchResponse from "./mocks/search-response-ok";
+import autoCompleteResponse from "./mocks/autocomplete-response-ok";
 import nock from "nock";
 import chai, {
 	assert,
@@ -12,28 +12,28 @@ module.exports = function () {
 
 	//mock all calls to the /search endpoint
 	beforeEach(() => {
-		nock(common.endpoint).post("/search").reply(200, searchResponse);
+		nock(common.endpoint).post("/autoComplete").reply(200, autoCompleteResponse);
 	});
 	
 	var searchOKFunc = function(response) {
 		expect(response.status).to.equal(200);
-		expect(response.data.results.count).to.equal(5);
+		expect(response.data.queries.count).to.equal(1);
 	}
 	
 	it("Returns 200 OK and a valid response, without callback", function () {
-		return client.search("meat").then(searchOKFunc);
+		return client.autoComplete("m").then(searchOKFunc);
 	});
 	
 	it("Returns 200 OK and a valid response, with callback", function (done) {
-		return client.search("meat", response => common.testCallBack(response,searchOKFunc,done));
+		return client.autoComplete("m", response => common.testCallBack(response,searchOKFunc,done));
 	});
 
 	it("Accepts options as second argument, without a callback", function () {
-		return client.search("meat", {}).then(searchOKFunc);
+		return client.autoComplete("m", {}).then(searchOKFunc);
 	});
 	
 	it("Accepts options as second argument, with a callback", function () {
-		return client.search("meat", {}, response => common.testCallBack(response,searchOKFunc,done));
+		return client.autoComplete("m", {}, response => common.testCallBack(response,searchOKFunc,done));
 	});
 	
 	var includesErrorFunc = function(response) {
@@ -41,18 +41,18 @@ module.exports = function () {
 	}
 
 	it("Returns error if it has too few arguments", function () {
-		return client.search().catch(includesErrorFunc);
+		return client.autoComplete().catch(includesErrorFunc);
 	});
 	
 	it("Returns error if it has too many arguments", function () {
-		return client.search("meat",{},"asdasd","asasd","g42om4").catch(includesErrorFunc);
+		return client.autoComplete("m",{},"asdasd","asasd","g42om4").catch(includesErrorFunc);
 	});
 	
 	it("Returns error if invalid search query, without callback", function () {
-		return client.search("").catch(includesErrorFunc);
+		return client.autoComplete("").catch(includesErrorFunc);
 	});
 	
 	it("Returns error if invalid search query, with callback", function (done) {
-		return client.search("",response => common.testCallBack(response,includesErrorFunc,done));
+		return client.autoComplete("",response => common.testCallBack(response,includesErrorFunc,done));
 	});
 }
