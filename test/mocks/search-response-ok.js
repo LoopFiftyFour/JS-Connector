@@ -3,7 +3,7 @@ module.exports = {
   "spellingSuggestions":{"count":0,"items":[]},
   "relatedQueries":{"count":0,"items":[]},
   "results":{
-    "count":24,
+    "count":5,
     "facets":[],
     "items":[
       {"type":"Product","id":"26707104","attributes":[{"name":"PartNo","type":"string","values":["1112799"]},{"name":"Name","type":"string","values":["COG-boll, 15 cm gul"]},{"name":"Description","type":"string","values":["COG-bollarna är för barn från 6 månader och uppåt. Denna typ av boll är en klassiker i alla skolors gymnastikhallar. De brukar oftast användas för att spela sporter såsom spökboll m.m."]},{"name":"ManufacturerName","type":"string","values":["Övriga"]},{"name":"ManufacturerPartNo","type":"string","values":["51-LB150-G"]},{"name":"Categories","type":"string","values":["Bollar & hoppbollar","Utomhuslek","Sport & fritid"]},{"name":"Category1","type":"string","values":["Sport & fritid"]},{"name":"Category2","type":"string","values":["Utomhuslek"]},{"name":"Category3","type":"string","values":["Bollar & hoppbollar"]},{"name":"VatRate","type":"number","values":[25]},{"name":"PriceSaleExclVat","type":"number","values":[63.2]},{"name":"FreightCostExclVat","type":"number","values":[39.2]},{"name":"AgeFrom","type":"number","values":[1]},{"name":"AgeTo","type":"number","values":[15]},{"name":"Flags","type":"string","values":["58"]},{"name":"URL","type":"string","values":["http://www.storochliten.se/produkt/cog-boll-15-cm"]},{"name":"PopularityRanking","type":"number","values":[8648]},{"name":"id","type":"string","values":["26707104"]}]},
