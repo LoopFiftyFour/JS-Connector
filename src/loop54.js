@@ -152,7 +152,7 @@ global.Loop54 = (function () {
 
 				var args = core.getOptionsAndCallback(arguments, 1);
 				if (args.error) {
-					return core.returnError(args);
+					return core.returnError(args,args.callback);
 				}
 
 				var options = args.options ? args.options : {};
@@ -170,7 +170,8 @@ global.Loop54 = (function () {
 					}, callback);
 				}
 
-				//copy over options from provided options to resultsOptionson the parameter object
+				//copy over options from provided options to resultsOptions on the parameter object
+				//TODO: is this needed?
 				var parameters = {};
 				if (options) {
 					if (options.relatedResultsOptions) {

@@ -31,9 +31,12 @@ let core = {
 		body = {
 			...body
 		};
+		
+		var url = core.ensureProtocol(endpoint) + path;
+		
 		var request = axios({
 				method: method ? method : "post",
-				url: core.ensureProtocol(endpoint) + path,
+				url: url,
 				headers: {
 					"user-id": userId,
 					"lib-version": core.versions.libVersion,
@@ -74,41 +77,41 @@ let core = {
 
 	ensureProtocol: function (url) {
 
-		if (!url.startsWith("http"))
+		//make sure it starts with http or https
+		if (!url.startsWith("http://") && !url.startsWith("https://"))
 			url = "https://" + url;
 
-		if (!url.endsWith("/"))
-			url = url + "/";
+		//make sure it doesnt end with slash
+		while (url.endsWith("/"))
+			url = url.substring(0,url.Length-1);
 
 		return url;
 
 	},
 
-	returnError: function (debug, message, callback) {
+	returnError: function (errorObject,callback) {
 		if (callback) {
-			if (debug) {
-				console.error(message);
-			}
-			return callback(message);
+			console.error(errorObject);
+			return callback(errorObject);
 		} else {
-			if (debug) {
-				console.error(message);
-			}
-			return message;
+			console.error(errorObject);
+			return Promise.reject(errorObject);
 		}
 	},
 
 	getOptionsAndCallback: function (args, numRequiredParameters) {
 
+		//too few parameters
 		if (args.length < numRequiredParameters)
 			return {
 				error: "Expected at least " + numRequiredParameters + " parameters."
 			};
 
-		//no options or parameter
+		//no options or other extra parameter
 		if (args.length == numRequiredParameters)
 			return {};
 
+		//too many parameters
 		if (args.length > numRequiredParameters + 2)
 			return {
 				error: "Expected at most " + (numRequiredParameters + 2) + " parameters."
