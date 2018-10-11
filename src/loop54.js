@@ -1,5 +1,8 @@
 import core from "./core.js";
 
+/**
+ * Used for communicating with a Loop54 engine
+ */
 global.Loop54 = (function () {
 
 	var getClient = function (endpoint) {
@@ -9,9 +12,16 @@ global.Loop54 = (function () {
 	
 		return {
 
+			/**
+			 * The engine endpoint this client communicates with.
+			 */
 			endpoint: endpoint,
 
-			autoComplete: function (searchTerm) {
+			/**
+			 * Used for performing autocomplete requests to the engine.
+			 * @param {string} searchTerm The query to find suggestions.
+			 */
+			autoComplete: function (query) {
 
 				var args = core.getOptionsAndCallback(arguments, 1);
 				if (args.error) {
@@ -21,17 +31,17 @@ global.Loop54 = (function () {
 				var options = args.options ? args.options : {};
 				var callback = args.callback ? args.callback : null;
 
-				if (typeof(searchTerm) != "string" || searchTerm.length == 0) {
+				if (typeof(query) != "string" || query.length == 0) {
 					return core.returnError({
 						error: {
 							type: "ArgumentError",
-							data: "Search term is either missing or not a string"
+							data: "query is either missing or not a string"
 						}
 					}, callback);
 				}
 
 				var req = core.call(this.endpoint, "/autoComplete", {
-						query: searchTerm,
+						query: query,
 						queriesOptions: options
 					}, null, callback);
 
@@ -41,17 +51,25 @@ global.Loop54 = (function () {
 				}
 			},
 
+			/**
+			 * Used for tracking a user interaction
+			 * @param {string} eventType The type of event. Typically "click", "addtocart" or "purchase"
+			 * @param {string} type The type of entity that was interacted with. Typically "Product"
+			 * @param {string} id The id of the entity that was interacted with. 
+			 * @param {string} orderId The id of the order. Typically only used with purchase events.
+			 * @param {number} quantity The quantity of this product in the order. Typically only used with purchase events.
+			 * @param {number} revenue The revenue for this product in the order. Typically only used with purchase events.
+			 */
 			trackEvent: function (eventType, type, id, orderId, quantity, revenue) {
-				// purchase, addToCart, click
 
 				if (!eventType) {
-					return core.returnError("eventType needs to be set, our standard events are \"click\", \"addtocart\" and \"purchase\"");
+					return core.returnError("eventType needs to be set, standard events are \"click\", \"addtocart\" and \"purchase\".");
 				}
 				if (!type) {
-					return core.returnError("All entities needs to have a \"type\" set, usually this is \"Product\" but can basically be anything");
+					return core.returnError("All entities needs to have a \"type\" set, usually this is \"Product\".");
 				}
 				if (!id) {
-					return core.returnError("All entities needs to have an \"id\" provided, this is usually the productId");
+					return core.returnError("All entities needs to have an \"id\" provided, this is usually the productId.");
 				}
 
 				var event = {
@@ -78,6 +96,10 @@ global.Loop54 = (function () {
 				});
 			},
 
+			/**
+			 * Used for tracking a multiple user interactions, for instance when purchasing multiple products at once.
+			 * @param {array} events The events to push. See trackEvent for detailed information about events.
+			 */
 			trackEvents: function (events) {
 				// purchase, addToCart, click
 
@@ -86,6 +108,10 @@ global.Loop54 = (function () {
 				});
 			},
 
+			/**
+			 * Used for performing getRelatedEntities requests to the engine.
+			 * @param {object} entity The entity for which to find related entities
+			 */
 			getRelatedEntities: function (entity) {
 
 				var args = core.getOptionsAndCallback(arguments, 1);
@@ -117,6 +143,11 @@ global.Loop54 = (function () {
 				}
 			},
 
+			/**
+			 * Used for performing getEntitiesByAttribute requests to the engine.
+			 * @param {string} attributeName The name of the attribute for which to get entities
+			 * @param {any} attributeValue The value of the attribute for which to get entitites
+			 */
 			getEntitiesByAttribute: function (attributeName, attributeValue) {
 
 				var args = core.getOptionsAndCallback(arguments, 2);
@@ -151,6 +182,9 @@ global.Loop54 = (function () {
 				}
 			},
 
+			/**
+			 * Used for performing getEntities requests to the engine.
+			 */
 			getEntities: function () {
 
 				var args = core.getOptionsAndCallback(arguments, 0);
@@ -171,7 +205,11 @@ global.Loop54 = (function () {
 				}
 			},
 
-			search: function (searchTerm) {
+			/**
+			 * Used for performing search requests to the engine.
+			 * @param {string} query The query to search for
+			 */
+			search: function (query) {
 
 				var args = core.getOptionsAndCallback(arguments, 1);
 				if (args.error) {
@@ -181,14 +219,12 @@ global.Loop54 = (function () {
 				var options = args.options ? args.options : {};
 				var callback = args.callback ? args.callback : null;
 
-				/*
-				 * Make sure there is a searchTerm added and check the formatting (needs to be string)
-				 */
-				if (typeof(searchTerm) != "string" || searchTerm.length == 0) {
+				//validate input
+				if (typeof(query) != "string" || query.length == 0) {
 					return core.returnError({
 						error: {
 							type: "ArgumentError",
-							data: "Search term is either missing or not a string"
+							data: "query is either missing or not a string"
 						}
 					}, callback);
 				}
@@ -255,7 +291,7 @@ global.Loop54 = (function () {
 				}
 
 				var req = core.call(this.endpoint, "/search", {
-						query: searchTerm,
+						query: query,
 						...parameters
 					}, null, callback);
 
@@ -267,6 +303,10 @@ global.Loop54 = (function () {
 	}
 
 	return {
+		/**
+		 * Returns a client that can be used to communicate with the engine.
+		 * @param {string} endpoint The complete URL to the engine.
+		*/
 		getClient: getClient
 	}
 })();
