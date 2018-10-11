@@ -127,6 +127,16 @@ global.Loop54 = (function () {
 				var options = args.options ? args.options : {};
 				var callback = args.callback ? args.callback : null;
 
+				//validate arguments
+				if (typeof(attributeName) != "string") {
+					return core.returnError({
+						error: {
+							type: "ArgumentError",
+							data: "Missing argument attributeName or attributeName was not of type string."
+						}
+					}, callback);
+				}
+				
 				var req = core.call(this.endpoint, "/getEntitiesByAttribute", {
 						attribute: {
 							name: attributeName,
