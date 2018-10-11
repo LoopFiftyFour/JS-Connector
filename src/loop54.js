@@ -96,6 +96,16 @@ global.Loop54 = (function () {
 				var options = args.options ? args.options : {};
 				var callback = args.callback ? args.callback : null;
 
+				//validate entity
+				if (typeof(entity) != "object" || !entity.type || !entity.id) {
+					return core.returnError({
+						error: {
+							type: "ArgumentError",
+							data: "entity must be an object with properties \"type\" and \"id\"."
+						}
+					}, callback);
+				}
+				
 				var req = core.call(this.endpoint, "/getRelatedEntities", {
 						entity: entity,
 						resultsOptions: options
