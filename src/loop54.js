@@ -4,6 +4,9 @@ global.Loop54 = (function () {
 
 	var getClient = function (endpoint) {
 
+		if(!endpoint || endpoint.Length==0)
+			throw new Error("Parameter \"endpoint\" must be present and have a non-zero length.");
+	
 		return {
 
 			endpoint: endpoint,
