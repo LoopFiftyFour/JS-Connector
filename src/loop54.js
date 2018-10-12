@@ -54,21 +54,7 @@ global.Loop54 = (function () {
 			 * @param {number} quantity The quantity of this product in the order. Typically only used with purchase events.
 			 * @param {number} revenue The revenue for this product in the order. Typically only used with purchase events.
 			 */
-			trackEvent: function (eventType, entity, orderId, quantity, revenue, callback) {
-
-				if (!eventType) {
-					return core.returnError("eventType needs to be set, standard events are \"click\", \"addtocart\" and \"purchase\".",callback);
-				}
-				if(!entity)
-				{
-					return core.returnError("entity needs to be set.",callback);
-				}
-				if (!entity.type) {
-					return core.returnError("entitiy needs to have a \"type\" set, usually this is \"Product\".",callback);
-				}
-				if (!entity.id) {
-					return core.returnError("entitiy needs to have an \"id\" provided, this is usually the productId.",callback);
-				}
+			createEvent: function (eventType, entity, orderId, quantity, revenue, callback) {
 
 				var event = {
 					type: eventType,
@@ -85,6 +71,11 @@ global.Loop54 = (function () {
 				if (revenue) {
 					event.revenue = parseFloat(revenue);
 				}
+				
+				var error = core.validateEvent(event,callback);
+				
+				if(error)
+					return core.returnError(error,callback);
 
 				var req = core.call(this.endpoint, "/createEvents", {
 					events: [event]
@@ -100,12 +91,24 @@ global.Loop54 = (function () {
 			 * Used for tracking a multiple user interactions, for instance when purchasing multiple products at once.
 			 * @param {array} events The events to push. See trackEvent for detailed information about events.
 			 */
-			trackEvents: function (events) {
-				// purchase, addToCart, click
+			createEvents: function (events,callback) {
+				
+				if(!Array.isArray(events) || events.Length==0)
+					return core.returnError("events must be a non-empty array",callback);
 
-				core.call(this.endpoint, "/createEvents", {
+				var errors = events.map(core.validateEvent).filter(err=>err);
+				
+				if(errors.length>0)
+					return core.returnError("At least one of the events was malformed: " + errors[0],callback);
+
+				var req = core.call(this.endpoint, "/createEvents", {
 					events: events
-				});
+				},null,callback);
+				
+				if (!callback) {
+					// if callback is missing, return a promise
+					return req;
+				}
 			},
 
 			/**

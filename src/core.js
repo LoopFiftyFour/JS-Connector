@@ -100,10 +100,8 @@ let core = {
 		};
 		
 		if (callback) {
-			console.error(ret);
 			return callback(ret);
 		} else {
-			console.error(ret);
 			return Promise.reject(ret);
 		}
 	},
@@ -141,6 +139,24 @@ let core = {
 			options: options,
 			callback: callback
 		};
+	},
+	
+	validateEvent: function(event) {
+		
+		if (!event.type || typeof(event.type)!="string" || event.type.Length==0) {
+			return "type needs to be set, standard events are \"click\", \"addtocart\" and \"purchase\".";
+		}
+		if(!event.entity) {
+			return "entity needs to be set.";
+		}
+		if (!event.entity.type) {
+			return "entity needs to have a \"type\" set, usually this is \"Product\".";
+		}
+		if (!event.entity.id) {
+			return "entity needs to have an \"id\" provided, this is usually the productId.";
+		}
+		
+		return null;
 	}
 }
 
