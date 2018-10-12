@@ -27,6 +27,7 @@
 		margin:5px;
 		padding:5px;
 		text-align:center;
+		cursor:pointer;
 	}
 	
 	div.entity img {
@@ -189,7 +190,7 @@
 	
 	function trackEvent(type,entity)
 	{
-		client.trackEvent(type,entity,null,null,null,function(response){
+		client.createEvent(type,entity,null,null,null,function(response){
 		console.log("response", response);
 			if(response.data.error)
 			{
