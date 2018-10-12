@@ -57,7 +57,7 @@
   
   <div class="input">
   
-	  <form id="form" onsubmit="return callLoop54()">
+	  <form id="form">
 		<p>
 		  Query: <input type="text" name="query" value="meat" />
 		</p>
@@ -86,7 +86,7 @@
 		  Filter (JSON): <textarea name="filter" value=""></textarea>
 		</p>
 		<p>
-		  <input type="submit" value="Post" />
+		  <input type="button" onclick="callLoop54()" value="Post" />
 		</p>
 	  </form>
 	  
@@ -104,6 +104,41 @@
   <script src="loop54-js-lib.js"></script>
   <script type="text/javascript">
 
+  //IE polyfills
+  if (typeof Object.assign != 'function') {
+	  Object.assign = function(target) {
+		'use strict';
+		if (target == null) {
+		  throw new TypeError('Cannot convert undefined or null to object');
+		}
+
+		target = Object(target);
+		for (var index = 1; index < arguments.length; index++) {
+		  var source = arguments[index];
+		  if (source != null) {
+			for (var key in source) {
+			  if (Object.prototype.hasOwnProperty.call(source, key)) {
+				target[key] = source[key];
+			  }
+			}
+		  }
+		}
+		return target;
+	  };
+	}
+	if (!String.prototype.startsWith) {
+	  String.prototype.startsWith = function(searchString, position) {
+		position = position || 0;
+		return this.indexOf(searchString, position) === position;
+	  };
+	}
+	if (!String.prototype.endsWith) {
+		String.prototype.endsWith = function(pattern) {
+	  var d = this.length - pattern.length;
+	  return d >= 0 && this.lastIndexOf(pattern) === d;
+	};
+	}
+  
     var state = {
       selectedFacets: {}
     }
@@ -139,7 +174,7 @@
 		
 		var rangeFacets = document.getElementById('form').elements['rangeFacets'].value.split(',').map(function(f){return {name:f,attributeName:f,type:'range',selected:selectedFacets[f]}});
 		
-		options.facets = [...distinctFacets,...rangeFacets];
+		options.facets = distinctFacets.concat(rangeFacets);
 		
 		var sortBy = document.getElementById('form').elements['sortBy'].value.split(',').map(function(s){
 			if(s=="relevance")
@@ -162,7 +197,7 @@
 		if(operation=="#search") {
 		
 			//copy over options to related results, but not customData
-			options.relatedResultsOptions = {...options};
+			options.relatedResultsOptions = Object.assign({},options);
 			delete options.relatedResultsOptions.customData;
 			
 			client.search(document.getElementById('form').elements['query'].value, options, printResponse);
