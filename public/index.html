@@ -107,6 +107,8 @@
       selectedFacets: {}
     }
 	
+	var client = Loop54.getClient("http://helloworld.54proxy.com");
+	
 	window.onhashchange = toggleFacets;
 	
 	function toggleFacets(){
@@ -123,8 +125,6 @@
 	}
 	
     function callLoop54(selectedFacets) {
-	
-		var client = Loop54.getClient("http://helloworld.54proxy.com");
 		
 		if(!selectedFacets)
 			selectedFacets = {};
@@ -186,6 +186,17 @@
 		
 		return false;
     }
+	
+	function trackEvent(type,entity)
+	{
+		client.trackEvent(type,entity,null,null,null,function(response){
+		console.log("response", response);
+			if(response.data.error)
+			{
+				alert(response.data.error.title);
+			}
+		});
+	}
 
     function updateFacets() {
 	
@@ -240,7 +251,7 @@
 		
 		if(response.data.error)
 		{
-			document.getElementById('searchResult').innerHTML += "<pre>" + JSON.stringify(response.data.error,null,2) + "</pre>";
+			document.getElementById('searchResult').innerHTML += "<h2>"+response.data.error.title+"</h2><pre>" + JSON.stringify(response.data.error,null,2) + "</pre>";
 		}
 
 		var mappings = {
@@ -291,7 +302,7 @@
 	
 	function formatEntity(val)
 	{
-		return "<div title=\""+formatAttributes(val)+"\" class=\"entity\">" + 
+		return "<div onclick=\"trackEvent('click',{type:'"+val.type+"',id:'"+val.id+"'});\" title=\""+formatAttributes(val)+"\" class=\"entity\">" + 
 			"<img src=\""+getAttribute(val,"ImageUrl")+"\"/><br />" + 
 			"<b>" + getAttribute(val,"Title") + "</b>" + 
 		"</div>";
