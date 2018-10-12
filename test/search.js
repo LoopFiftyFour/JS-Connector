@@ -32,7 +32,7 @@ module.exports = function () {
 		return client.search("meat", {}).then(searchOKFunc);
 	});
 	
-	it("Accepts options as second argument, with a callback", function () {
+	it("Accepts options as second argument, with a callback", function (done) {
 		return client.search("meat", {}, response => common.testCallBack(response,searchOKFunc,done));
 	});
 	

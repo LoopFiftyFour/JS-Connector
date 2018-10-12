@@ -5,6 +5,7 @@ import autoComplete from "./autoComplete"
 import getEntities from "./getEntities"
 import getRelatedEntities from "./getRelatedEntities"
 import getEntitiesByAttribute from "./getEntitiesByAttribute"
+import createEvents from "./createEvents"
 
 describe("Loop54", function () {
 	
@@ -15,4 +16,5 @@ describe("Loop54", function () {
 	describe("client.getEntities", getEntities);
 	describe("client.getRelatedEntities", getRelatedEntities);
 	describe("client.getEntitiesByAttribute", getEntitiesByAttribute);
+	describe("client.createEvents", createEvents);
 });

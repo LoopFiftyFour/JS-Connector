@@ -10,7 +10,7 @@ module.exports = function () {
 
 	let client = Loop54.getClient(common.endpoint);
 
-	//mock all calls to the /search endpoint
+	//mock all calls to the /autoComplete endpoint
 	beforeEach(() => {
 		nock(common.endpoint).post("/autoComplete").reply(200, autoCompleteResponse);
 	});
@@ -32,7 +32,7 @@ module.exports = function () {
 		return client.autoComplete("m", {}).then(okFunc);
 	});
 	
-	it("Accepts options as second argument, with a callback", function () {
+	it("Accepts options as second argument, with a callback", function (done) {
 		return client.autoComplete("m", {}, response => common.testCallBack(response,okFunc,done));
 	});
 

@@ -10,7 +10,7 @@ module.exports = function () {
 
 	let client = Loop54.getClient(common.endpoint);
 
-	//mock all calls to the /search endpoint
+	//mock all calls to the /getRelatedEntities endpoint
 	beforeEach(() => {
 		nock(common.endpoint).post("/getRelatedEntities").reply(200, getRelatedEntitiesResponse);
 	});
@@ -32,7 +32,7 @@ module.exports = function () {
 		return client.getRelatedEntities({type:"Product",id:"test"},{}).then(okFunc);
 	});
 	
-	it("Accepts options as second argument, with a callback", function () {
+	it("Accepts options as second argument, with a callback", function (done) {
 		return client.getRelatedEntities({type:"Product",id:"test"},{}, response => common.testCallBack(response,okFunc,done));
 	});
 	
