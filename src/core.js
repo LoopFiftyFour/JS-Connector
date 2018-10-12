@@ -157,6 +157,11 @@ let core = {
 		}
 		
 		return null;
+	},
+	
+	deleteCustomData: function(options)	{
+		let ret = {...options};
+		delete ret.customData;
 	}
 }
 

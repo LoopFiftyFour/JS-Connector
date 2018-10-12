@@ -155,11 +155,16 @@
 		if(filter)
 			options.filter = JSON.parse(filter);
 		
-	
+		options.customData = {anything:"value"};
+		
 		var operation = location.hash;
 	
 		if(operation=="#search") {
+		
+			//copy over options to related results, but not customData
 			options.relatedResultsOptions = {...options};
+			delete options.relatedResultsOptions.customData;
+			
 			client.search(document.getElementById('form').elements['query'].value, options, printResponse);
 		}
 		else if(operation=="#autocomplete")

@@ -37,7 +37,8 @@ global.Loop54 = (function () {
 
 				var req = core.call(this.endpoint, "/autoComplete", {
 						query: query,
-						queriesOptions: options
+						queriesOptions: core.deleteCustomData(options),
+						customData:options.customData
 					}, null, callback);
 
 				if (!callback) {
@@ -132,7 +133,8 @@ global.Loop54 = (function () {
 				
 				var req = core.call(this.endpoint, "/getRelatedEntities", {
 						entity: entity,
-						resultsOptions: options
+						resultsOptions: core.deleteCustomData(options),
+						customData:options.customData
 					}, null, callback);
 
 				if (!callback) {
@@ -166,7 +168,8 @@ global.Loop54 = (function () {
 							name: attributeName,
 							value: attributeValue
 						},
-						resultsOptions: options
+						resultsOptions: core.deleteCustomData(options),
+						customData:options.customData
 					}, null, callback);
 
 				if (!callback) {
@@ -189,7 +192,8 @@ global.Loop54 = (function () {
 				var callback = args.callback ? args.callback : null;
 
 				var req = core.call(this.endpoint, "/getEntities", {
-						resultsOptions: options
+						resultsOptions: core.deleteCustomData(options),
+						customData:options.customData
 					}, null, callback);
 
 				if (!callback) {
@@ -217,70 +221,19 @@ global.Loop54 = (function () {
 					return core.returnError("query is either missing or not a string", callback);
 				}
 
-				//copy over options from provided options to resultsOptions on the parameter object
-				//TODO: is this needed?
-				var parameters = {};
-				if (options) {
-					if (options.relatedResultsOptions) {
-						parameters = {
-							...parameters,
-							relatedResultsOptions: options.relatedResultsOptions
-						};
-					}
-
-					if (options.spellingSuggestionsOptions) {
-						parameters = {
-							...parameters,
-							spellingSuggestionsOptions: options.spellingSuggestionsOptions
-						};
-					}
-
-					if (options.relatedQueriesOptions) {
-						parameters = {
-							...parameters,
-							relatedQueriesOptions: options.relatedQueriesOptions
-						};
-					}
-
-					if (options.sortBy) {
-						parameters["resultsOptions"] = {
-							...parameters["resultsOptions"],
-							sortBy: options.sortBy
-						};
-					}
-
-					if (options.filters) {
-						parameters["resultsOptions"] = {
-							...parameters["resultsOptions"],
-							filters: options.filters
-						};
-					}
-
-					if (options.take) {
-						parameters["resultsOptions"] = {
-							...parameters["resultsOptions"],
-							take: options.take
-						};
-					}
-
-					if (options.skip) {
-						parameters["resultsOptions"] = {
-							...parameters["resultsOptions"],
-							skip: options.skip
-						};
-					}
-
-					if (options.facets) {
-						parameters["resultsOptions"] = {
-							...parameters["resultsOptions"],
-							facets: options.facets
-						};
-					}
-				}
-
 				var req = core.call(this.endpoint, "/search", {
 						query: query,
-						...parameters
+						relatedResultsOptions: options.relatedResultsOptions,
+						spellingSuggestionsOptions: options.spellingSuggestionsOptions,
+						relatedQueriesOptions: options.relatedQueriesOptions,
+						resultsOptions:{
+							sortBy: options.sortBy,
+							filters: options.filters,
+							take: options.take,
+							skip: options.skip,
+							facets: options.facets
+						},
+						customData:options.customData
 					}, null, callback);
 
 				if (!callback) { // if callback is missing, return a promise
