@@ -5,9 +5,9 @@
   "main": "lib/loop54.js",
   "scripts": {
     "dev": "node launch-dev.js",
-    "watch": "watchify src/loop54.js -o lib/loop54-js-lib.js -t [ babelify --presets [ es2015 stage-2 ] ]",
+    "watch": "watchify src/loop54.js -o lib/loop54-js-lib.js -t [ babelify --presets [ @babel/preset-env ] ]",
     "server": "node server.js",
-    "bundle": "browserify src/loop54.js -o lib/loop54-js-lib.js -t [ babelify --presets [ es2015 stage-2 ] ] | uglifyjs lib/loop54-js-lib.js -o lib/loop54-js-lib.min.js",
+    "bundle": "browserify src/loop54.js -o lib/loop54-js-lib.js -t [ babelify --presets [ @babel/preset-env ] ] | uglifyjs lib/loop54-js-lib.js -o lib/loop54-js-lib.min.js",
     "test": "mocha --require mocha-babel.js ./test/lib-test.js"
   },
   "test": "mocha --require mocha-babel.js ./test/lib-test.js",
@@ -23,12 +23,9 @@
     "promise-polyfill": "^6.0.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.16.0",
-    "babel-core": "^6.2.1",
-    "babel-preset-es2015": "^6.1.18",
-    "babel-preset-stage-2": "^6.1.18",
-    "babelify": "^7.2.0",
-    "browserify": "^12.0.1",
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "babelify": "^10.0.0",
     "chai": "^3.4.1",
     "chai-as-promised": "^7.1.1",
     "express": "^4.16.2",
