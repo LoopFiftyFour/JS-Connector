@@ -14,7 +14,7 @@ let core = {
 		for (var i = 0; i < 10; i++) {
 			text += possible.charAt(Math.floor(Math.random() * possible.length));
 		}
-		cookies.setItem("Loop54User", text, 365);
+		cookies.setItem("Loop54User", text, 365*24*60*60); //365 days
 		return text;
 	},
 
