@@ -36,23 +36,19 @@ module.exports = function () {
 		return client.getEntitiesByAttribute("title","test",{}, response => common.testCallBack(response,okFunc,done));
 	});
 	
-	var includesErrorFunc = function(response) {
-		expect(response).to.include.keys("error");
-	}
-	
 	it("Returns error if it has too few arguments", function () {
-		return client.getEntitiesByAttribute("title").catch(includesErrorFunc);
+		return client.getEntitiesByAttribute("title").catch(common.includesError);
 	});
 	
 	it("Returns error if it has too many arguments", function () {
-		return client.getEntitiesByAttribute("title","test",{},"asdasd","asasd","g42om4").catch(includesErrorFunc);
+		return client.getEntitiesByAttribute("title","test",{},"asdasd","asasd","g42om4").catch(common.includesError);
 	});
 	
 	it("Returns error if invalid attributeName, without callback", function () {
-		return client.getEntitiesByAttribute([],"value").catch(includesErrorFunc);
+		return client.getEntitiesByAttribute([],"value").catch(common.includesError);
 	});
 	
 	it("Returns error if invalid attributeName, with callback", function (done) {
-		return client.getEntitiesByAttribute([],"value",response => common.testCallBack(response,includesErrorFunc,done));
+		return client.getEntitiesByAttribute([],"value",response => common.testCallBack(response,common.includesError,done));
 	});
 }

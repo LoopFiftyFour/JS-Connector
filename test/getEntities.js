@@ -36,11 +36,7 @@ module.exports = function () {
 		return client.getEntities({}, response => common.testCallBack(response,okFunc,done));
 	});
 	
-	var includesErrorFunc = function(response) {
-		expect(response).to.include.keys("error");
-	}
-	
 	it("Returns error if it has too many arguments", function () {
-		return client.getEntities({},"asdasd","asasd","g42om4").catch(includesErrorFunc);
+		return client.getEntities({},"asdasd","asasd","g42om4").catch(common.includesError);
 	});
 }

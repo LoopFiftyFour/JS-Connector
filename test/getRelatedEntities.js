@@ -36,31 +36,27 @@ module.exports = function () {
 		return client.getRelatedEntities({type:"Product",id:"test"},{}, response => common.testCallBack(response,okFunc,done));
 	});
 	
-	var includesErrorFunc = function(response) {
-		expect(response).to.include.keys("error");
-	}
-	
 	it("Returns error if it has too few arguments", function () {
-		return client.getRelatedEntities().catch(includesErrorFunc);
+		return client.getRelatedEntities().catch(common.includesError);
 	});
 	
 	it("Returns error if it has too many arguments", function () {
-		return client.getRelatedEntities({type:"Product",id:"test"},{},"asdasd","asasd","g42om4").catch(includesErrorFunc);
+		return client.getRelatedEntities({type:"Product",id:"test"},{},"asdasd","asasd","g42om4").catch(common.includesError);
 	});
 	
 	it("Returns error if invalid entity, without callback", function () {
-		return client.getRelatedEntities("").catch(includesErrorFunc);
+		return client.getRelatedEntities("").catch(common.includesError);
 	});
 	
 	it("Returns error if invalid entity, with callback", function (done) {
-		return client.getRelatedEntities("",response => common.testCallBack(response,includesErrorFunc,done));
+		return client.getRelatedEntities("",response => common.testCallBack(response,common.includesError,done));
 	});
 	
 	it("Returns error if invalid entity, without callback", function () {
-		return client.getRelatedEntities({type:"Test"}).catch(includesErrorFunc);
+		return client.getRelatedEntities({type:"Test"}).catch(common.includesError);
 	});
 	
 	it("Returns error if invalid entity, with callback", function (done) {
-		return client.getRelatedEntities({type:"Test"},response => common.testCallBack(response,includesErrorFunc,done));
+		return client.getRelatedEntities({type:"Test"},response => common.testCallBack(response,common.includesError,done));
 	});
 }

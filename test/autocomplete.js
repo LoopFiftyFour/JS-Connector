@@ -35,24 +35,20 @@ module.exports = function () {
 	it("Accepts options as second argument, with a callback", function () {
 		return client.autoComplete("m", {}, response => common.testCallBack(response,okFunc,done));
 	});
-	
-	var includesErrorFunc = function(response) {
-		expect(response).to.include.keys("error");
-	}
 
 	it("Returns error if it has too few arguments", function () {
-		return client.autoComplete().catch(includesErrorFunc);
+		return client.autoComplete().catch(common.includesError);
 	});
 	
 	it("Returns error if it has too many arguments", function () {
-		return client.autoComplete("m",{},"asdasd","asasd","g42om4").catch(includesErrorFunc);
+		return client.autoComplete("m",{},"asdasd","asasd","g42om4").catch(common.includesError);
 	});
 	
 	it("Returns error if invalid search query, without callback", function () {
-		return client.autoComplete("").catch(includesErrorFunc);
+		return client.autoComplete("").catch(common.includesError);
 	});
 	
 	it("Returns error if invalid search query, with callback", function (done) {
-		return client.autoComplete("",response => common.testCallBack(response,includesErrorFunc,done));
+		return client.autoComplete("",response => common.testCallBack(response,common.includesError,done));
 	});
 }

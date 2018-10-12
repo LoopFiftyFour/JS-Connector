@@ -1,3 +1,8 @@
+import chai, {
+	assert,
+	expect
+} from "chai";
+
 module.exports = {
 	
 	endpoint: "http://test.loop54.se",
@@ -7,5 +12,9 @@ module.exports = {
 			testFunc(response);
 			done();
 		}, 0)
+	},
+	
+	includesError: function(response) {
+		expect(response.data.error).to.include.keys("title");
 	}
 }
