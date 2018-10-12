@@ -25,19 +25,14 @@ global.Loop54 = (function () {
 
 				var args = core.getOptionsAndCallback(arguments, 1);
 				if (args.error) {
-					return core.returnError(args);
+					return core.returnError(args.error,args.callback);
 				}
 
 				var options = args.options ? args.options : {};
 				var callback = args.callback ? args.callback : null;
 
 				if (typeof(query) != "string" || query.length == 0) {
-					return core.returnError({
-						error: {
-							type: "ArgumentError",
-							data: "query is either missing or not a string"
-						}
-					}, callback);
+					return core.returnError("query is either missing or not a string", callback);
 				}
 
 				var req = core.call(this.endpoint, "/autoComplete", {
@@ -54,30 +49,30 @@ global.Loop54 = (function () {
 			/**
 			 * Used for tracking a user interaction
 			 * @param {string} eventType The type of event. Typically "click", "addtocart" or "purchase"
-			 * @param {string} type The type of entity that was interacted with. Typically "Product"
-			 * @param {string} id The id of the entity that was interacted with. 
+			 * @param {object} entity The entity that was interacted with. Must have properties "type" and "id"
 			 * @param {string} orderId The id of the order. Typically only used with purchase events.
 			 * @param {number} quantity The quantity of this product in the order. Typically only used with purchase events.
 			 * @param {number} revenue The revenue for this product in the order. Typically only used with purchase events.
 			 */
-			trackEvent: function (eventType, type, id, orderId, quantity, revenue) {
+			trackEvent: function (eventType, entity, orderId, quantity, revenue, callback) {
 
 				if (!eventType) {
-					return core.returnError("eventType needs to be set, standard events are \"click\", \"addtocart\" and \"purchase\".");
+					return core.returnError("eventType needs to be set, standard events are \"click\", \"addtocart\" and \"purchase\".",callback);
 				}
-				if (!type) {
-					return core.returnError("All entities needs to have a \"type\" set, usually this is \"Product\".");
+				if(!entity)
+				{
+					return core.returnError("entity needs to be set.",callback);
 				}
-				if (!id) {
-					return core.returnError("All entities needs to have an \"id\" provided, this is usually the productId.");
+				if (!entity.type) {
+					return core.returnError("entitiy needs to have a \"type\" set, usually this is \"Product\".",callback);
+				}
+				if (!entity.id) {
+					return core.returnError("entitiy needs to have an \"id\" provided, this is usually the productId.",callback);
 				}
 
 				var event = {
 					type: eventType,
-					entity: {
-						type: type,
-						id: id
-					}
+					entity: entity
 				};
 
 				// purchase event extra attributes
@@ -91,9 +86,14 @@ global.Loop54 = (function () {
 					event.revenue = parseFloat(revenue);
 				}
 
-				core.call(this.endpoint, "/createEvents", {
+				var req = core.call(this.endpoint, "/createEvents", {
 					events: [event]
-				});
+				},null,callback);
+				
+				if (!callback) {
+					// if callback is missing, return a promise
+					return req;
+				}
 			},
 
 			/**
@@ -116,7 +116,7 @@ global.Loop54 = (function () {
 
 				var args = core.getOptionsAndCallback(arguments, 1);
 				if (args.error) {
-					return core.returnError(args);
+					return core.returnError(args.error,args.callback);
 				}
 
 				var options = args.options ? args.options : {};
@@ -124,12 +124,7 @@ global.Loop54 = (function () {
 
 				//validate entity
 				if (typeof(entity) != "object" || !entity.type || !entity.id) {
-					return core.returnError({
-						error: {
-							type: "ArgumentError",
-							data: "entity must be an object with properties \"type\" and \"id\"."
-						}
-					}, callback);
+					return core.returnError("entity must be an object with properties \"type\" and \"id\".", callback);
 				}
 				
 				var req = core.call(this.endpoint, "/getRelatedEntities", {
@@ -152,7 +147,7 @@ global.Loop54 = (function () {
 
 				var args = core.getOptionsAndCallback(arguments, 2);
 				if (args.error) {
-					return core.returnError(args);
+					return core.returnError(args.error,args.callback);
 				}
 
 				var options = args.options ? args.options : {};
@@ -160,12 +155,7 @@ global.Loop54 = (function () {
 
 				//validate arguments
 				if (typeof(attributeName) != "string") {
-					return core.returnError({
-						error: {
-							type: "ArgumentError",
-							data: "Missing argument attributeName or attributeName was not of type string."
-						}
-					}, callback);
+					return core.returnError("Missing argument attributeName or attributeName was not of type string.", callback);
 				}
 				
 				var req = core.call(this.endpoint, "/getEntitiesByAttribute", {
@@ -189,7 +179,7 @@ global.Loop54 = (function () {
 
 				var args = core.getOptionsAndCallback(arguments, 0);
 				if (args.error) {
-					return core.returnError(args);
+					return core.returnError(args.error,args.callback);
 				}
 
 				var options = args.options ? args.options : {};
@@ -213,7 +203,7 @@ global.Loop54 = (function () {
 
 				var args = core.getOptionsAndCallback(arguments, 1);
 				if (args.error) {
-					return core.returnError(args,args.callback);
+					return core.returnError(args.error,args.callback);
 				}
 
 				var options = args.options ? args.options : {};
@@ -221,12 +211,7 @@ global.Loop54 = (function () {
 
 				//validate input
 				if (typeof(query) != "string" || query.length == 0) {
-					return core.returnError({
-						error: {
-							type: "ArgumentError",
-							data: "query is either missing or not a string"
-						}
-					}, callback);
+					return core.returnError("query is either missing or not a string", callback);
 				}
 
 				//copy over options from provided options to resultsOptions on the parameter object

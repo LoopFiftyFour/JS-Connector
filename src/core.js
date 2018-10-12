@@ -39,7 +39,7 @@ let core = {
 				url: url,
 				headers: {
 					"user-id": userId,
-					"lib-version": core.versions.libVersion,
+					"lib-version": "JS:" + core.versions.libVersion,
 					"api-version": core.versions.apiVersion,
 				},
 				responseType: "json",
@@ -47,24 +47,25 @@ let core = {
 			})
 			.then(function (response) {
 				
-				var ret = {
-					status: response.status,
-					data: response.data
-				};
-				
 				if(response.status === 200)
-					return ret;
+					return response;
 				else {
-					throw new Error({
-						error: ret
-					});
+					return Promise.reject(response);
 				}
 			})
 			.catch (function (response) {
-				var ret = {
-						status: response.status,
-						data: response.data
+				
+				var ret = response;
+				
+				//if there is no data, that means something went wrong before we got a response
+				//construct a "fake" response object with the same properties as an error from the engine
+				if(!ret.data) {
+					ret = {
+						data: {
+							error: { title:response.message }
+						}
 					};
+				}
 				return Promise.reject(ret);
 			});
 
@@ -89,13 +90,21 @@ let core = {
 
 	},
 
-	returnError: function (errorObject,callback) {
+	returnError: function (message,callback) {
+		
+		//construct a "fake" response object with the same properties as an error from the engine
+		var ret = {
+			data: {
+				error: {title:message}
+			}
+		};
+		
 		if (callback) {
-			console.error(errorObject);
-			return callback(errorObject);
+			console.error(ret);
+			return callback(ret);
 		} else {
-			console.error(errorObject);
-			return Promise.reject(errorObject);
+			console.error(ret);
+			return Promise.reject(ret);
 		}
 	},
 
