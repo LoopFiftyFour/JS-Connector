@@ -162,6 +162,8 @@ let core = {
 	deleteCustomData: function(options)	{
 		let ret = {...options};
 		delete ret.customData;
+		
+		return ret;
 	}
 }
 
