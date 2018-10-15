@@ -19,6 +19,7 @@
   "author": "Loop54",
   "license": "ISC",
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "axios": "^0.7.0",
     "promise-polyfill": "^6.0.2"
   },
@@ -36,6 +37,6 @@
     "npm-run-all": "^4.1.1",
     "sinon": "^4.0.1",
     "uglify-js": "^3.1.7",
-    "watchify": "^3.9.0"
+    "watchify": "^3.11.0"
   }
 }
