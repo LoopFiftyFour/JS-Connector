@@ -8,9 +8,9 @@
     "watch": "watchify src/loop54.js -o lib/loop54-js-lib.js -t [ babelify --presets [ @babel/preset-env ] ]",
     "server": "node server.js",
     "bundle": "browserify src/loop54.js -o lib/loop54-js-lib.js -t [ babelify --presets [ @babel/preset-env ] ] | uglifyjs lib/loop54-js-lib.js -o lib/loop54-js-lib.min.js",
-    "test": "mocha --require mocha-babel.js ./test/lib-test.js"
+    "test": "mocha --compilers js:@babel/register ./test/lib-test.js"
   },
-  "test": "mocha --require mocha-babel.js ./test/lib-test.js",
+  "test": "mocha --compilers js:@babel/register ./test/lib-test.js",
   "keywords": [
     "Loop54",
     "SaaS",
@@ -26,6 +26,8 @@
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
+    "@babel/register": "^7.0.0",
+    "babel-core": "^6.26.3",
     "babelify": "^10.0.0",
     "chai": "^3.4.1",
     "chai-as-promised": "^7.1.1",
