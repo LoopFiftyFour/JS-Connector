@@ -10,18 +10,15 @@
     "bundle": "browserify src/loop54.js -o lib/loop54-js-lib.js -t [ babelify --presets [ @babel/preset-env ] ] | uglifyjs lib/loop54-js-lib.js -o lib/loop54-js-lib.min.js",
     "test": "mocha --compilers js:@babel/register ./test/lib-test.js"
   },
-  "test": "mocha --compilers js:@babel/register ./test/lib-test.js",
   "keywords": [
     "Loop54",
     "SaaS",
     "Search"
   ],
   "author": "Loop54",
-  "license": "ISC",
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
-    "axios": "^0.7.0",
-    "promise-polyfill": "^6.0.2"
+    "axios": "^0.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
