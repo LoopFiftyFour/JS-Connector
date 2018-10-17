@@ -222,7 +222,7 @@
 			client.getRelatedEntities({type:typeIdPair[0],id:typeIdPair[1]}, options, printResponse);
 		}
 		else {
-			console.log("unknown operation " + operation);
+			console.warn("unknown operation " + operation);
 		}
 		
 		return false;
@@ -231,7 +231,7 @@
 	function trackEvent(type,entity)
 	{
 		client.createEvent(type,entity,null,null,null,function(response){
-		console.log("response", response);
+			console.log("response", response);
 			if(response.data.error)
 			{
 				alert(response.data.error.title);

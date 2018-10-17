@@ -29,6 +29,20 @@ var client = Loop54.getClient('URL_TO_YOUR_ENDPOINT');
 
 ### Making API requests
 
+__Search example with promise__
+```
+var options = {skip:0,take:20}; //this will take the first 20 results
+
+client.search("R2 droids", options)
+	.then(function(response){
+		if(response.data.error) {
+			console.log(response.data.error.title);
+		} else {
+			console.log("found " + response.data.results.count + " results");
+		}
+	});
+```
+
 __Search example with callback__
 ```
 var options = {skip:0,take:20}; //this will take the first 20 results
@@ -42,20 +56,6 @@ var callback = function(response){
 }
 
 client.search("R2 droids", options, callback);
-```
-
-__Search example with promise__
-```
-var options = {skip:0,take:20}; //this will take the first 20 results
-
-client.search("R2 droids", options)
-	.then(function(response){
-		if(response.data.error) {
-			console.log(response.data.error.title);
-		} else {
-			console.log("found " + response.data.results.count + " results");
-		}
-	});
 ```
 
 The `options` and `callback` parameters are optional. As seen above, if the `callback` is omitted, `client.search` will return a Promise.
@@ -94,7 +94,7 @@ The connector supports the following API operations:
 
 It also aids in developing a Loop54 integration by:
 
-- Taking care of user ID and cookies
+- Taking care of user ID and cookies (note that you need to ask your users' consent)
 - Setting required HTTP headers
 - Serializing and deserializing requests and responses
 - Friendlier error handling than HTTP error codes for common mistakes

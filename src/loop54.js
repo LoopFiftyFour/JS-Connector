@@ -91,17 +91,19 @@ global.Loop54 = (function () {
 
 			/**
 			 * Used for tracking a multiple user interactions, for instance when purchasing multiple products at once.
-			 * @param {array} events The events to push. See trackEvent for detailed information about events.
+			 * @param {array} events The events to push. See createEvent for detailed information about events.
 			 */
 			createEvents: function (events,callback) {
 				
 				if(!Array.isArray(events) || events.Length==0)
-					return core.returnError("events must be a non-empty array",callback);
+					return core.returnError("Events must be a non-empty array",callback);
 
-				var errors = events.map(core.validateEvent).filter(err=>err);
-				
-				if(errors.length>0)
-					return core.returnError("At least one of the events was malformed: " + errors[0],callback);
+				if (events.some(core.validateEvent)) {
+					return core.returnError(
+						"Malformed event errors: [" + events.map(core.validateEvent).filter(e=>e).map(e=>"\"" + e + "\"").join(",") + "]",
+						callback
+					)
+				}
 
 				var req = core.call(this.endpoint, "/createEvents", {
 					events: events
