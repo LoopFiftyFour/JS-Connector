@@ -42,27 +42,3 @@ function scopedAutoCompleteExample(client, query) {
 	// CODE SAMPLE END
 	return response.then((r)=>console.log("autocomplete-scoped (end)"))
 };
-
- // private void ScopedAutoCompleteExample(string query)
-        // {
-            // Debug.WriteLine("autocomplete-scoped: " + Environment.NewLine);
-
-            // CODE SAMPLE autocomplete-scoped BEGIN
-            // Below is an example of a request - response cycle of an autocomplete request
-            // where scopes are used to provide the user with more context
-            // AutoCompleteRequest request = new AutoCompleteRequest(query);
-            // request.QueriesOptions.Skip = 0;
-            // request.QueriesOptions.Take = 9;
-            // AutoCompleteResponse response = _loop54Client.AutoComplete(request);
-
-            // prints out the scoped suggestions
-            // if(response.ScopedQuery != null)
-            // {
-                // Debug.WriteLine("scoped query: " + response.ScopedQuery.Query);
-                // Debug.WriteLine("scopes based on: " + response.ScopedQuery.ScopeAttributeName);
-                // Debug.WriteLine("scopes: " + string.Join(", ", response.ScopedQuery.Scopes));
-            // }
-            // CODE SAMPLE END
-
-            // Debug.WriteLine("autocomplete-scoped (end) " + Environment.NewLine);
-        // }
