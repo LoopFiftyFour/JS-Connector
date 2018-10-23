@@ -1,6 +1,7 @@
 src
+test
+public
 .gitignore
 .npmignore
-tools
 node_modules
 *.log
