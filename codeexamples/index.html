@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  
+	<script type="text/javascript" src='../lib/loop54-js-lib.js'> </script>
+	<script type="text/javascript" src='autocomplete.js'> </script>
+    <title>Loop54 code examples</title>
+  </head>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="root"></div>
+	<script>
+	var autoCompleteQuery = 'a';
+	var client = Loop54.getClient("http://helloworld.54proxy.com");
+	autoCompleteExample(client, autoCompleteQuery).then(() => scopedAutoCompleteExample(client, autoCompleteQuery));
+	</script>
+  </body>
+</html>
