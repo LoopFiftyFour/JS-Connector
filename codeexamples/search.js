@@ -26,25 +26,30 @@ function searchExample(client, query) {
 										//render direct results
 										var results = searchResponseData["results"].items;
 										if (!results || results.count == 0)
-											console.log("There were no items matching your search.");
-
-										for (let resultItem of results)
 										{
-											var productId = resultItem.id;
-											var productTitle = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Title"}).values[0] : "";
-											console.log(productId + " " + productTitle); //render a product on the search results page
+											console.log("There were no items matching your search.");
+										}
+										else
+										{
+											for (let resultItem of results)
+											{
+												var productId = resultItem.id;
+												var productTitle = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Title"}).values[0] : "";
+												console.log(productId + " " + productTitle); //render a product on the search results page
+											}
 										}
 
 										//render recommended results
 										var relatedResults = searchResponseData["relatedResults"].items;
 										if (relatedResults && relatedResults.count > 0)
-											console.log("Maybe you also want these?");
-
-										for (let resultItem of relatedResults)
 										{
-											var productId = resultItem.id;
-											var productTitle = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Title"}).values[0] : "";
-											console.log(productId + " " + productTitle); //render a product on the search results page
+											console.log("Maybe you also want these?");
+											for (let resultItem of relatedResults)
+											{
+												var productId = resultItem.id;
+												var productTitle = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Title"}).values[0] : "";
+												console.log(productId + " " + productTitle); //render a product on the search results page
+											}
 										}
 									}
 							);
