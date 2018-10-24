@@ -36,8 +36,6 @@ function categoryListingFacetsExample(client, categoryName) {
 	
 	var response = client.getEntitiesByAttribute('Category', categoryName, options); 
 	
-	
-	
 	response = response.then((r) => {
 										// INJECT SAMPLE render-items BEGIN
 										renderItems(r.data);
@@ -50,6 +48,72 @@ function categoryListingFacetsExample(client, categoryName) {
 	// CODE SAMPLE END
 	return response.then((r)=>console.log("categorylisting-facets (end)"))
 };
+
+function categoryListingDistinctFacetExample(client, categoryName, specificManufacturer)
+{
+	console.log("categorylisting-distinct-facet:");
+	console.log("items: ");
+
+	// CODE SAMPLE categorylisting-distinct-facet BEGIN
+	// Category listing with a distinct facet applied
+	// The use-case here is e.g. when the user clicks on a specific manufacturer in the category listing facet list
+	// Add facets to the request 
+	// And select a specific facet value to filter on
+	var options = {};
+	var distinctFacetNames = ["Manufacturer", "Category", "Organic"];
+	
+	var selectedFacets = {};
+	selectedFacets["Manufacturer"] = [];
+	selectedFacets["Manufacturer"].push(specificManufacturer);
+	selectedFacets["Category"] = [];
+	selectedFacets["Organic"] = [];
+	
+	var distinctFacets = distinctFacetNames.map(function(f){return {name:f,attributeName:f,type:'distinct',selected:selectedFacets[f]}});
+	var rangeFacetNames = ["Price"];
+	var rangeFacets = rangeFacetNames.map(function(f){return {name:f,attributeName:f,type:'range'}});
+	options.facets = distinctFacets.concat(rangeFacets);
+	
+	var response = client.getEntitiesByAttribute('Category', categoryName, options);
+	
+	// CODE SAMPLE END
+	response = response.then((r) => {
+									renderItemsExtended(r.data);
+									renderFacets(r.data);
+								}
+						);
+						
+	return response.then((r)=>console.log("categorylisting-distinct-facet (end)"))
+}
+
+function categoryListingRangeFacetExample(client, categoryName)
+{
+	console.log("categorylisting-range-facet:");
+	console.log("items: ");
+
+	// CODE SAMPLE categorylisting-range-facet BEGIN
+	// Category listing with a range facet
+	// The use-case here is e.g. when the user selects a specific price range in the category listing facet list
+	// Add facets to the request 
+	// And select a specific range for a certain facet
+	var options = {};
+	var distinctFacetNames = ["Manufacturer", "Category", "Organic"];
+	var distinctFacets = distinctFacetNames.map(function(f){return {name:f,attributeName:f,type:'distinct'}});
+	var selectedRange = {min: 10, max: 60};
+	var rangeFacetNames = ["Price"];
+	var rangeFacets = rangeFacetNames.map(function(f){return {name:f,attributeName:f,type:'range',selected:selectedRange}});
+	options.facets = distinctFacets.concat(rangeFacets);
+	
+	var response = client.getEntitiesByAttribute('Category', categoryName, options);
+	// CODE SAMPLE END
+	
+	response = response.then((r) => {
+									renderItemsExtended(r.data);
+									renderFacets(r.data);
+								}
+						);
+						
+	return response.then((r)=>console.log("categorylisting-range-facet (end)"))
+}
 
 function renderItems(data)
 {
@@ -71,6 +135,28 @@ function renderItems(data)
 	}	
 	// CODE SAMPLE END
 }
+
+function renderItemsExtended(data)
+{
+	var results = data["results"].items;
+
+	if (!results || results.count == 0)
+	{
+		console.log("There were no items in this category.");
+	}
+	else
+	{
+		for (let resultItem of results)
+		{
+			var productId = resultItem.id;
+			var productTitle = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Title"}).values[0] : "";
+			var price = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Price"}).values[0] : "";
+			var organic = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Organic"}).values[0] : "";
+			console.log(productId + " " + productTitle + " (" + price + " kr, " + organic + "), "); //render a product on the category listing page
+		}
+	}	
+}
+
 
 function renderFacets(data)
 {
@@ -125,56 +211,9 @@ function renderFacets(data)
 
 
 
-        // private void CategoryListingDistinctFacetExample(string categoryName, string specificManufacturer)
-        // {
-            // Debug.WriteLine("categorylisting-distinct-facet: " + Environment.NewLine);
-            // Debug.WriteLine("items: ");
+        
 
-            // // CODE SAMPLE categorylisting-distinct-facet BEGIN
-            // // Category listing with a distinct facet applied
-            // // The use-case here is e.g. when the user clicks on a specific manufacturer in the category listing facet list
-            // var request = new GetEntitiesByAttributeRequest("Category", categoryName);
-
-            // //Add facets to the request 
-            // //And select a specific facet value to filter on
-            // request.ResultsOptions.AddDistinctFacet<string>("Manufacturer", new List<string>() { specificManufacturer });
-            // request.ResultsOptions.AddDistinctFacet<string>("Category");
-            // request.ResultsOptions.AddDistinctFacet<string>("Organic");
-            // request.ResultsOptions.AddRangeFacet<double>("Price");
-
-            // var response = _loop54Client.GetEntitiesByAttribute(request);
-            // // CODE SAMPLE END
-
-            // RenderItemsExtended(response);
-            // RenderFacets(response);
-            // Debug.WriteLine("categorylisting-distinct-facet (end) " + Environment.NewLine);
-        // }
-
-        // private void CategoryListingRangeFacetExample(string categoryName)
-        // {
-            // Debug.WriteLine("categorylisting-range-facet: " + Environment.NewLine);
-            // Debug.WriteLine("items: ");
-
-            // // CODE SAMPLE categorylisting-range-facet BEGIN
-            // // Category listing with a range facet
-            // // The use-case here is e.g. when the user selects a specific price range in the category listing facet list
-            // var request = new GetEntitiesByAttributeRequest("Category", categoryName);
-
-            // //Add facets to the request 
-            // //And select a specific range for a certain facet
-            // request.ResultsOptions.AddDistinctFacet<string>("Manufacturer");
-            // request.ResultsOptions.AddDistinctFacet<string>("Category");
-            // request.ResultsOptions.AddDistinctFacet<string>("Organic");
-            // request.ResultsOptions.AddRangeFacet<double>("Price", new RangeFacetSelectedParameter<double>() { Min = 10, Max = 60 });
-
-            // var response = _loop54Client.GetEntitiesByAttribute(request);
-            // // CODE SAMPLE END
-
-            // RenderItemsExtended(response);
-            // RenderFacets(response);
-
-            // Debug.WriteLine("categorylisting-range-facet (end) " + Environment.NewLine);
-        // }
+       
 
         // private void CategoryListingSortingExample(string categoryName)
         // {
@@ -232,24 +271,7 @@ function renderFacets(data)
         // #region HelperMethods
         
 
-        // private void RenderItemsExtended(GetEntitiesByAttributeResponse response)
-        // {
-            // var results = response.Results.Items;
-
-            // if (!results.Any())
-                // Debug.WriteLine("There were no items in this category.");
-
-            // foreach (var resultItem in results)
-            // {
-                // var productId = resultItem.GetAttributeValueOrDefault<string>("Id");
-                // var productTitle = resultItem.GetAttributeValueOrDefault<string>("Title");
-                // var price = resultItem.GetAttributeValueOrDefault<double>("Price");
-                // var organic = resultItem.GetAttributeValueOrDefault<string>("Organic");
-                // Debug.WriteLine(productId + " " + productTitle + " (" + price + " kr, " + organic + "), ");
-                // //render a product on the category listing page
-            // }
-        // }
-
+       
         
 
 
