@@ -115,6 +115,56 @@ function categoryListingRangeFacetExample(client, categoryName)
 	return response.then((r)=>console.log("categorylisting-range-facet (end)"))
 }
 
+function categoryListingSortingExample(client, categoryName)
+{
+	console.log("categorylisting-sorting:");
+	console.log("items: ");
+
+	// CODE SAMPLE categorylisting-sorting BEGIN
+	// Category listing with sorting
+	// Set the sort order of the products in the category
+	var options = {};
+	var sortBy = [];
+	sortBy.push({type:"attribute", attributeName:"Price", order:"asc"});// Primary sorting: Sort on attribute Price, ascending order
+	sortBy.push({type:"popularity", order:"desc"});// Secondary sorting: Sort on popularity, descending order
+	options.sortBy = sortBy;
+	
+	var response = client.getEntitiesByAttribute('Category', categoryName, options);
+	// CODE SAMPLE END
+	
+	response = response.then((r) => {
+							renderItemsExtended(r.data);
+						}
+				);
+					
+	return response.then((r)=>console.log("categorylisting-sorting (end)"))
+}
+
+function categoryListingFilterExample(client, categoryName)
+{
+	console.log("categorylisting-filter:");
+	console.log("items: ");
+
+	// CODE SAMPLE categorylisting-filter BEGIN
+	// Category listing with filters
+	// Filter the products in the category
+	// In this case, we only want products that have got
+	// the price attribute, and where the organic attribute is set to "True"
+	var options = {};
+	var filter = JSON.parse('{"and":[{"attributeName":"Price"}, {"type":"attribute", "attributeName":"Organic", "value":"true"}]}');
+	options.filter = filter;
+
+	var response = client.getEntitiesByAttribute('Category', categoryName, options);
+	// CODE SAMPLE END
+
+	response = response.then((r) => {
+							renderItemsExtended(r.data);
+						}
+				);
+					
+	return response.then((r)=>console.log("categorylisting-filter (end)"))
+}
+
 function renderItems(data)
 {
 	// CODE SAMPLE render-items BEGIN
@@ -157,7 +207,6 @@ function renderItemsExtended(data)
 	}	
 }
 
-
 function renderFacets(data)
 {
 	// CODE SAMPLE render-distinct-facets BEGIN
@@ -190,24 +239,25 @@ function renderFacets(data)
 	if(data.results && data.results.facets.length > 0) 
 	{
 		var facets = data.results.facets.filter(function(f) { return f.type == 'range' && f.name == "Price"; });
-			if (facets && facets.length > 0)
+		if (facets && facets.length > 0)
+		{
+			var facet = facets[0];
+			if(facet)
 			{
-				var facet = facets[0];
-				if(facet)
-				{
-					console.log("Price: ");
-					var minPrice = facet.min;
-					var maxPrice = facet.max;
-					var minPriceSelected = facet.selectedMin;
-					var maxPriceSelected = facet.selectedMax;
-					console.log("min: " + minPrice + " kr, max: " + maxPrice +
-									" kr, min selected: " + minPriceSelected + " kr," +
-									" max selected: " + maxPriceSelected + " kr.");				
-				}
+				console.log("Price: ");
+				var minPrice = facet.min;
+				var maxPrice = facet.max;
+				var minPriceSelected = facet.selectedMin;
+				var maxPriceSelected = facet.selectedMax;
+				console.log("min: " + minPrice + " kr, max: " + maxPrice +
+								" kr, min selected: " + minPriceSelected + " kr," +
+								" max selected: " + maxPriceSelected + " kr.");				
 			}
+		}
 	}
 }
 
+ 
 
 
 
@@ -215,60 +265,9 @@ function renderFacets(data)
 
        
 
-        // private void CategoryListingSortingExample(string categoryName)
-        // {
-            // Debug.WriteLine("categorylisting-sorting: " + Environment.NewLine);
-            // Debug.WriteLine("items: ");
+       
 
-            // // CODE SAMPLE categorylisting-sorting BEGIN
-            // // Category listing with sorting
-            // var request = new GetEntitiesByAttributeRequest("Category", categoryName);
-
-            // //Set the sort order of the products in the category
-            // request.ResultsOptions.SortBy = new List<EntitySortingParameter>{
-                // new EntitySortingParameter("Price")
-                    // { Order = SortOrders.Asc}, // Primary sorting: Sort on attribute Price, ascending order
-                // new EntitySortingParameter(EntitySortingParameter.Types.Popularity)
-                    // { Order = SortOrders.Desc} // Secondary sorting: Sort on popularity, descending order
-            // };
-
-            // var response = _loop54Client.GetEntitiesByAttribute(request);
-            // // CODE SAMPLE END
-
-            // RenderItemsExtended(response);
-
-            // Debug.WriteLine("categorylisting-sorting (end) " + Environment.NewLine);
-        // }
-
-        // private void CategoryListingFilterExample(string categoryName)
-        // {
-            // Debug.WriteLine("categorylisting-filter: " + Environment.NewLine);
-            // Debug.WriteLine("items: ");
-
-            // // CODE SAMPLE categorylisting-filter BEGIN
-            // // Category listing with filters
-            // var request = new GetEntitiesByAttributeRequest("Category", categoryName);
-
-            // //Filter the products in the category
-            // //In this case, we only want products that have got
-            // //the price attribute, and where the organic attribute is set to "True"
-            // request.ResultsOptions.Filter = new AndFilterParameter(
-                // new AttributeExistsFilterParameter("Price"),
-                // //Because the organic attribute is stored as a string in the engine we need to filter with that type.                
-                // //If it would have been stored as a boolean we would have used bool instead.
-                // new AttributeFilterParameter<string>("Organic", "True")
-            // );
-
-            // var response = _loop54Client.GetEntitiesByAttribute(request);
-            // // CODE SAMPLE END
-
-            // RenderItemsExtended(response);
-
-            // Debug.WriteLine("categorylisting-filter (end) " + Environment.NewLine);
-        // }
-        // #endregion
-
-        // #region HelperMethods
+      
         
 
        

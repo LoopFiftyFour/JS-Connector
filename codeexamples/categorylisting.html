@@ -24,16 +24,10 @@
 		categoryListingExample(client, categoryName).then(() => 
 														categoryListingFacetsExample(client, categoryName).then(() => 
 															categoryListingDistinctFacetExample(client, categoryName, specificManufacturer).then(() =>
-																categoryListingRangeFacetExample(client, categoryName)
-															)));
-		<!-- .then( -->
-																		<!-- () => categoryListingSortingExample(client, categoryName).then( -->
-																			<!-- () => categoryListingFilterExample(client, categoryName).then() -->
-																		<!-- ) -->
-																	<!-- ) -->
-																<!-- ) -->
-															<!-- ) -->
-														<!-- ); -->
+																categoryListingRangeFacetExample(client, categoryName).then(() => 
+																	categoryListingSortingExample(client, categoryName).then(() =>
+																		categoryListingFilterExample(client, categoryName)
+																	)))));
 	</script>
   </body>
 </html>
