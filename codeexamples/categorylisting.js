@@ -151,10 +151,10 @@ function categoryListingFilterExample(client, categoryName)
 	// In this case, we only want products that have got
 	// the price attribute, and where the organic attribute is set to "True"
 	var options = {};
-	var filterTest = {and:[]}; // And filter
-	filterTest.and.push({attributeName:"Price"}); // The price attribute must exist
-	filterTest.and.push({type:"attribute", attributeName:"Organic", value:"True"}); // The Organic attribute must be set to "True"
-	options.filter = filterTest;
+	var filter = {and:[]}; // And filter, contains a list of other filters
+	filter.and.push({attributeName:"Price"}); // The price attribute must exist
+	filter.and.push({type:"attribute", attributeName:"Organic", value:"True"}); // The Organic attribute must be set to "True"
+	options.filter = filter;
 
 	var response = client.getEntitiesByAttribute('Category', categoryName, options);
 	// CODE SAMPLE END
