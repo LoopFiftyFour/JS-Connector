@@ -32,7 +32,7 @@ function categoryListingFacetsExample(client, categoryName) {
 	var distinctFacets = distinctFacetNames.map(function(f){return {name:f,attributeName:f,type:'distinct'}});
 	var rangeFacetNames = ["Price"];
 	var rangeFacets = rangeFacetNames.map(function(f){return {name:f,attributeName:f,type:'range'}});
-	options.facets = distinctFacets.concat(rangeFacets);;
+	options.facets = distinctFacets.concat(rangeFacets);
 	
 	var response = client.getEntitiesByAttribute('Category', categoryName, options); 
 	
@@ -151,8 +151,10 @@ function categoryListingFilterExample(client, categoryName)
 	// In this case, we only want products that have got
 	// the price attribute, and where the organic attribute is set to "True"
 	var options = {};
-	var filter = JSON.parse('{"and":[{"attributeName":"Price"}, {"type":"attribute", "attributeName":"Organic", "value":"true"}]}');
-	options.filter = filter;
+	var filterTest = {and:[]}; // And filter
+	filterTest.and.push({attributeName:"Price"}); // The price attribute must exist
+	filterTest.and.push({type:"attribute", attributeName:"Organic", value:"True"}); // The Organic attribute must be set to "True"
+	options.filter = filterTest;
 
 	var response = client.getEntitiesByAttribute('Category', categoryName, options);
 	// CODE SAMPLE END
