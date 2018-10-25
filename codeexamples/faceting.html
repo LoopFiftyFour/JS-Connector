@@ -20,13 +20,15 @@
 		var client = Loop54.getClient("http://helloworld.54proxy.com");
 		
 		var query = 'a';
+		var query2 = 'dfshdfjsdkhfsdjkf';
 		var specificManufacturer = 'MeatNStuff';
 		facetingSingleFacetExample(client, query).then(() => 
 														facetingMultipleFacetsExample(client, query).then(() =>
 															facetingEngineResponseExample(client, query).then(() => 
 																facetingDistinctFacetExample(client, query, specificManufacturer).then(() =>
-																	facetingRangeFacetExample(client, query)
-																	)))); 
+																	facetingRangeFacetExample(client, query).then(() =>
+																		facetingSingleFacetExample(client, query2)
+																	))))); 
 	</script>
   </body>
 </html>

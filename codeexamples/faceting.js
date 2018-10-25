@@ -10,8 +10,8 @@ function facetingSingleFacetExample(client, query)
 	var distinctFacets = [];
 	distinctFacets.push({name:'Category',attributeName:'Category',type:'distinct'});
 	var options = {};
-	options.facets = distinctFacets;
-	
+    options.facets = distinctFacets;
+
 	var response = client.search(query, options); 
 	// CODE SAMPLE END
 	
@@ -143,9 +143,9 @@ function facetingRangeFacetExample(client, query)
 
 function renderItems(data)
 {
-	var results = data["results"].items;
-	
-	if (!results || results.count == 0)
+    var results = data["results"].items;
+
+	if (!results || results.length == 0)
 	{
 		console.log("There were no items.");
 	}

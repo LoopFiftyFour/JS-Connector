@@ -25,7 +25,7 @@ function searchExample(client, query) {
 										
 										//render direct results
 										var results = searchResponseData["results"].items;
-										if (!results || results.count == 0)
+										if (!results || results.length == 0)
 										{
 											console.log("There were no items matching your search.");
 										}
@@ -41,7 +41,7 @@ function searchExample(client, query) {
 
 										//render recommended results
 										var relatedResults = searchResponseData["relatedResults"].items;
-										if (relatedResults && relatedResults.count > 0)
+										if (relatedResults && relatedResults.length > 0)
 										{
 											console.log("Maybe you also want these?");
 											for (let resultItem of relatedResults)

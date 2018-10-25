@@ -23,7 +23,7 @@ function createEventsExample(client, productId) {
 	var quantity = 5; //Optional
 	var revenue = 249.0; //Optional
 		
-	var response = client.createEvent('add',addToCartEntity,orderId,quantity,revenue,null);
+	var response = client.createEvent('purchase',addToCartEntity,orderId,quantity,revenue,null);
 	response = response.then((r) => {
 										console.log("purchase response", r);
 						});

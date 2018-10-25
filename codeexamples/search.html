@@ -21,7 +21,11 @@
 		
 		var searchQuery = 'a';
 		var searchQuery2 = 'b';
-		searchExample(client, searchQuery).then(() => searchCheckResultExample(client, searchQuery2));
+		var searchQuery3 = 'dfshdfjsdkhfsdjkf';
+		searchExample(client, searchQuery).then(() => 
+												searchCheckResultExample(client, searchQuery2).then(() =>
+													searchExample(client, searchQuery3)
+											));
 	</script>
   </body>
 </html>

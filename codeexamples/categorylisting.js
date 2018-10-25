@@ -10,8 +10,6 @@ function categoryListingExample(client, categoryName) {
 	
 	var response = client.getEntitiesByAttribute('Category', categoryName, options); 
 	
-	
-	
 	response = response.then((r) => {
 										// INJECT SAMPLE render-items BEGIN
 										renderItems(r.data);
@@ -172,7 +170,7 @@ function renderItems(data)
 	// CODE SAMPLE render-items BEGIN
 	var results = data["results"].items;
 	
-	if (!results || results.count == 0)
+	if (!results || results.length == 0)
 	{
 		console.log("There were no items in this category.");
 	}
@@ -192,7 +190,7 @@ function renderItemsExtended(data)
 {
 	var results = data["results"].items;
 
-	if (!results || results.count == 0)
+	if (!results || results.length == 0)
 	{
 		console.log("There were no items in this category.");
 	}
