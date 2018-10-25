@@ -22,10 +22,12 @@
 		var searchQuery = 'a';
 		var searchQuery2 = 'b';
 		var searchQuery3 = 'dfshdfjsdkhfsdjkf';
+		var searchQuery4 = 'apple';
 		searchExample(client, searchQuery).then(() => 
 												searchCheckResultExample(client, searchQuery2).then(() =>
-													searchExample(client, searchQuery3)
-											));
+													searchExample(client, searchQuery3).then(() =>
+														searchExample(client, searchQuery4)
+											)));
 	</script>
   </body>
 </html>
