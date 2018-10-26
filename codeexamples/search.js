@@ -59,30 +59,6 @@ function searchExample(client, query) {
 	return response.then((r)=>console.log("search-full (end)"))
 };
 
-function searchCheckResultExample(client, query) {
-	console.log("search-check-result:");
-	
-	// initialize "Search" request and set search query
-	
-	//specify number of response items
-	var options = {};
-	options.skip = 0;
-	options.take = 10;
-	var relatedResultsOptions = {}
-	relatedResultsOptions.skip = 0;
-	relatedResultsOptions.take = 9;
-	options.relatedResultOptions = relatedResultsOptions;
-	
-	//fetch response from engine
-	var response = client.search(query, options); 
-	response = response.then((r) => {
-										var data = r.data;
-										checkResults(data);
-									}
-							);
-	return response.then((r)=>console.log("search-check-result (end)"))
-};
-
 function checkResults(data)
 {
 	// CODE SAMPLE search-check-results BEGIN
