@@ -18,13 +18,13 @@ function searchExample(client, query) {
 	//fetch response from engine
 	var response = client.search(query, options); 
 	response = response.then((r) => {
-										var searchResponseData = r.data;
+										var data = r.data;
 										// INJECT SAMPLE search-check-results BEGIN
-										checkResults(searchResponseData);
+										checkResults(data);
 										// INJECT SAMPLE END
 										
 										//render direct results
-										var results = searchResponseData["results"].items;
+										var results = data["results"].items;
 										if (!results || results.length == 0)
 										{
 											console.log("There were no items matching your search.");
@@ -40,7 +40,7 @@ function searchExample(client, query) {
 										}
 
 										//render recommended results
-										var relatedResults = searchResponseData["relatedResults"].items;
+										var relatedResults = data["relatedResults"].items;
 										if (relatedResults && relatedResults.length > 0)
 										{
 											console.log("Maybe you also want these?");
@@ -74,8 +74,8 @@ function searchCheckResultExample(client, query) {
 	//fetch response from engine
 	var response = client.search(query, options); 
 	response = response.then((r) => {
-										var searchResponseData = r.data;
-										checkResults(searchResponseData);
+										var data = r.data;
+										checkResults(data);
 									}
 							);
 	return response.then((r)=>console.log("search-check-result (end)"))

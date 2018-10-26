@@ -11,8 +11,9 @@ function categoryListingExample(client, categoryName) {
 	var response = client.getEntitiesByAttribute('Category', categoryName, options); 
 	
 	response = response.then((r) => {
+										var data = r.data
 										// INJECT SAMPLE render-items BEGIN
-										renderItems(r.data);
+										renderItems(data);
 										// INJECT SAMPLE END
 									}
 							);
@@ -35,11 +36,12 @@ function categoryListingFacetsExample(client, categoryName) {
 	var response = client.getEntitiesByAttribute('Category', categoryName, options); 
 	
 	response = response.then((r) => {
+										var data = r.data
 										// INJECT SAMPLE render-items BEGIN
-										renderItems(r.data);
+										renderItems(data);
 										// INJECT SAMPLE END
 										// INJECT SAMPLE render-distinct-facets BEGIN
-										renderFacets(r.data);
+										renderFacets(data);
 										// INJECT SAMPLE END
 									}
 							);
@@ -75,8 +77,9 @@ function categoryListingDistinctFacetExample(client, categoryName, specificManuf
 	
 	// CODE SAMPLE END
 	response = response.then((r) => {
-									renderItemsExtended(r.data);
-									renderFacets(r.data);
+									var data = r.data
+									renderItemsExtended(data);
+									renderFacets(data);
 								}
 						);
 						
@@ -105,8 +108,9 @@ function categoryListingRangeFacetExample(client, categoryName)
 	// CODE SAMPLE END
 	
 	response = response.then((r) => {
-									renderItemsExtended(r.data);
-									renderFacets(r.data);
+									var data = r.data
+									renderItemsExtended(data);
+									renderFacets(data);
 								}
 						);
 						
@@ -131,7 +135,8 @@ function categoryListingSortingExample(client, categoryName)
 	// CODE SAMPLE END
 	
 	response = response.then((r) => {
-							renderItemsExtended(r.data);
+							var data = r.data
+							renderItemsExtended(data);
 						}
 				);
 					
@@ -158,7 +163,8 @@ function categoryListingFilterExample(client, categoryName)
 	// CODE SAMPLE END
 
 	response = response.then((r) => {
-							renderItemsExtended(r.data);
+							var data = r.data
+							renderItemsExtended(data);
 						}
 				);
 					
