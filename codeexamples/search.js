@@ -31,10 +31,11 @@ function searchExample(client, query) {
 										}
 										else
 										{
-											for (let resultItem of results)
+											console.log("Total number of items: " + data["results"].count);
+											for (var i in results)
 											{
-												var productId = resultItem.id;
-												var productTitle = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Title"}).values[0] : "";
+												var productId = results[i].id;
+												var productTitle = results[i].attributes ? results[i].attributes.find(function(a){return a.name=="Title"}).values[0] : "";
 												console.log(productId + " " + productTitle); //render a product on the search results page
 											}
 										}
@@ -44,10 +45,11 @@ function searchExample(client, query) {
 										if (relatedResults && relatedResults.length > 0)
 										{
 											console.log("Maybe you also want these?");
-											for (let resultItem of relatedResults)
+											console.log("Total number of related results: " + data["relatedResults"].count);
+											for (var i in relatedResults)
 											{
-												var productId = resultItem.id;
-												var productTitle = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Title"}).values[0] : "";
+												var productId = relatedResults[i].id;
+												var productTitle = relatedResults[i].attributes ? relatedResults[i].attributes.find(function(a){return a.name=="Title"}).values[0] : "";
 												console.log(productId + " " + productTitle); //render a product on the search results page
 											}
 										}

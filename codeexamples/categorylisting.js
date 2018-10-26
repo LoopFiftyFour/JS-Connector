@@ -4,13 +4,7 @@ function categoryListingExample(client, categoryName) {
 	console.log("items:");
 	// CODE SAMPLE categorylisting-full BEGIN
 	// Below is an example of a request - response cycle of a category listing request
-	var options = {};
-	options.skip = 0;
-	options.take = 9;
-	
-	var response = client.getEntitiesByAttribute('Category', categoryName, options); 
-	
-	response = response.then((r) => {
+	var response = client.getEntitiesByAttribute('Category', categoryName, {skip: 0, take:9}).then((r) => {
 										var data = r.data
 										// INJECT SAMPLE render-items BEGIN
 										renderItems(data);
@@ -27,15 +21,12 @@ function categoryListingFacetsExample(client, categoryName) {
 	// CODE SAMPLE categorylisting-facets BEGIN
 	// Category listing with facets
 	var options = {};
-	var distinctFacetNames = ["Manufacturer", "Category", "Organic"];
-	var distinctFacets = distinctFacetNames.map(function(f){return {name:f,attributeName:f,type:'distinct'}});
+	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct'}});
 	var rangeFacetNames = ["Price"];
 	var rangeFacets = rangeFacetNames.map(function(f){return {name:f,attributeName:f,type:'range'}});
 	options.facets = distinctFacets.concat(rangeFacets);
 	
-	var response = client.getEntitiesByAttribute('Category', categoryName, options); 
-	
-	response = response.then((r) => {
+	var response = client.getEntitiesByAttribute('Category', categoryName, options).then((r) => {
 										var data = r.data
 										// INJECT SAMPLE render-items BEGIN
 										renderItems(data);
@@ -60,7 +51,6 @@ function categoryListingDistinctFacetExample(client, categoryName, specificManuf
 	// Add facets to the request 
 	// And select a specific facet value to filter on
 	var options = {};
-	var distinctFacetNames = ["Manufacturer", "Category", "Organic"];
 	
 	var selectedFacets = {};
 	selectedFacets["Manufacturer"] = [];
@@ -68,7 +58,7 @@ function categoryListingDistinctFacetExample(client, categoryName, specificManuf
 	selectedFacets["Category"] = [];
 	selectedFacets["Organic"] = [];
 	
-	var distinctFacets = distinctFacetNames.map(function(f){return {name:f,attributeName:f,type:'distinct',selected:selectedFacets[f]}});
+	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct',selected:selectedFacets[f]}});
 	var rangeFacetNames = ["Price"];
 	var rangeFacets = rangeFacetNames.map(function(f){return {name:f,attributeName:f,type:'range'}});
 	options.facets = distinctFacets.concat(rangeFacets);
@@ -97,8 +87,7 @@ function categoryListingRangeFacetExample(client, categoryName)
 	// Add facets to the request 
 	// And select a specific range for a certain facet
 	var options = {};
-	var distinctFacetNames = ["Manufacturer", "Category", "Organic"];
-	var distinctFacets = distinctFacetNames.map(function(f){return {name:f,attributeName:f,type:'distinct'}});
+	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct'}});
 	var selectedRange = {min: 10, max: 60};
 	var rangeFacetNames = ["Price"];
 	var rangeFacets = rangeFacetNames.map(function(f){return {name:f,attributeName:f,type:'range',selected:selectedRange}});
@@ -126,10 +115,8 @@ function categoryListingSortingExample(client, categoryName)
 	// Category listing with sorting
 	// Set the sort order of the products in the category
 	var options = {};
-	var sortBy = [];
-	sortBy.push({type:"attribute", attributeName:"Price", order:"asc"});// Primary sorting: Sort on attribute Price, ascending order
-	sortBy.push({type:"popularity", order:"desc"});// Secondary sorting: Sort on popularity, descending order
-	options.sortBy = sortBy;
+	options.sortBy = [{type:"attribute", attributeName:"Price", order:"asc"},// Primary sorting: Sort on attribute Price, ascending order
+					{type:"popularity", order:"desc"}];// Secondary sorting: Sort on popularity, descending order. Secondary sorting is used when items are equal in the primary sorting.
 	
 	var response = client.getEntitiesByAttribute('Category', categoryName, options);
 	// CODE SAMPLE END
@@ -153,13 +140,11 @@ function categoryListingFilterExample(client, categoryName)
 	// Filter the products in the category
 	// In this case, we only want products that have got
 	// the price attribute, and where the organic attribute is set to "True"
-	var options = {};
-	var filter = {and:[]}; // And filter, contains a list of other filters
-	filter.and.push({attributeName:"Price"}); // The price attribute must exist
-	filter.and.push({type:"attribute", attributeName:"Organic", value:"True"}); // The Organic attribute must be set to "True"
-	options.filter = filter;
-
-	var response = client.getEntitiesByAttribute('Category', categoryName, options);
+	var response = client.getEntitiesByAttribute('Category', categoryName, {filter: {and:[{attributeName:"Price"}, // The price attribute must exist
+																						{type:"attribute", attributeName:"Organic", value:"True"}] // AND the Organic attribute must be set to "True" 
+																					}
+																			}
+												);
 	// CODE SAMPLE END
 
 	response = response.then((r) => {
@@ -182,10 +167,11 @@ function renderItems(data)
 	}
 	else
 	{
-		for (let resultItem of results)
+		console.log("Total number of items: " + data["results"].count);
+		for (var i in results)
 		{
-			var productId = resultItem.id;
-			var productTitle = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Title"}).values[0] : "";
+			var productId = results[i].id;
+			var productTitle = results[i].attributes ? results[i].attributes.find(function(a){return a.name=="Title"}).values[0] : "";
 			console.log(productId + " " + productTitle); //render a product on the category listing page
 		}
 	}	
@@ -202,12 +188,13 @@ function renderItemsExtended(data)
 	}
 	else
 	{
-		for (let resultItem of results)
+		console.log("Total number of items: " + data["results"].count);
+		for (var i in results)
 		{
-			var productId = resultItem.id;
-			var productTitle = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Title"}).values[0] : "";
-			var price = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Price"}).values[0] : "";
-			var organic = resultItem.attributes ? resultItem.attributes.find(function(a){return a.name=="Organic"}).values[0] : "";
+			var productId = results[i].id;
+			var productTitle = results[i].attributes ? results[i].attributes.find(function(a){return a.name=="Title"}).values[0] : "";
+			var price = results[i].attributes ? results[i].attributes.find(function(a){return a.name=="Price"}).values[0] : "";
+			var organic = results[i].attributes ? results[i].attributes.find(function(a){return a.name=="Organic"}).values[0] : "";
 			console.log(productId + " " + productTitle + " (" + price + " kr, " + organic + "), "); //render a product on the category listing page
 		}
 	}	
@@ -219,21 +206,17 @@ function renderFacets(data)
 	var distinctFacetsToDisplay = ["Manufacturer", "Category", "Organic"];
 	if(data.results && data.results.facets.length > 0) 
 	{
-		for (let attributeName of distinctFacetsToDisplay)
+		for (var i in distinctFacetsToDisplay)
 		{
-			var facets = data.results.facets.filter(function(f) { return f.type == 'distinct' && f.name == attributeName; });
-			if (facets && facets.length > 0)
-			{
-				var facet = facets[0];
-				if(facet)
-				{	
-					var facetItems = facet.items;
-					if (facetItems && facetItems.length > 0)
-						console.log(attributeName + ": ");
-					for (let facetItem of facetItems)
-					{
-						console.log(facetItem.item + ": " + facetItem.count); // Write the facet name and the number of products in the facet 
-					}
+			var facet = data.results.facets.find(function(f) { return f.type == 'distinct' && f.name == distinctFacetsToDisplay[i]; });
+			if(facet)
+			{	
+				var facetItems = facet.items;
+				if (facetItems && facetItems.length > 0)
+					console.log(distinctFacetsToDisplay[i] + ": ");
+				for (var j in facetItems)
+				{
+					console.log(facetItems[j].item + ": " + facetItems[j].count); // Write the facet name and the number of products in the facet 
 				}
 			}
 		}
@@ -244,40 +227,13 @@ function renderFacets(data)
 	//if there is a price range facet
 	if(data.results && data.results.facets.length > 0) 
 	{
-		var facets = data.results.facets.filter(function(f) { return f.type == 'range' && f.name == "Price"; });
-		if (facets && facets.length > 0)
+		var facet = data.results.facets.find(function(f) { return f.type == 'range' && f.name == "Price"; });
+		if(facet)
 		{
-			var facet = facets[0];
-			if(facet)
-			{
-				console.log("Price: ");
-				var minPrice = facet.min;
-				var maxPrice = facet.max;
-				var minPriceSelected = facet.selectedMin;
-				var maxPriceSelected = facet.selectedMax;
-				console.log("min: " + minPrice + " kr, max: " + maxPrice +
-								" kr, min selected: " + minPriceSelected + " kr," +
-								" max selected: " + maxPriceSelected + " kr.");				
-			}
+			console.log("Price: ");
+			console.log("min: " + facet.min + " kr, max: " + facet.max +
+							" kr, min selected: " + facet.selectedMin + " kr," +
+							" max selected: " + facet.selectedMax + " kr.");				
 		}
 	}
 }
-
- 
-
-
-
-        
-
-       
-
-       
-
-      
-        
-
-       
-        
-
-
-        

@@ -4,11 +4,7 @@ function autoCompleteExample(client, query) {
 	
 	// CODE SAMPLE autocomplete-full BEGIN
     // Below is an example of a request - response cycle of an autocomplete request
-	var options = {};
-	options.skip = 0;
-	options.take = 9;
-	var response = client.autoComplete(query, options); 
-	response = response.then((r) => { 
+	var response = client.autoComplete(query, {skip: 0, take:9}).then((r) => { 
 										var queries = r.data["queries"].items.map(i => i.query);
 										//print out all suggested autocomplete queries
 										console.log("queries: " + queries.join());
@@ -24,11 +20,7 @@ function scopedAutoCompleteExample(client, query) {
 	// CODE SAMPLE autocomplete-scoped BEGIN
 	// Below is an example of a request - response cycle of an autocomplete request
 	// where scopes are used to provide the user with more context
-	var options = {};
-	options.skip = 0;
-	options.take = 9;
-	var response = client.autoComplete(query, options); 
-	response = response.then((r) => { 
+	var response = client.autoComplete(query, {skip: 0, take:9}).then((r) => { 
 										var scopedQuery = r.data["scopedQuery"];
 										//prints out the scoped suggestions
 										if(scopedQuery)
