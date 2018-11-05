@@ -22,12 +22,12 @@
 		var categoryName = 'meat';
 		var specificManufacturer = 'MeatNStuff';
 		categoryListingExample(client, categoryName).then(() => 
-														categoryListingFacetsExample(client, categoryName).then(() => 
-															categoryListingDistinctFacetExample(client, categoryName, specificManufacturer).then(() =>
-																categoryListingRangeFacetExample(client, categoryName).then(() => 
-																	categoryListingSortingExample(client, categoryName).then(() =>
-																		categoryListingFilterExample(client, categoryName)
-																	)))));
+			categoryListingFacetsExample(client, categoryName).then(() => 
+				categoryListingDistinctFacetExample(client, categoryName, specificManufacturer).then(() =>
+					categoryListingRangeFacetExample(client, categoryName).then(() => 
+						categoryListingSortingExample(client, categoryName).then(() =>
+							categoryListingFilterExample(client, categoryName)
+						)))));
 	</script>
   </body>
 </html>
