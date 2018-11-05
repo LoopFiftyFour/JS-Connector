@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<script type="text/javascript" src='../lib/loop54-js-lib.js'> </script>
+	<script type="text/javascript" src='faceting.js'> </script>
+    <title>Loop54 faceting code examples</title>
+  </head>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="root">
+	</div>
+	<div>
+		<ul>
+			<li><a href="index.html">Index</a></li>
+		</ul>
+	</div>
+	<script>
+		var client = Loop54.getClient("http://helloworld.54proxy.com");
+		
+		var query = 'a';
+		var query2 = 'dfshdfjsdkhfsdjkf';
+		var specificManufacturer = 'MeatNStuff';
+		facetingSingleFacetExample(client, query)
+			.then(() => facetingMultipleFacetsExample(client, query))
+			.then(() => facetingEngineResponseExample(client, query))
+			.then(() => facetingDistinctFacetExample(client, query, specificManufacturer))
+			.then(() => facetingRangeFacetExample(client, query))
+			.then(() => facetingSingleFacetExample(client, query2));
+	</script>
+  </body>
+</html>
