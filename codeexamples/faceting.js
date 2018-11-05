@@ -11,10 +11,10 @@ function facetingSingleFacetExample(client, query)
 	// CODE SAMPLE END
 	
 	response = response.then((r) => {
-										renderItems(r.data);
-										renderFacets(r.data);
-									}
-								);
+			renderItems(r.data);
+			renderFacets(r.data);
+		}
+	);
 							
 	return response.then((r)=>console.log("faceting-single-facet (end)"))
 }
@@ -32,10 +32,10 @@ function facetingMultipleFacetsExample(client, query)
 	// CODE SAMPLE END
 
 	response = response.then((r) => {
-										renderItems(r.data);
-										renderFacets(r.data);
-									}
-								);
+			renderItems(r.data);
+			renderFacets(r.data);
+		}
+	);
 							
 	return response.then((r)=>console.log("faceting-multiple-facets (end)"))
 }
@@ -49,10 +49,10 @@ function facetingEngineResponseExample(client, query)
 	var response = client.search(query, {facets: ["Manufacturer", "Category"].map(function(f){return {name:f,attributeName:f,type:'distinct'}})});
 
 	response = response.then((r) => {
-										renderItems(r.data);
-										renderFacets(r.data);
-									}
-								);
+			renderItems(r.data);
+			renderFacets(r.data);
+		}
+	);
 							
 	return response.then((r)=>console.log("faceting-engine-response (end)"))
 }
@@ -82,10 +82,10 @@ function facetingDistinctFacetExample(client, query, specificManufacturer)
 	// CODE SAMPLE END
 
 	response = response.then((r) => {
-										renderItems(r.data);
-										renderFacets(r.data);
-									}
-								);
+			renderItems(r.data);
+			renderFacets(r.data);
+		}
+	);
 							
 	return response.then((r)=>console.log("faceting-distinct-facet (end)"))
 }
@@ -109,10 +109,10 @@ function facetingRangeFacetExample(client, query)
 	// CODE SAMPLE END
 
 	response = response.then((r) => {
-										renderItems(r.data);
-										renderFacets(r.data);
-									}
-								);
+			renderItems(r.data);
+			renderFacets(r.data);
+		}
+	);
 							
 	return response.then((r)=>console.log("faceting-range-facet (end)"))
 }

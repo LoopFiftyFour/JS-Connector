@@ -1,16 +1,15 @@
- 
-function categoryListingExample(client, categoryName) {
+ function categoryListingExample(client, categoryName) {
 	console.log("categorylisting-full:");
 	console.log("items:");
 	// CODE SAMPLE categorylisting-full BEGIN
 	// Below is an example of a request - response cycle of a category listing request
 	var response = client.getEntitiesByAttribute('Category', categoryName, {skip: 0, take:9}).then((r) => {
-										var data = r.data
-										// INJECT SAMPLE render-items BEGIN
-										renderItems(data);
-										// INJECT SAMPLE END
-									}
-							);
+			var data = r.data
+			// INJECT SAMPLE render-items BEGIN
+			renderItems(data);
+			// INJECT SAMPLE END
+		}
+	);
 	// CODE SAMPLE END
 	return response.then((r)=>console.log("categorylisting-full (end)"))
 };
@@ -27,15 +26,15 @@ function categoryListingFacetsExample(client, categoryName) {
 	options.facets = distinctFacets.concat(rangeFacets);
 	
 	var response = client.getEntitiesByAttribute('Category', categoryName, options).then((r) => {
-										var data = r.data
-										// INJECT SAMPLE render-items BEGIN
-										renderItems(data);
-										// INJECT SAMPLE END
-										// INJECT SAMPLE render-distinct-facets BEGIN
-										renderFacets(data);
-										// INJECT SAMPLE END
-									}
-							);
+			var data = r.data
+			// INJECT SAMPLE render-items BEGIN
+			renderItems(data);
+			// INJECT SAMPLE END
+			// INJECT SAMPLE render-distinct-facets BEGIN
+			renderFacets(data);
+			// INJECT SAMPLE END
+		}
+	);
 	// CODE SAMPLE END
 	return response.then((r)=>console.log("categorylisting-facets (end)"))
 };
@@ -67,11 +66,11 @@ function categoryListingDistinctFacetExample(client, categoryName, specificManuf
 	
 	// CODE SAMPLE END
 	response = response.then((r) => {
-									var data = r.data
-									renderItemsExtended(data);
-									renderFacets(data);
-								}
-						);
+			var data = r.data
+			renderItemsExtended(data);
+			renderFacets(data);
+		}
+	);
 						
 	return response.then((r)=>console.log("categorylisting-distinct-facet (end)"))
 }
@@ -97,11 +96,11 @@ function categoryListingRangeFacetExample(client, categoryName)
 	// CODE SAMPLE END
 	
 	response = response.then((r) => {
-									var data = r.data
-									renderItemsExtended(data);
-									renderFacets(data);
-								}
-						);
+			var data = r.data
+			renderItemsExtended(data);
+			renderFacets(data);
+		}
+	);
 						
 	return response.then((r)=>console.log("categorylisting-range-facet (end)"))
 }
@@ -122,10 +121,10 @@ function categoryListingSortingExample(client, categoryName)
 	// CODE SAMPLE END
 	
 	response = response.then((r) => {
-							var data = r.data
-							renderItemsExtended(data);
-						}
-				);
+			var data = r.data
+			renderItemsExtended(data);
+		}
+	);
 					
 	return response.then((r)=>console.log("categorylisting-sorting (end)"))
 }
@@ -140,18 +139,25 @@ function categoryListingFilterExample(client, categoryName)
 	// Filter the products in the category
 	// In this case, we only want products that have got
 	// the price attribute, and where the organic attribute is set to "True"
-	var response = client.getEntitiesByAttribute('Category', categoryName, {filter: {and:[{attributeName:"Price"}, // The price attribute must exist
-																						{type:"attribute", attributeName:"Organic", value:"True"}] // AND the Organic attribute must be set to "True" 
-																					}
-																			}
-												);
+	var response = client.getEntitiesByAttribute(
+		'Category', 
+		categoryName, 
+		{
+			filter: {
+				and:[
+					{ type:"attribute", attributeName:"Price" }, // The price attribute must exist
+					{ type:"attribute", attributeName:"Organic", value:"True" } // AND the Organic attribute must be set to "True" 
+				] 
+			}
+		}
+	);
 	// CODE SAMPLE END
 
 	response = response.then((r) => {
-							var data = r.data
-							renderItemsExtended(data);
-						}
-				);
+			var data = r.data
+			renderItemsExtended(data);
+		}
+	);
 					
 	return response.then((r)=>console.log("categorylisting-filter (end)"))
 }
