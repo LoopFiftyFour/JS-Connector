@@ -1,6 +1,6 @@
 {
   "name": "loop54-js-lib",
-  "version": "2.0.0.[BUILD_COUNTER]",
+  "version": "2.0.5454545454-build-number",
   "description": "JS lib for Loop54 easy frontend implementation.",
   "main": "lib/loop54.js",
   "scripts": {
