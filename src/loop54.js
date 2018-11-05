@@ -6,7 +6,7 @@ import core from "./core.js";
  */
 global.Loop54 = (function () {
 
-	var getClient = function (endpoint) {
+	var getClient = function (endpoint, userId) {
 
 		if(!endpoint || endpoint.Length==0)
 			throw new Error("Parameter \"endpoint\" must be present and have a non-zero length.");
@@ -17,6 +17,11 @@ global.Loop54 = (function () {
 			 * The engine endpoint this client communicates with.
 			 */
 			endpoint: endpoint,
+			
+			/**
+			 * The user ID to use for communications. If left falsy, cookies will be used to track user ID.
+			 */
+			userId: userId,
 
 			/**
 			 * Used for performing autocomplete requests to the engine.
@@ -40,7 +45,7 @@ global.Loop54 = (function () {
 						query: query,
 						queriesOptions: core.deleteCustomData(options),
 						customData:options.customData
-					}, null, callback);
+					}, null, callback, userId);
 
 				if (!callback) {
 					// if callback is missing, return a promise
@@ -81,7 +86,7 @@ global.Loop54 = (function () {
 
 				var req = core.call(this.endpoint, "/createEvents", {
 					events: [event]
-				},null,callback);
+				},null,callback, userId);
 				
 				if (!callback) {
 					// if callback is missing, return a promise
@@ -107,7 +112,7 @@ global.Loop54 = (function () {
 
 				var req = core.call(this.endpoint, "/createEvents", {
 					events: events
-				},null,callback);
+				},null,callback, userId);
 				
 				if (!callback) {
 					// if callback is missing, return a promise
@@ -138,7 +143,7 @@ global.Loop54 = (function () {
 						entity: entity,
 						resultsOptions: core.deleteCustomData(options),
 						customData:options.customData
-					}, null, callback);
+					}, null, callback, userId);
 
 				if (!callback) {
 					// if callback is missing, return a promise
@@ -173,7 +178,7 @@ global.Loop54 = (function () {
 						},
 						resultsOptions: core.deleteCustomData(options),
 						customData:options.customData
-					}, null, callback);
+					}, null, callback, userId);
 
 				if (!callback) {
 					// if callback is missing, return a promise
@@ -197,7 +202,7 @@ global.Loop54 = (function () {
 				var req = core.call(this.endpoint, "/getEntities", {
 						resultsOptions: core.deleteCustomData(options),
 						customData:options.customData
-					}, null, callback);
+					}, null, callback, userId);
 
 				if (!callback) {
 					// if callback is missing, return a promise
@@ -237,7 +242,7 @@ global.Loop54 = (function () {
 							facets: options.facets
 						},
 						customData:options.customData
-					}, null, callback);
+					}, null, callback, userId);
 
 				if (!callback) { // if callback is missing, return a promise
 					return req;
