@@ -145,7 +145,7 @@ function categoryListingFilterExample(client, categoryName)
 		{
 			filter: {
 				and:[
-					{ type:"attribute", attributeName:"Price" }, // The price attribute must exist
+					{ attributeName:"Price" }, // The price attribute must exist
 					{ type:"attribute", attributeName:"Organic", value:"True" } // AND the Organic attribute must be set to "True" 
 				] 
 			}
