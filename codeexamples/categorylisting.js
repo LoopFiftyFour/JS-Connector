@@ -19,11 +19,13 @@ function categoryListingFacetsExample(client, categoryName) {
 	console.log("items:");
 	// CODE SAMPLE categorylisting-facets BEGIN
 	// Category listing with facets
-	var options = {};
+	
 	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct'}});
-	var rangeFacetNames = ["Price"];
-	var rangeFacets = rangeFacetNames.map(function(f){return {name:f,attributeName:f,type:'range'}});
-	options.facets = distinctFacets.concat(rangeFacets);
+	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range'}});
+	
+	var options = {
+		facets: distinctFacets.concat(rangeFacets)
+	};
 	
 	var response = client.getEntitiesByAttribute('Category', categoryName, options).then((r) => {
 			var data = r.data
@@ -49,7 +51,6 @@ function categoryListingDistinctFacetExample(client, categoryName, specificManuf
 	// The use-case here is e.g. when the user clicks on a specific manufacturer in the category listing facet list
 	// Add facets to the request 
 	// And select a specific facet value to filter on
-	var options = {};
 	
 	var selectedFacets = {};
 	selectedFacets["Manufacturer"] = [];
@@ -58,9 +59,11 @@ function categoryListingDistinctFacetExample(client, categoryName, specificManuf
 	selectedFacets["Organic"] = [];
 	
 	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct',selected:selectedFacets[f]}});
-	var rangeFacetNames = ["Price"];
-	var rangeFacets = rangeFacetNames.map(function(f){return {name:f,attributeName:f,type:'range'}});
-	options.facets = distinctFacets.concat(rangeFacets);
+	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range'}});
+	
+	var options = {
+		facets: distinctFacets.concat(rangeFacets)
+	};
 	
 	var response = client.getEntitiesByAttribute('Category', categoryName, options);
 	
@@ -85,12 +88,14 @@ function categoryListingRangeFacetExample(client, categoryName)
 	// The use-case here is e.g. when the user selects a specific price range in the category listing facet list
 	// Add facets to the request 
 	// And select a specific range for a certain facet
-	var options = {};
+	
 	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct'}});
 	var selectedRange = {min: 10, max: 60};
-	var rangeFacetNames = ["Price"];
-	var rangeFacets = rangeFacetNames.map(function(f){return {name:f,attributeName:f,type:'range',selected:selectedRange}});
-	options.facets = distinctFacets.concat(rangeFacets);
+	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range',selected:selectedRange}});
+	
+	var options = {
+		facets: distinctFacets.concat(rangeFacets)
+	};
 	
 	var response = client.getEntitiesByAttribute('Category', categoryName, options);
 	// CODE SAMPLE END
@@ -113,20 +118,21 @@ function categoryListingSortingExample(client, categoryName)
 	// CODE SAMPLE categorylisting-sorting BEGIN
 	// Category listing with sorting
 	// Set the sort order of the products in the category
-	var options = {};
-	options.sortBy = [{type:"attribute", attributeName:"Price", order:"asc"},// Primary sorting: Sort on attribute Price, ascending order
-					{type:"popularity", order:"desc"}];// Secondary sorting: Sort on popularity, descending order. Secondary sorting is used when items are equal in the primary sorting.
+	var options = {
+		sortBy: [{type:"attribute", attributeName:"Price", order:"asc"}, // Primary sorting: Sort on attribute Price, ascending order
+					{type:"popularity", order:"desc"}] // Secondary sorting: Sort on popularity, descending order. Secondary sorting is used when items are equal in the primary sorting.
+	};
 	
 	var response = client.getEntitiesByAttribute('Category', categoryName, options);
 	// CODE SAMPLE END
 	
-	response = response.then((r) => {
-			var data = r.data
-			renderItemsExtended(data);
-		}
-	);
-					
-	return response.then((r)=>console.log("categorylisting-sorting (end)"))
+	return response = response
+		.then((r) => {
+				var data = r.data
+				renderItemsExtended(data);
+			}
+		)
+		.then((r)=>console.log("categorylisting-sorting (end)"))
 }
 
 function categoryListingFilterExample(client, categoryName)
@@ -153,13 +159,13 @@ function categoryListingFilterExample(client, categoryName)
 	);
 	// CODE SAMPLE END
 
-	response = response.then((r) => {
-			var data = r.data
-			renderItemsExtended(data);
-		}
-	);
-					
-	return response.then((r)=>console.log("categorylisting-filter (end)"))
+	return response = response
+		.then((r) => {
+				var data = r.data
+				renderItemsExtended(data);
+			}
+		)
+		.then((r)=>console.log("categorylisting-filter (end)"))
 }
 
 function renderItems(data)

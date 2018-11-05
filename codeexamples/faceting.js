@@ -7,7 +7,14 @@ function facetingSingleFacetExample(client, query)
 	// Search with a single facet
 	
 	// Add facets to the search request 
-	var response = client.search(query, {facets: [{name:'Category',attributeName:'Category',type:'distinct'}]}); 
+	var response = client.search(
+		query, 
+		{
+			facets: [
+				{name:'Category',attributeName:'Category',type:'distinct'}
+			]
+		}
+	); 
 	// CODE SAMPLE END
 	
 	response = response.then((r) => {
@@ -28,7 +35,12 @@ function facetingMultipleFacetsExample(client, query)
 	// Search with multiple facets
 	
 	// Add facets to the search request 
-	var response = client.search(query, {facets: ["Manufacturer", "Category"].map(function(f){return {name:f,attributeName:f,type:'distinct'}})});
+	var response = client.search(
+		query, 
+		{
+			facets: ["Manufacturer","Category"].map(function(f){return {name:f,attributeName:f,type:'distinct'}})
+		}
+	);
 	// CODE SAMPLE END
 
 	response = response.then((r) => {
@@ -68,11 +80,11 @@ function facetingDistinctFacetExample(client, query, specificManufacturer)
 	
 	// Add facets to the search request 
 	// And select a specific facet value to filter on
-	var selectedFacets = {};
-	selectedFacets["Manufacturer"] = [];
-	selectedFacets["Manufacturer"].push(specificManufacturer);
-	selectedFacets["Category"] = [];
-	selectedFacets["Organic"] = [];
+	var selectedFacets = {
+		"Manufacturer": [specificManufacturer],
+		"Category": [],
+		"Organic": []
+	};
 	
 	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct',selected:selectedFacets[f]}});
 	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range'}});
@@ -102,8 +114,7 @@ function facetingRangeFacetExample(client, query)
 	//Add facets to the search request
 	//And select a specific range for a certain facet
 	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct'}});
-	var selectedRange = {min: 10, max: 60};
-	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range',selected:selectedRange}});
+	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range',selected:{min: 10, max: 60}}});
 	
     var response = client.search(query, { facets: distinctFacets.concat(rangeFacets)});
 	// CODE SAMPLE END
