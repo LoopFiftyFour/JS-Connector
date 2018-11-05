@@ -6,13 +6,14 @@ function searchExample(client, query) {
 	// initialize "Search" request and set search query
 	
 	//specify number of response items
-	var options = {};
-	options.skip = 0;
-	options.take = 10;
-	var relatedResultsOptions = {}
-	relatedResultsOptions.skip = 0;
-	relatedResultsOptions.take = 9;
-	options.relatedResultOptions = relatedResultsOptions;
+	var options = {
+		skip: 0,
+		take:10,
+		relatedResultOptions: {
+			skip:0,
+			take:9
+		}
+	};
 	
 	//fetch response from engine
 	var response = client.search(query, options); 
