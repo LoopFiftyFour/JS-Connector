@@ -90,8 +90,7 @@ function categoryListingRangeFacetExample(client, categoryName)
 	// And select a specific range for a certain facet
 	
 	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct'}});
-	var selectedRange = {min: 10, max: 60};
-	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range',selected:selectedRange}});
+	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range',selected:{min: 10, max: 60}}});
 	
 	var options = {
 		facets: distinctFacets.concat(rangeFacets)
