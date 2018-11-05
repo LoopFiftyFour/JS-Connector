@@ -4,7 +4,7 @@ import cookies from "./cookies.js";
 let core = {
 
 	versions: {
-		libVersion: "2.0.0",
+		libVersion: "2.0.0.[BUILD_COUNTER]",
 		apiVersion: "V3"
 	},
 
