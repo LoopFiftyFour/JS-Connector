@@ -88,6 +88,10 @@
 		<p>
 		  <input type="button" onclick="callLoop54()" value="Post" />
 		</p>
+		<h2>Advanced</h2>
+		<p>
+		  UserId: <input type="text" name="userid" value="" />
+		</p>
 	  </form>
 	  
 	  <hr />
@@ -143,8 +147,6 @@
       selectedFacets: {}
     }
 	
-	var client = Loop54.getClient("http://helloworld.54proxy.com");
-	
 	window.onhashchange = toggleFacets;
 	
 	function toggleFacets(){
@@ -191,6 +193,12 @@
 			options.filter = JSON.parse(filter);
 		
 		options.customData = {anything:"value"};
+		
+		var userId = document.getElementById('form').elements['userid'].value;
+		if(userId=="")
+			userId = null;
+		
+		var client = Loop54.getClient("http://helloworld.54proxy.com",userId);
 		
 		var operation = location.hash;
 	

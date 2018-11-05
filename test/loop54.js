@@ -20,5 +20,11 @@ module.exports = function () {
 		it("Throws an error for too short endpoint", function () {
 			expect(function(){Loop54.getClient("");}).to.throw();
 		});
+		
+		it("Recieves and retains userID", function () {
+			var id = "testUserId";
+			var client = Loop54.getClient(common.endpoint,id);
+			expect(client.userId).to.equal(id);
+		});
 	});
 }

@@ -26,8 +26,11 @@ let core = {
 		return core.setUserId();
 	},
 
-	call: function (endpoint, path, body, method, callback) {
-		var userId = core.getUserId();
+	call: function (endpoint, path, body, method, callback, userId) {
+		
+		if(!userId)
+			userId = core.getUserId();
+		
 		body = {
 			...body
 		};
