@@ -3,8 +3,9 @@ import cookies from "./cookies.js";
 
 let core = {
 
+	
 	versions: {
-		libVersion: "2.0.0",
+		libVersion: "1.0.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
 		apiVersion: "V3"
 	},
 
@@ -26,8 +27,11 @@ let core = {
 		return core.setUserId();
 	},
 
-	call: function (endpoint, path, body, method, callback) {
-		var userId = core.getUserId();
+	call: function (endpoint, path, body, method, callback, userId) {
+		
+		if(!userId)
+			userId = core.getUserId();
+		
 		body = {
 			...body
 		};
