@@ -5,7 +5,7 @@ let core = {
 
 	
 	versions: {
-		libVersion: "2.0.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
+		libVersion: "1.0.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
 		apiVersion: "V3"
 	},
 
