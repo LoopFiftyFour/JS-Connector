@@ -1,0 +1,43 @@
+{
+  "name": "loop54-js-connector",
+  "version": "1.0.5454545454-build-number",
+  "description": "JS Wrapper for Loop54 JSON API",
+  "main": "lib/loop54.js",
+  "scripts": {
+    "dev": "node launch-dev.js",
+    "watch": "watchify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --presets [ @babel/preset-env ] ]",
+    "server": "node server.js",
+    "browserify": "browserify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --presets [ @babel/preset-env ] ]",
+    "uglify": "uglifyjs lib/loop54-js-connector.js -o lib/loop54-js-connector.min.js",
+	"bundle": "node bundle.js",
+    "test": "mocha --compilers js:@babel/register ./test/lib-test.js"
+  },
+  "keywords": [
+    "Loop54",
+    "SaaS",
+    "Search"
+  ],
+  "author": "Loop54",
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0",
+    "axios": "^0.7.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/register": "^7.0.0",
+    "babel-core": "^6.26.3",
+    "babelify": "^10.0.0",
+    "chai": "^3.4.1",
+    "chai-as-promised": "^7.1.1",
+    "express": "^4.16.2",
+    "forever": "^0.15.3",
+    "http": "0.0.0",
+    "mocha": "^4.0.1",
+    "nock": "^9.0.22",
+    "npm-run-all": "^4.1.1",
+    "sinon": "^4.0.1",
+    "uglify-js": "^3.1.7",
+    "watchify": "^3.11.0"
+  }
+}

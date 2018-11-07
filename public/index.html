@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Loop54</title>
+  <link href="nouislider.min.css" rel="stylesheet" />
+  <style>
+    .range-slider {
+      max-width: 50%;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+	
+	div.input {
+		width:400px;
+	}
+	
+	div#searchResult {
+		position:absolute;
+		top:100px;
+		margin-left:400px;
+	}
+	
+	div.entity {
+		width:220px;
+		float:left;
+		border:1px solid black;
+		margin:5px;
+		padding:5px;
+		text-align:center;
+		cursor:pointer;
+	}
+	
+	div.entity img {
+		width:220px;
+		height:220px;
+		object-fit: cover;
+	}
+	
+	h2 {
+		clear:left;
+		margin-top:0px;
+		margin-bottom:0px;
+		padding-top:10px;
+	}
+  </style>
+</head>
+<body>
+  <h1>loop54-js-connector Testing environment</h1>
+  
+  <a href="#search">Search</a> | 
+  <a href="#autocomplete">AutoComplete</a> | 
+  <a href="#getentities">GetEntities</a> | 
+  <a href="#getentitiesbyattribute">GetEntitiesByAttribute</a> | 
+  <a href="#getrelatedentities">GetRelatedEntities</a>
+  
+  <hr />
+  
+  <div class="input">
+  
+	  <form id="form">
+		<p>
+		  Query: <input type="text" name="query" value="meat" />
+		</p>
+		<h2>Options</h2>
+		<p>
+		  Skip: <input type="text" name="skip" value="0" />
+		</p>
+		<p>
+		  Take: <input type="text" name="take" value="10" />
+		</p>
+		<div id="inputFacets">
+			<h2>Define facets</h2>
+			<p>
+			  Distinct: <input type="text" name="distinctFacets" value="Manufacturer,Category" />
+			</p>
+			<p>
+			  Range: <input type="text" name="rangeFacets" value="OrgPrice" />
+			</p>
+		</div>
+		<h2>Sorting</h2>
+		<p>
+		  SortBy: <input type="text" name="sortBy" value="relevance" />
+		</p>
+		<h2>Filtering</h2>
+		<p>
+		  Filter (JSON): <textarea name="filter" value=""></textarea>
+		</p>
+		<p>
+		  <input type="button" onclick="callLoop54()" value="Post" />
+		</p>
+		<h2>Advanced</h2>
+		<p>
+		  UserId: <input type="text" name="userid" value="" />
+		</p>
+	  </form>
+	  
+	  <hr />
+	  
+	  <div id="outputFacets">
+		  <h2>Facets</h2>
+		  <form id="facetsForm" onchange="return updateFacets()"></form>
+	  </div>
+  
+  </div>
+
+  <div id="searchResult"></div>
+  <script src="nouislider.min.js"></script>
+  <script src="loop54-js-connector.js"></script>
+  <script type="text/javascript">
+
+  //IE polyfills
+  if (typeof Object.assign != 'function') {
+	  Object.assign = function(target) {
+		'use strict';
+		if (target == null) {
+		  throw new TypeError('Cannot convert undefined or null to object');
+		}
+
+		target = Object(target);
+		for (var index = 1; index < arguments.length; index++) {
+		  var source = arguments[index];
+		  if (source != null) {
+			for (var key in source) {
+			  if (Object.prototype.hasOwnProperty.call(source, key)) {
+				target[key] = source[key];
+			  }
+			}
+		  }
+		}
+		return target;
+	  };
+	}
+	if (!String.prototype.startsWith) {
+	  String.prototype.startsWith = function(searchString, position) {
+		position = position || 0;
+		return this.indexOf(searchString, position) === position;
+	  };
+	}
+	if (!String.prototype.endsWith) {
+		String.prototype.endsWith = function(pattern) {
+	  var d = this.length - pattern.length;
+	  return d >= 0 && this.lastIndexOf(pattern) === d;
+	};
+	}
+  
+    var state = {
+      selectedFacets: {}
+    }
+	
+	window.onhashchange = toggleFacets;
+	
+	function toggleFacets(){
+		var operation = location.hash;
+	
+		if(operation=="#search" || operation=="#getentities" || operation=="#getrelatedentities" || operation=="#getentitiesbyattribute") {
+			document.getElementById('inputFacets').style.display='block';
+			document.getElementById('outputFacets').style.display='block';
+		}
+		else if(operation=="#autocomplete") {
+			document.getElementById('inputFacets').style.display='none';
+			document.getElementById('outputFacets').style.display='none';
+		}
+	}
+	
+    function callLoop54(selectedFacets) {
+		
+		if(!selectedFacets)
+			selectedFacets = {};
+	
+		var options = {};
+		
+		options.skip = document.getElementById('form').elements['skip'].value;
+		options.take = document.getElementById('form').elements['take'].value;
+		
+		var distinctFacets = document.getElementById('form').elements['distinctFacets'].value.split(',').map(function(f){return {name:f,attributeName:f,type:'distinct',selected:selectedFacets[f]}});
+		
+		var rangeFacets = document.getElementById('form').elements['rangeFacets'].value.split(',').map(function(f){return {name:f,attributeName:f,type:'range',selected:selectedFacets[f]}});
+		
+		options.facets = distinctFacets.concat(rangeFacets);
+		
+		var sortBy = document.getElementById('form').elements['sortBy'].value.split(',').map(function(s){
+			if(s=="relevance")
+				return {type:"relevance"};
+				
+			return {type:"attribute",attributeName:s,order:"asc"}
+		});
+		
+		options.sortBy = sortBy;
+		
+		var filter = document.getElementById('form').elements['filter'].value;
+		
+		if(filter)
+			options.filter = JSON.parse(filter);
+		
+		options.customData = {anything:"value"};
+		
+		var userId = document.getElementById('form').elements['userid'].value;
+		if(userId=="")
+			userId = null;
+		
+		var client = Loop54.getClient("http://helloworld.54proxy.com",userId);
+		
+		var operation = location.hash;
+	
+		if(operation=="#search") {
+		
+			//copy over options to related results, but not customData
+			options.relatedResultsOptions = Object.assign({},options);
+			delete options.relatedResultsOptions.customData;
+			
+			client.search(document.getElementById('form').elements['query'].value, options, printResponse);
+		}
+		else if(operation=="#autocomplete")
+		{
+			delete options.facets;
+			client.autoComplete(document.getElementById('form').elements['query'].value, options, printResponse);
+		}
+		else if(operation=="#getentities")
+		{
+			client.getEntities(options, printResponse);
+		}
+		else if(operation=="#getentitiesbyattribute")
+		{
+			var nameValuePair = document.getElementById('form').elements['query'].value.split(':');
+			client.getEntitiesByAttribute(nameValuePair[0],nameValuePair[1],options, printResponse);
+		}
+		else if(operation=="#getrelatedentities")
+		{
+			var typeIdPair = document.getElementById('form').elements['query'].value.split(':');
+			client.getRelatedEntities({type:typeIdPair[0],id:typeIdPair[1]}, options, printResponse);
+		}
+		else {
+			console.warn("unknown operation " + operation);
+		}
+		
+		return false;
+    }
+	
+	function trackEvent(type,entity)
+	{
+		client.createEvent(type,entity,null,null,null,function(response){
+			console.log("response", response);
+			if(response.data.error)
+			{
+				alert(response.data.error.title);
+			}
+		});
+	}
+
+    function updateFacets() {
+	
+		var facetsFormElements = document.getElementById('facetsForm').elements;
+		var selectedFacets = state.selectedFacets ? state.selectedFacets : {};
+		
+		for(var i=0; i<facetsFormElements.length; i++) {
+			var facet = facetsFormElements[i];
+			
+			if(!selectedFacets[facet.name]) { 
+				selectedFacets[facet.name] = [] ;
+			}
+			
+			if(facet.checked) {
+				var index = selectedFacets[facet.name].indexOf(facet.value);
+				if (index == -1) {
+					selectedFacets[facet.name].push(facet.value);
+				}
+			}
+			else {
+				var arr = selectedFacets[facet.name];
+				
+				var index = arr.indexOf(facet.value);
+				if (index > -1) {
+					arr.splice(index, 1);
+				}
+				
+				if(arr.length==0) {
+					delete selectedFacets[facet.name];
+				}
+			}
+		}
+
+		state.selectedFacets = selectedFacets;
+
+		callLoop54(selectedFacets);
+		return false;
+    }
+
+    function doRangeFaceting(range, name) {
+		var selectedFacets = state.selectedFacets ? state.selectedFacets : {};
+		selectedFacets[name] = {min: range[0], max: range[1]};
+
+		state.selectedFacets = selectedFacets;
+		callLoop54(selectedFacets);
+    }
+
+    function printResponse(response) {
+		console.log('response', response);
+		
+		document.getElementById('searchResult').innerHTML = "";
+		
+		if(response.data.error)
+		{
+			document.getElementById('searchResult').innerHTML += "<h2>"+response.data.error.title+"</h2><pre>" + JSON.stringify(response.data.error,null,2) + "</pre>";
+		}
+
+		var mappings = {
+			"id":formatValue,
+			"makesSense":formatValue,
+			"relatedQueries":formatStringResults,
+			"spellingSuggestions":formatStringResults,
+			"queries":formatStringResults,
+			"results":formatEntityResults,
+			"relatedResults":formatEntityResults,
+		}
+		
+		for(var mapping in mappings)
+		{
+			var value = response.data[mapping];
+			
+			if(value)
+				document.getElementById('searchResult').innerHTML += "<h2>" + mapping + "</h2>" + mappings[mapping](value);
+		}
+		
+		var facetsForm = document.getElementById('facetsForm');
+		facetsForm.innerHTML = '';
+		
+		if(response.data.results && response.data.results.facets.length > 0) {
+			renderFacets(response.data.results.facets);
+		}
+    }
+	
+	function formatStringResults(val)
+	{
+		let ret = "<b>Total number</b>:" + val.count + "<br/>";
+		
+		for(var i in val.items)
+			ret += val.items[i].query + "<br />";
+			
+		return ret;
+	}
+	
+	function formatEntityResults(val)
+	{
+		let ret = "<b>Total number</b>:" + val.count + "<br/>";
+		
+		for(var i in val.items)
+			ret += formatEntity(val.items[i]);
+			
+		return ret;
+	}
+	
+	function formatEntity(val)
+	{
+		return "<div onclick=\"trackEvent('click',{type:'"+val.type+"',id:'"+val.id+"'});\" title=\""+formatAttributes(val)+"\" class=\"entity\">" + 
+			"<img src=\""+getAttribute(val,"ImageUrl")+"\"/><br />" + 
+			"<b>" + getAttribute(val,"Title") + "</b>" + 
+		"</div>";
+	}
+	
+	function formatAttributes(val)
+	{
+		let ret = "type:" + val.type + "\nid:" + val.id + "\n";
+		for(var i in val.attributes)
+			ret += val.attributes[i].name + ":" + val.attributes[i].values[0] + "\n";
+			
+		return ret;
+	}
+	
+	function getAttribute(entity,attr)
+	{
+		if(!entity.attributes)
+			return "";
+		
+		return entity.attributes.find(function(a){return a.name==attr}).values[0];
+	}
+	
+	function formatValue(val)
+	{
+		return val;
+	}
+	
+	function renderFacets(facets) {
+		for(var i=0;i<facets.length; i++) {
+			var facet = facets[i];
+			var title = document.createElement('h3');
+			title.innerText = facet.name;
+			facetsForm.appendChild(title);
+			var list = document.createElement('div');
+			if(facet.type == 'distinct') {
+				for(var y=0; y<facet.items.length; y++) {
+					var listItem = document.createElement('div');
+					var isChecked = null;
+					if(state.selectedFacets[facet.name]) {
+						if(state.selectedFacets[facet.name].includes(facet.items[y].item)) {
+							isChecked = 'checked';
+						}
+					}
+					listItem.innerHTML = '<input type="checkbox" id="'+facet.name+'-'+y+'" name="'+facet.name+'" value="'+facet.items[y].item+'" '+isChecked+' /><label for="facets-'+y+'">'+facet.items[y].item+' ('+facet.items[y].count+')</label>';
+					list.appendChild(listItem);
+					facetsForm.appendChild(list);
+				}
+			} 
+			else if(facet.type == 'range') {
+				var listItem = document.createElement('div');
+				listItem.id = facet.name;
+				listItem.className = 'range-slider range-slider-' + i;
+				list.appendChild(listItem);
+				facetsForm.appendChild(list);
+
+				var selectedFacet = state.selectedFacets[facet.name];
+				var min = selectedFacet ? selectedFacet.min : facet.min;
+				var max = selectedFacet ? selectedFacet.max : facet.max;
+
+				noUiSlider.create(listItem, {
+					connect: true,
+					behaviour: 'tap',
+					start: [ min, max],
+					tooltips: true,
+					range: {
+						// Starting at 500, step the value by 500,
+						// until 4000 is reached. From there, step by 1000.
+						'min': [ facet.min ],
+						'max': [ facet.max ]
+					}
+				});
+
+				listItem.noUiSlider.on('change', function(data) {
+					doRangeFaceting(data, listItem.id);
+				});
+			}
+        }
+	}
+  </script>
+</body>
+</html>
