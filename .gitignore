@@ -3,6 +3,4 @@ node_modules
 .DS_Store
 build
 /package-lock.json
-/lib/loop54-js-lib.min.js
-/lib/loop54-js-lib.js
 /lib
