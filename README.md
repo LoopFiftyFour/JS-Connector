@@ -80,6 +80,15 @@ client.createEvent("click",entity,null,null,null,callback);
 
 See http://docs.loop54.com for more code samples.
 
+### But wait! I don't want the Connector to handle user ID:s for me!
+
+If you for some reason want to handle user ID:S yourself instead of letting the Connector do it using cookies. You can set the user ID when retrieving your client like this:
+
+__Configuration example with custom user ID__
+```
+var client = Loop54.getClient('URL_TO_YOUR_ENDPOINT','YOUR_USER_ID');
+```
+
 ### Features
 
 The connector supports the following API operations:
