@@ -1,18 +1,18 @@
-# Loop54 API library - javascript edition
+# JS-Connector
 
-Javascript wrapper for Loop54 JSON V3 API
+Javascript Wrapper for Loop54 JSON V3 API
 
 ## How to install
 
 ### Using Node Package Manager (NPM):
 
-1. Install the package with `npm install --save loop54-js-lib`
-2. Require it in your project with `require('loop54-js-lib')`
+1. Install the package with `npm install --save loop54-js-connector`
+2. Require it in your project with `require('loop54-js-connector')`
 3. You should now have access to the global variable `Loop54`
 
 ### Using `<script>` tag
 
-1. Download `loop54-js-lib.js` (for development) from [Insert file URL here] or `loop54-js-lib.min.js` (for production) from [Insert file URL here]
+1. Download `loop54-js-connector.js` (for development) from <http://files.loop54.com/files/libs/loop54-js-connector.js> or `loop54-js-connector.min.js` (for production) from <http://files.loop54.com/files/libs/loop54-js-connector.min.js>
 2. Host the file on your own servers or the CDN on your choice
 3. Include a `<script>` tag with an `src` attribute that points to your hosted file
 
