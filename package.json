@@ -5,9 +5,11 @@
   "main": "lib/loop54.js",
   "scripts": {
     "dev": "node launch-dev.js",
-    "watch": "watchify src/loop54.js -o lib/loop54-js-lib.js -t [ babelify --presets [ @babel/preset-env ] ]",
+    "watch": "watchify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --presets [ @babel/preset-env ] ]",
     "server": "node server.js",
-    "bundle": "browserify src/loop54.js -o lib/loop54-js-lib.js -t [ babelify --presets [ @babel/preset-env ] ] | uglifyjs lib/loop54-js-lib.js -o lib/loop54-js-lib.min.js",
+    "browserify": "browserify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --presets [ @babel/preset-env ] ]",
+    "uglify": "uglifyjs lib/loop54-js-connector.js -o lib/loop54-js-connector.min.js",
+	"bundle": "node bundle.js",
     "test": "mocha --compilers js:@babel/register ./test/lib-test.js"
   },
   "keywords": [
