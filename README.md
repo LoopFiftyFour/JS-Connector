@@ -12,9 +12,13 @@ Javascript Wrapper for Loop54 JSON V3 API
 
 ### Using `<script>` tag
 
-1. Download `loop54-js-connector.js` (for development) from <http://files.loop54.com/files/libs/loop54-js-connector.js> or `loop54-js-connector.min.js` (for production) from <http://files.loop54.com/files/libs/loop54-js-connector.min.js>
+1. Download `loop54-js-connector.js` (for development) from
+   <https://static.loop54.com/lib/js/loop54-js-connector.js> or
+   `loop54-js-connector.min.js` (for production) from
+   <https://static.loop54.com/lib/js/loop54-js-connector.min.js>
 2. Host the file on your own servers or the CDN on your choice
-3. Include a `<script>` tag with an `src` attribute that points to your hosted file
+3. Include a `<script>` tag with an `src` attribute that points to your hosted
+   file
 
 ## How to use
 
@@ -58,9 +62,11 @@ var callback = function(response){
 client.search("R2 droids", options, callback);
 ```
 
-The `options` and `callback` parameters are optional. As seen above, if the `callback` is omitted, `client.search` will return a Promise.
+The `options` and `callback` parameters are optional. As seen above, if the
+`callback` is omitted, `client.search` will return a Promise.
 
-All API operations work the same way with regards to `options` and `callback`, except createEvent and createEvents which do not take `options`.
+All API operations work the same way with regards to `options` and `callback`,
+except createEvent and createEvents which do not take `options`.
 
 __Create events example__
 
@@ -82,7 +88,9 @@ See http://docs.loop54.com for more code samples.
 
 ### But wait! I don't want the Connector to handle user ID:s for me!
 
-If you for some reason want to handle user ID:s yourself instead of letting the Connector do it using cookies, you can set the user ID when retrieving a client like this:
+If you for some reason want to handle user ID:s yourself instead of letting the
+Connector do it using cookies, you can set the user ID when retrieving a client
+like this:
 
 __Configuration example with custom user ID__
 ```
@@ -103,7 +111,8 @@ The connector supports the following API operations:
 
 It also aids in developing a Loop54 integration by:
 
-- Taking care of user ID and cookies (note that you need to ask your users' consent)
+- Taking care of user ID and cookies (note that you need to ask your users'
+  consent)
 - Setting required HTTP headers
 - Serializing and deserializing requests and responses
 - Friendlier error handling than HTTP error codes for common mistakes
@@ -113,9 +122,10 @@ It also aids in developing a Loop54 integration by:
 
 ### Development
 
-1. Git clone this repository  
-2. in the folder, run `npm install` to install all dependencies  
-3. run `npm run dev` to start the webserver, open up http://localhost:3001/#search and try out the basic features
+1. Git clone this repository
+2. in the folder, run `npm install` to install all dependencies
+3. run `npm run dev` to start the webserver, open up
+   http://localhost:3001/#search and try out the basic features
 
 ### Build
 
