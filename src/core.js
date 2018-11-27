@@ -3,7 +3,6 @@ import cookies from "./cookies.js";
 
 let core = {
 
-	
 	versions: {
 		libVersion: "1.0.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
 		apiVersion: "V3"
@@ -15,7 +14,7 @@ let core = {
 		for (var i = 0; i < 10; i++) {
 			text += possible.charAt(Math.floor(Math.random() * possible.length));
 		}
-		cookies.setItem("Loop54User", text, 365*24*60*60); //365 days
+		cookies.setItem("Loop54User", text, 365 * 24 * 60 * 60); //365 days
 		return text;
 	},
 
@@ -28,60 +27,64 @@ let core = {
 	},
 
 	call: function (endpoint, path, body, method, callback, userId, apiKey) {
-		
+
 		if(!userId)
 			userId = core.getUserId();
-		
+
 		body = {
 			...body
 		};
-		
+
 		var url = core.ensureProtocol(endpoint) + path;
-		
+
 		var headers = {
-					"user-id": userId,
-					"lib-version": "JS:" + core.versions.libVersion,
-					"api-version": core.versions.apiVersion,
-				}
+			"user-id": userId,
+			"lib-version": "JS:" + core.versions.libVersion,
+			"api-version": core.versions.apiVersion,
+		}
 		if(apiKey)
 			headers["Loop54-key"] = apiKey;
-		
-		var request = axios({
-				method: method ? method : "post",
-				url: url,
-				headers: headers,
-				responseType: "json",
-				data: body
-			})
-			.then(function (response) {
-				
-				if(response.status === 200)
-					return response;
-				else {
-					return Promise.reject(response);
-				}
-			})
-			.catch (function (response) {
-				
-				var ret = response;
-				
-				//if there is no data, that means something went wrong before we got a response
-				//construct a "fake" response object with the same properties as an error from the engine
-				if(!ret.data) {
-					ret = {
-						data: {
-							error: { title:response.message }
-						}
-					};
-				}
-				return Promise.reject(ret);
-			});
 
-		if (callback) {
-			request.then(callback).catch(function(response){callback(response);});
-		} else {
-			return request;
-		}
+        var request = axios({
+            method: method ? method : "post",
+            url: url,
+            headers: headers,
+            responseType: "json",
+            data: body
+        })
+            .then(function (response) {
+
+                if(response.status === 200)
+                    return response;
+                else {
+                    return Promise.reject(response);
+                }
+            })
+            .catch(function (response) {
+
+                var ret = response;
+
+                //if there is no data, that means something went wrong before we got a response
+                //construct a "fake" response object with the same properties as an error from the engine
+                if(!ret.data) {
+                    ret = {
+                        data: {
+                            error: {
+                                title: response.message
+                            }
+                        }
+                    };
+                }
+                return Promise.reject(ret);
+            });
+
+			if (callback) {
+				request.then(callback).catch(function(response){
+					callback(response);
+				});
+			} else {
+				return request;
+			}
 	},
 
 	ensureProtocol: function (url) {
@@ -92,21 +95,23 @@ let core = {
 
 		//make sure it doesnt end with slash
 		while (url.endsWith("/"))
-			url = url.substring(0,url.Length-1);
+			url = url.substring(0, url.Length - 1);
 
 		return url;
 
 	},
 
-	returnError: function (message,callback) {
-		
+	returnError: function (message, callback) {
+
 		//construct a "fake" response object with the same properties as an error from the engine
 		var ret = {
 			data: {
-				error: {title:message}
+				error: {
+					title: message
+				}
 			}
 		};
-		
+
 		if (callback) {
 			return callback(ret);
 		} else {
@@ -148,10 +153,10 @@ let core = {
 			callback: callback
 		};
 	},
-	
+
 	validateEvent: function(event) {
-		
-		if (!event.type || typeof(event.type)!="string" || event.type.Length==0) {
+
+		if (!event.type || typeof(event.type) != "string" || event.type.Length == 0) {
 			return "type needs to be set, standard events are \"click\", \"addtocart\" and \"purchase\".";
 		}
 		if(!event.entity) {
@@ -163,14 +168,16 @@ let core = {
 		if (!event.entity.id) {
 			return "entity needs to have an \"id\" provided, this is usually the productId.";
 		}
-		
+
 		return null;
 	},
-	
-	deleteCustomData: function(options)	{
-		let ret = {...options};
+
+	deleteCustomData: function(options){
+		let ret = {
+			...options
+		};
 		delete ret.customData;
-		
+
 		return ret;
 	}
 }
