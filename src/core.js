@@ -27,7 +27,7 @@ let core = {
 		return core.setUserId();
 	},
 
-	call: function (endpoint, path, body, method, callback, userId) {
+	call: function (endpoint, path, body, method, callback, userId, apiKey) {
 		
 		if(!userId)
 			userId = core.getUserId();
@@ -38,14 +38,18 @@ let core = {
 		
 		var url = core.ensureProtocol(endpoint) + path;
 		
-		var request = axios({
-				method: method ? method : "post",
-				url: url,
-				headers: {
+		var headers = {
 					"user-id": userId,
 					"lib-version": "JS:" + core.versions.libVersion,
 					"api-version": core.versions.apiVersion,
-				},
+				}
+		if(apiKey)
+			headers["Loop54-key"] = apiKey;
+		
+		var request = axios({
+				method: method ? method : "post",
+				url: url,
+				headers: headers,
 				responseType: "json",
 				data: body
 			})
