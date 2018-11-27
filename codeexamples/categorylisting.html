@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-	<script type="text/javascript" src='../lib/loop54-js-connector.js'> </script>
-	<script type="text/javascript" src='categorylisting.js'> </script>
+	<script type="text/javascript" src="../lib/loop54-js-connector.js"> </script>
+	<script type="text/javascript" src="categorylisting.js"> </script>
     <title>Loop54 category listing code examples</title>
   </head>
   <body>
@@ -19,8 +19,8 @@
 	<script>
 		var client = Loop54.getClient("http://helloworld.54proxy.com");
 		
-		var categoryName = 'meat';
-		var specificManufacturer = 'MeatNStuff';
+		var categoryName = "meat";
+		var specificManufacturer = "MeatNStuff";
 		categoryListingExample(client, categoryName)
 			.then(() => categoryListingFacetsExample(client, categoryName))
 			.then(() => categoryListingDistinctFacetExample(client, categoryName, specificManufacturer))

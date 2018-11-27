@@ -6,7 +6,7 @@ import core from "./core.js";
  */
 global.Loop54 = (function () {
 
-	var getClient = function (endpoint, userId) {
+	var getClient = function (endpoint, userId, apiKey) {
 
 		if(!endpoint || endpoint.Length==0)
 			throw new Error("Parameter \"endpoint\" must be present and have a non-zero length.");
@@ -22,6 +22,11 @@ global.Loop54 = (function () {
 			 * The user ID to use for communications. If left falsy, cookies will be used to track user ID.
 			 */
 			userId: userId,
+			
+			/**
+			 * The api key to use for communications. This is required for administrative operations.
+			 */
+			apiKey: apiKey,
 
 			/**
 			 * Used for performing autocomplete requests to the engine.
@@ -45,7 +50,7 @@ global.Loop54 = (function () {
 						query: query,
 						queriesOptions: core.deleteCustomData(options),
 						customData:options.customData
-					}, null, callback, userId);
+					}, null, callback, userId, apiKey);
 
 				if (!callback) {
 					// if callback is missing, return a promise
@@ -86,7 +91,7 @@ global.Loop54 = (function () {
 
 				var req = core.call(this.endpoint, "/createEvents", {
 					events: [event]
-				},null,callback, userId);
+				},null,callback, userId, apiKey);
 				
 				if (!callback) {
 					// if callback is missing, return a promise
@@ -112,7 +117,7 @@ global.Loop54 = (function () {
 
 				var req = core.call(this.endpoint, "/createEvents", {
 					events: events
-				},null,callback, userId);
+				},null,callback, userId, apiKey);
 				
 				if (!callback) {
 					// if callback is missing, return a promise
@@ -143,7 +148,7 @@ global.Loop54 = (function () {
 						entity: entity,
 						resultsOptions: core.deleteCustomData(options),
 						customData:options.customData
-					}, null, callback, userId);
+					}, null, callback, userId, apiKey);
 
 				if (!callback) {
 					// if callback is missing, return a promise
@@ -178,7 +183,7 @@ global.Loop54 = (function () {
 						},
 						resultsOptions: core.deleteCustomData(options),
 						customData:options.customData
-					}, null, callback, userId);
+					}, null, callback, userId, apiKey);
 
 				if (!callback) {
 					// if callback is missing, return a promise
@@ -202,7 +207,7 @@ global.Loop54 = (function () {
 				var req = core.call(this.endpoint, "/getEntities", {
 						resultsOptions: core.deleteCustomData(options),
 						customData:options.customData
-					}, null, callback, userId);
+					}, null, callback, userId, apiKey);
 
 				if (!callback) {
 					// if callback is missing, return a promise
@@ -242,7 +247,29 @@ global.Loop54 = (function () {
 							facets: options.facets
 						},
 						customData:options.customData
-					}, null, callback, userId);
+					}, null, callback, userId, apiKey);
+
+				if (!callback) { // if callback is missing, return a promise
+					return req;
+				}
+			},
+			
+			/**
+			 * Used for telling the engine to re-sync the catalog.
+			 */
+			sync: function () {
+
+				var args = core.getOptionsAndCallback(arguments, 0);
+				if (args.error) {
+					return core.returnError(args.error,args.callback);
+				}
+
+				var options = args.options ? args.options : {};
+				var callback = args.callback ? args.callback : null;
+				
+				var req = core.call(this.endpoint, "/sync", {
+						customData:options.customData
+					}, null, callback, userId, apiKey);
 
 				if (!callback) { // if callback is missing, return a promise
 					return req;

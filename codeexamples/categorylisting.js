@@ -3,7 +3,7 @@
 	console.log("items:");
 	// CODE SAMPLE categorylisting-full BEGIN
 	// Below is an example of a request - response cycle of a category listing request
-	var response = client.getEntitiesByAttribute('Category', categoryName, {skip: 0, take:9}).then((r) => {
+	var response = client.getEntitiesByAttribute("Category", categoryName, {skip: 0, take:9}).then((r) => {
 			var data = r.data
 			// INJECT SAMPLE render-items BEGIN
 			renderItems(data);
@@ -20,14 +20,14 @@ function categoryListingFacetsExample(client, categoryName) {
 	// CODE SAMPLE categorylisting-facets BEGIN
 	// Category listing with facets
 	
-	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct'}});
-	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range'}});
+	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:"distinct"}});
+	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:"range"}});
 	
 	var options = {
 		facets: distinctFacets.concat(rangeFacets)
 	};
 	
-	var response = client.getEntitiesByAttribute('Category', categoryName, options).then((r) => {
+	var response = client.getEntitiesByAttribute("Category", categoryName, options).then((r) => {
 			var data = r.data
 			// INJECT SAMPLE render-items BEGIN
 			renderItems(data);
@@ -58,14 +58,14 @@ function categoryListingDistinctFacetExample(client, categoryName, specificManuf
 	selectedFacets["Category"] = [];
 	selectedFacets["Organic"] = [];
 	
-	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct',selected:selectedFacets[f]}});
-	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range'}});
+	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:"distinct",selected:selectedFacets[f]}});
+	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:"range"}});
 	
 	var options = {
 		facets: distinctFacets.concat(rangeFacets)
 	};
 	
-	var response = client.getEntitiesByAttribute('Category', categoryName, options);
+	var response = client.getEntitiesByAttribute("Category", categoryName, options);
 	
 	// CODE SAMPLE END
 	response = response.then((r) => {
@@ -89,14 +89,14 @@ function categoryListingRangeFacetExample(client, categoryName)
 	// Add facets to the request 
 	// And select a specific range for a certain facet
 	
-	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct'}});
-	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range',selected:{min: 10, max: 60}}});
+	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:"distinct"}});
+	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:"range",selected:{min: 10, max: 60}}});
 	
 	var options = {
 		facets: distinctFacets.concat(rangeFacets)
 	};
 	
-	var response = client.getEntitiesByAttribute('Category', categoryName, options);
+	var response = client.getEntitiesByAttribute("Category", categoryName, options);
 	// CODE SAMPLE END
 	
 	response = response.then((r) => {
@@ -122,7 +122,7 @@ function categoryListingSortingExample(client, categoryName)
 					{type:"popularity", order:"desc"}] // Secondary sorting: Sort on popularity, descending order. Secondary sorting is used when items are equal in the primary sorting.
 	};
 	
-	var response = client.getEntitiesByAttribute('Category', categoryName, options);
+	var response = client.getEntitiesByAttribute("Category", categoryName, options);
 	// CODE SAMPLE END
 	
 	return response = response
@@ -145,7 +145,7 @@ function categoryListingFilterExample(client, categoryName)
 	// In this case, we only want products that have got
 	// the price attribute, and where the organic attribute is set to "True"
 	var response = client.getEntitiesByAttribute(
-		'Category', 
+		"Category", 
 		categoryName, 
 		{
 			filter: {
@@ -219,7 +219,7 @@ function renderFacets(data)
 	{
 		for (var i in distinctFacetsToDisplay)
 		{
-			var facet = data.results.facets.find(function(f) { return f.type == 'distinct' && f.name == distinctFacetsToDisplay[i]; });
+			var facet = data.results.facets.find(function(f) { return f.type == "distinct" && f.name == distinctFacetsToDisplay[i]; });
 			if(facet)
 			{	
 				var facetItems = facet.items;
@@ -238,7 +238,7 @@ function renderFacets(data)
 	//if there is a price range facet
 	if(data.results && data.results.facets.length > 0) 
 	{
-		var facet = data.results.facets.find(function(f) { return f.type == 'range' && f.name == "Price"; });
+		var facet = data.results.facets.find(function(f) { return f.type == "range" && f.name == "Price"; });
 		if(facet)
 		{
 			console.log("Price: ");
