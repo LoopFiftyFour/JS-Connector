@@ -45,46 +45,46 @@ let core = {
 		if(apiKey)
 			headers["Loop54-key"] = apiKey;
 
-        var request = axios({
-            method: method ? method : "post",
-            url: url,
-            headers: headers,
-            responseType: "json",
-            data: body
-        })
-            .then(function (response) {
+		var request = axios({
+			method: method ? method : "post",
+			url: url,
+			headers: headers,
+			responseType: "json",
+			data: body
+		})
+		.then(function (response) {
 
-                if(response.status === 200)
-                    return response;
-                else {
-                    return Promise.reject(response);
-                }
-            })
-            .catch(function (response) {
-
-                var ret = response;
-
-                //if there is no data, that means something went wrong before we got a response
-                //construct a "fake" response object with the same properties as an error from the engine
-                if(!ret.data) {
-                    ret = {
-                        data: {
-                            error: {
-                                title: response.message
-                            }
-                        }
-                    };
-                }
-                return Promise.reject(ret);
-            });
-
-			if (callback) {
-				request.then(callback).catch(function(response){
-					callback(response);
-				});
-			} else {
-				return request;
+			if(response.status === 200)
+				return response;
+			else {
+				return Promise.reject(response);
 			}
+		})
+		.catch(function (response) {
+
+			var ret = response;
+
+			//if there is no data, that means something went wrong before we got a response
+			//construct a "fake" response object with the same properties as an error from the engine
+			if(!ret.data) {
+				ret = {
+					data: {
+						error: {
+							title: response.message
+						}
+					}
+				};
+			}
+			return Promise.reject(ret);
+		});
+
+		if (callback) {
+			request.then(callback).catch(function(response){
+				callback(response);
+			});
+		} else {
+			return request;
+		}
 	},
 
 	ensureProtocol: function (url) {
