@@ -2,8 +2,8 @@
 <html lang="en">
   <head>
 	<script type="text/javascript" src="../lib/loop54-js-connector.js"> </script>
-	<script type="text/javascript" src="eventtracking.js"> </script>
-    <title>Loop54 event tracking code examples</title>
+	<script type="text/javascript" src="sync.js"> </script>
+    <title>Loop54 sync code examples</title>
   </head>
   <body>
     <noscript>
@@ -17,10 +17,7 @@
 		</ul>
 	</div>
 	<script>
-		var client = Loop54.getClient("http://helloworld.54proxy.com");
-		
-		var productId = "1";
-		createEventsExample(client, productId);
+		syncExample();
 	</script>
   </body>
 </html>

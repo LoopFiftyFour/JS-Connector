@@ -11,7 +11,7 @@ function facetingSingleFacetExample(client, query)
 		query, 
 		{
 			facets: [
-				{name:'Category',attributeName:'Category',type:'distinct'}
+				{name:"Category",attributeName:"Category",type:"distinct"}
 			]
 		}
 	); 
@@ -38,7 +38,7 @@ function facetingMultipleFacetsExample(client, query)
 	var response = client.search(
 		query, 
 		{
-			facets: ["Manufacturer","Category"].map(function(f){return {name:f,attributeName:f,type:'distinct'}})
+			facets: ["Manufacturer","Category"].map(function(f){return {name:f,attributeName:f,type:"distinct"}})
 		}
 	);
 	// CODE SAMPLE END
@@ -58,7 +58,7 @@ function facetingEngineResponseExample(client, query)
 	console.log("items: ");
 	
 	//Add facets to the search request 
-	var response = client.search(query, {facets: ["Manufacturer", "Category"].map(function(f){return {name:f,attributeName:f,type:'distinct'}})});
+	var response = client.search(query, {facets: ["Manufacturer", "Category"].map(function(f){return {name:f,attributeName:f,type:"distinct"}})});
 
 	response = response.then((r) => {
 			renderItems(r.data);
@@ -86,8 +86,8 @@ function facetingDistinctFacetExample(client, query, specificManufacturer)
 		"Organic": []
 	};
 	
-	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct',selected:selectedFacets[f]}});
-	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range'}});
+	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:"distinct",selected:selectedFacets[f]}});
+	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:"range"}});
 	
 	var response = client.search(query, {facets: distinctFacets.concat(rangeFacets)});
 	
@@ -113,8 +113,8 @@ function facetingRangeFacetExample(client, query)
 	
 	//Add facets to the search request
 	//And select a specific range for a certain facet
-	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:'distinct'}});
-	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:'range',selected:{min: 10, max: 60}}});
+	var distinctFacets = ["Manufacturer", "Category", "Organic"].map(function(f){return {name:f,attributeName:f,type:"distinct"}});
+	var rangeFacets = ["Price"].map(function(f){return {name:f,attributeName:f,type:"range",selected:{min: 10, max: 60}}});
 	
     var response = client.search(query, { facets: distinctFacets.concat(rangeFacets)});
 	// CODE SAMPLE END
@@ -157,7 +157,7 @@ function renderFacets(data)
 	{
 		for (var i in distinctFacetsToDisplay)
 		{
-			var facet = data.results.facets.find(function(f) { return f.type == 'distinct' && f.name == distinctFacetsToDisplay[i];});
+			var facet = data.results.facets.find(function(f) { return f.type == "distinct" && f.name == distinctFacetsToDisplay[i];});
 			if(facet)
 			{	
 				var facetItems = facet.items;
@@ -176,7 +176,7 @@ function renderFacets(data)
 	//if there is a price range facet
 	if(data.results && data.results.facets.length > 0) 
 	{
-		var facet = data.results.facets.find(function(f) { return f.type == 'range' && f.name == "Price"; });
+		var facet = data.results.facets.find(function(f) { return f.type == "range" && f.name == "Price"; });
 		if(facet)
 		{
 			console.log("Price: ");
