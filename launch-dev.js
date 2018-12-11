@@ -1,5 +1,4 @@
 const runAll = require("npm-run-all");
-const forever = require("forever");
 
 const runopts = {parallel: true, stdout: process.stdout};
 

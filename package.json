@@ -3,11 +3,14 @@
   "version": "1.0.5454545454-build-number",
   "description": "JS Wrapper for Loop54 JSON API",
   "main": "lib/loop54-js-connector.js",
+  "module": "lib/loop54-js-connector-client.js",
   "scripts": {
+    "clean": "rm -rf ./lib",
     "dev": "node launch-dev.js",
     "watch": "watchify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --presets [ @babel/preset-env ] ]",
     "server": "node server.js",
-    "browserify": "browserify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --presets [ @babel/preset-env ] ]",
+    "build-connector": "browserify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --presets [ @babel/preset-env ] ]",
+    "build-client": "rollup src/client.js -e axios -o lib/loop54-js-connector-client.js -f cjs",
     "uglify": "uglifyjs lib/loop54-js-connector.js -o lib/loop54-js-connector.min.js",
     "bundle": "node bundle.js",
     "test": "mocha --compilers js:@babel/register ./test/lib-test.js"
@@ -16,6 +19,9 @@
     "Loop54",
     "SaaS",
     "Search"
+  ],
+  "files": [
+    "lib/*"
   ],
   "author": "Loop54",
   "dependencies": {
@@ -31,11 +37,11 @@
     "chai": "^3.4.1",
     "chai-as-promised": "^7.1.1",
     "express": "^4.16.2",
-    "forever": "^0.15.3",
     "http": "0.0.0",
     "mocha": "^4.0.1",
     "nock": "^9.0.22",
     "npm-run-all": "^4.1.1",
+    "rollup": "^0.67.4",
     "sinon": "^4.0.1",
     "uglify-js": "^3.1.7",
     "watchify": "^3.11.0"

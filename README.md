@@ -4,12 +4,6 @@ Javascript Wrapper for Loop54 JSON V3 API
 
 ## How to install
 
-### Using Node Package Manager (NPM):
-
-1. Install the package with `npm install --save loop54-js-connector`
-2. Require it in your project with `require('loop54-js-connector')`
-3. You should now have access to the global variable `Loop54`
-
 ### Using `<script>` tag
 
 1. Download `loop54-js-connector.js` (for development) from
@@ -17,8 +11,21 @@ Javascript Wrapper for Loop54 JSON V3 API
    `loop54-js-connector.min.js` (for production) from
    <https://static.loop54.com/lib/js/loop54-js-connector.min.js>
 2. Host the file on your own servers or the CDN on your choice
-3. Include a `<script>` tag with an `src` attribute that points to your hosted
-   file
+3. Include a `<script>` tag with an `src` attribute that points to your hosted file
+4. You should now have access to the global variable `Loop54`.
+5. Create and use a Loop54 client as [explained below](#how-to-use)
+
+### Using Node Package Manager (NPM) as AMD (wg. RequireJS) or CJS (eg. NodeJS):
+
+1. Install the package with `npm install --save loop54-js-connector`
+2. Require it in your project with `require('loop54-js-connector');` or with `define(["loop54-js-connector"], function(getClient) { /* ... */ })`
+3. Create and use a Loop54 client as [explained below](#how-to-use)
+
+### Using Node Package Manager (NPM) in a ESM environment (eg. Babel):
+
+1. Install the package with `npm install --save loop54-js-connector`
+2. Require it in your project with `const getClient = require('loop54-js-connector');` or `import getClient from 'loop54-js-connector';`
+3. Create and use a Loop54 client as [explained below](#how-to-use)
 
 ## How to use
 
