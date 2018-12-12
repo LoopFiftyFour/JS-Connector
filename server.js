@@ -1,7 +1,8 @@
 var express = require('express'),
   app = express(),
-  http = require('http'),
-  httpServer = http.Server(app);
+  http = require('http');
+  
+http.Server(app);
 
 app.use(express.static(__dirname + '/lib'));
 app.use(express.static(__dirname + '/public'));

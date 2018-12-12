@@ -1,5 +1,7 @@
 import "../src/loop54.js"
-import loop54 from "./loop54"
+
+import loop54global from "./loop54global"
+import loop54client from "./loop54client"
 import search from "./search"
 import autoComplete from "./autoComplete"
 import getEntities from "./getEntities"
@@ -10,7 +12,8 @@ import sync from "./sync"
 
 describe("Loop54", function () {
 	
-	describe("Loop54", loop54);
+	describe("Loop54Global", loop54global);
+	describe("Loop54Client", loop54client);
 	
 	describe("client.search", search);
 	describe("client.autoComplete", autoComplete);

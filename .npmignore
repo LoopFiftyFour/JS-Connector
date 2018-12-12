@@ -1,7 +1,0 @@
-src
-test
-public
-.gitignore
-.npmignore
-node_modules
-*.log
