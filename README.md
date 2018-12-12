@@ -33,9 +33,15 @@ Javascript Wrapper for Loop54 JSON V3 API
 
 You will need to set the endpoint to match the one you will get from Loop54.
 
-__Configuration example__
+__Get client from global variable__
 ```
 var client = Loop54.getClient('URL_TO_YOUR_ENDPOINT');
+```
+
+Or if you imported only the client, omit the Loop54 global variable qualifier:
+__Configuration example__
+```
+var client = getClient('URL_TO_YOUR_ENDPOINT');
 ```
 
 ### Making API requests
@@ -143,3 +149,6 @@ run `npm run bundle` to build the source code into /lib folder
 `npm run test` to do check if the tests passes
 
 All tests are located in the `test` folder
+
+### Contributors
+Thanks to [Doru Moisa](https://github.com/moisadoru) for [PR #1](https://github.com/LoopFiftyFour/JS-Connector/pull/1)
