@@ -31,15 +31,18 @@ Javascript Wrapper for Loop54 JSON V3 API
 
 ### Configure
 
-You will need to set the endpoint to match the one you will get from Loop54.
+When creating a client, you will need to set the endpoint to match the one you will get from Loop54.
 
-__Get client from global variable__
+If you included `loop54-js-connector.js` (or `loop54-js-connector.min.js`) in a script tag, 
+you can get a configured client from the global Loop54 object:
+__Get client from global Loop54 object__
 ```
 var client = Loop54.getClient('URL_TO_YOUR_ENDPOINT');
 ```
 
-Or if you imported only the client, omit the Loop54 global variable qualifier:
-__Configuration example__
+If you imported the connector as an ECMAScript module (with require('loop54-js-connector') or equivalent), 
+you can call the getClient function directly:
+__Get client from imported function__
 ```
 var client = getClient('URL_TO_YOUR_ENDPOINT');
 ```
