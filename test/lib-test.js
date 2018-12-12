@@ -6,6 +6,7 @@ import getEntities from "./getEntities"
 import getRelatedEntities from "./getRelatedEntities"
 import getEntitiesByAttribute from "./getEntitiesByAttribute"
 import createEvents from "./createEvents"
+import sync from "./sync"
 
 describe("Loop54", function () {
 	
@@ -17,4 +18,5 @@ describe("Loop54", function () {
 	describe("client.getRelatedEntities", getRelatedEntities);
 	describe("client.getEntitiesByAttribute", getEntitiesByAttribute);
 	describe("client.createEvents", createEvents);
+	describe("client.sync", sync);
 });

@@ -4,13 +4,13 @@ function createEventsExample(client, productId) {
 	// CODE SAMPLE create-events BEGIN
 	// click event (can be called on the product page)
 	var clickedEntity = {type: "Product", id: productId};
-	client.createEvent('click',clickedEntity,null,null,null,function(response){
+	client.createEvent("click",clickedEntity,null,null,null,function(response){
 		console.log("click event response", response);
 	});
 		
 	// addtocart event (call this when a customer adds a product to cart)
 	var addToCartEntity = {type: "Product", id: productId};
-	client.createEvent('addtocart',addToCartEntity,null,null,null,function(response){
+	client.createEvent("addtocart",addToCartEntity,null,null,null,function(response){
 		console.log("add to cart response", response);
 	});
 
@@ -20,7 +20,7 @@ function createEventsExample(client, productId) {
 	var quantity = 5; //Optional
 	var revenue = 249.0; //Optional
 		
-	var response = client.createEvent('purchase',addToCartEntity,orderId,quantity,revenue,null).then((r) => {
+	var response = client.createEvent("purchase",addToCartEntity,orderId,quantity,revenue,null).then((r) => {
 		console.log("purchase response", r);
 	});
 	// CODE SAMPLE END
