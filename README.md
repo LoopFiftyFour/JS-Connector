@@ -85,20 +85,14 @@ except createEvent and createEvents which do not take `options`.
 
 __Cancelling a request__
 ```
-var options = {skip:0,take:20}; //this will take the first 20 results
-
-var callback = function(response){
-	// ...
-}
+var options = {};
+var callback = function(response) {}
 
 const request = client.search("R2 droids", options, callback);
-request.cancel();
+request.cancel(); // cancel the request
 ```
 
-The `options` and `callback` parameters are optional. The result of `client.search` will always return a Promise.
-
-All API operations work the same way with regards to `options` and `callback`,
-except createEvent and createEvents which do not take `options`.
+The request will be cancelled (useful when the user types fast and you need to cancel a running request).
 
 __Create events example__
 
