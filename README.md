@@ -33,14 +33,14 @@ Javascript Wrapper for Loop54 JSON V3 API
 
 When creating a client, you will need to set the endpoint to match the one you will get from Loop54.
 
-If you included `loop54-js-connector.js` (or `loop54-js-connector.min.js`) in a script tag, 
+If you included `loop54-js-connector.js` (or `loop54-js-connector.min.js`) in a script tag,
 you can get a configured client from the global Loop54 object:
 __Get client from global Loop54 object__
 ```
 var client = Loop54.getClient('URL_TO_YOUR_ENDPOINT');
 ```
 
-If you imported the connector as an ECMAScript module (with require('loop54-js-connector') or equivalent), 
+If you imported the connector as an ECMAScript module (with require('loop54-js-connector') or equivalent),
 you can call the getClient function directly:
 __Get client from imported function__
 ```
@@ -78,8 +78,24 @@ var callback = function(response){
 client.search("R2 droids", options, callback);
 ```
 
-The `options` and `callback` parameters are optional. As seen above, if the
-`callback` is omitted, `client.search` will return a Promise.
+The `options` and `callback` parameters are optional. The result of `client.search` will always return a Promise.
+
+All API operations work the same way with regards to `options` and `callback`,
+except createEvent and createEvents which do not take `options`.
+
+__Cancelling a request__
+```
+var options = {skip:0,take:20}; //this will take the first 20 results
+
+var callback = function(response){
+	// ...
+}
+
+const request = client.search("R2 droids", options, callback);
+request.cancel();
+```
+
+The `options` and `callback` parameters are optional. The result of `client.search` will always return a Promise.
 
 All API operations work the same way with regards to `options` and `callback`,
 except createEvent and createEvents which do not take `options`.
