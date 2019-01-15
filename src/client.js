@@ -5,55 +5,47 @@ import core from './core.js';
  * @param {string} endpoint The complete URL to the engine.
 */
 function getLoop54Client (endpoint, userId, apiKey) {
-
-    if(!endpoint || endpoint.Length==0)
+    if (!endpoint || endpoint.length === 0) {
         throw new Error("Parameter \"endpoint\" must be present and have a non-zero length.");
+    }
 
     return {
-
         /**
          * The engine endpoint this client communicates with.
          */
-        endpoint: endpoint,
-        
+        endpoint,
+
         /**
          * The user ID to use for communications. If left falsy, cookies will be used to track user ID.
          */
-        userId: userId,
-        
+        userId,
+
         /**
          * The api key to use for communications. This is required for administrative operations.
          */
-        apiKey: apiKey,
+        apiKey,
 
         /**
          * Used for performing autocomplete requests to the engine.
          * @param {string} searchTerm The query to find suggestions.
          */
-        autoComplete: function (query) {
-
-            var args = core.getOptionsAndCallback(arguments, 1);
-            if (args.error) {
-                return core.returnError(args.error,args.callback);
+        autoComplete: function (query = '') {
+            const { error, callback = null, options = {} } = core.getOptionsAndCallback(arguments, 1);
+            if (error) {
+                return core.returnError(error, callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
-
-            if (typeof(query) != "string" || query.length == 0) {
+            if (query.length === 0) {
                 return core.returnError("query is either missing or not a string", callback);
             }
 
-            var req = core.call(this.endpoint, "/autoComplete", {
+            const req = core.call(this.endpoint, "/autoComplete", {
                     query: query,
                     queriesOptions: core.deleteCustomData(options),
-                    customData:options.customData
+                    customData: options.customData
                 }, null, callback, userId, apiKey);
 
-            if (!callback) {
-                // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         },
 
         /**
@@ -64,12 +56,8 @@ function getLoop54Client (endpoint, userId, apiKey) {
          * @param {number} quantity The quantity of this product in the order. Typically only used with purchase events.
          * @param {number} revenue The revenue for this product in the order. Typically only used with purchase events.
          */
-        createEvent: function (eventType, entity, orderId, quantity, revenue, callback) {
-
-            var event = {
-                type: eventType,
-                entity: entity
-            };
+        createEvent: function (type, entity, orderId, quantity, revenue, callback) {
+            var event = { type, entity };
 
             // purchase event extra attributes
             if (orderId) {
@@ -81,30 +69,27 @@ function getLoop54Client (endpoint, userId, apiKey) {
             if (revenue) {
                 event.revenue = parseFloat(revenue);
             }
-            
-            var error = core.validateEvent(event,callback);
-            
-            if(error)
-                return core.returnError(error,callback);
+
+            const error = core.validateEvent(event, callback);
+            if (error) {
+                return core.returnError(error, callback);
+            }
 
             var req = core.call(this.endpoint, "/createEvents", {
                 events: [event]
-            },null,callback, userId, apiKey);
-            
-            if (!callback) {
-                // if callback is missing, return a promise
-                return req;
-            }
+            }, null, callback, userId, apiKey);
+
+            return req;
         },
 
         /**
          * Used for tracking a multiple user interactions, for instance when purchasing multiple products at once.
          * @param {array} events The events to push. See createEvent for detailed information about events.
          */
-        createEvents: function (events,callback) {
-            
-            if(!Array.isArray(events) || events.Length==0)
-                return core.returnError("Events must be a non-empty array",callback);
+        createEvents: function (events, callback) {
+            if (!Array.isArray(events) || events.Length==0) {
+                return core.returnError("Events must be a non-empty array", callback);
+            }
 
             if (events.some(core.validateEvent)) {
                 return core.returnError(
@@ -115,12 +100,9 @@ function getLoop54Client (endpoint, userId, apiKey) {
 
             var req = core.call(this.endpoint, "/createEvents", {
                 events: events
-            },null,callback, userId, apiKey);
-            
-            if (!callback) {
-                // if callback is missing, return a promise
-                return req;
-            }
+            }, null, callback, userId, apiKey);
+
+            return req;
         },
 
         /**
@@ -128,10 +110,9 @@ function getLoop54Client (endpoint, userId, apiKey) {
          * @param {object} entity The entity for which to find related entities
          */
         getRelatedEntities: function (entity) {
-
             var args = core.getOptionsAndCallback(arguments, 1);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
             var options = args.options ? args.options : {};
@@ -141,17 +122,14 @@ function getLoop54Client (endpoint, userId, apiKey) {
             if (typeof(entity) != "object" || !entity.type || !entity.id) {
                 return core.returnError("entity must be an object with properties \"type\" and \"id\".", callback);
             }
-            
+
             var req = core.call(this.endpoint, "/getRelatedEntities", {
                     entity: entity,
                     resultsOptions: core.deleteCustomData(options),
                     customData:options.customData
                 }, null, callback, userId, apiKey);
 
-            if (!callback) {
-                // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         },
 
         /**
@@ -160,10 +138,9 @@ function getLoop54Client (endpoint, userId, apiKey) {
          * @param {any} attributeValue The value of the attribute for which to get entitites
          */
         getEntitiesByAttribute: function (attributeName, attributeValue) {
-
             var args = core.getOptionsAndCallback(arguments, 2);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
             var options = args.options ? args.options : {};
@@ -173,30 +150,26 @@ function getLoop54Client (endpoint, userId, apiKey) {
             if (typeof(attributeName) != "string") {
                 return core.returnError("Missing argument attributeName or attributeName was not of type string.", callback);
             }
-            
+
             var req = core.call(this.endpoint, "/getEntitiesByAttribute", {
                     attribute: {
                         name: attributeName,
                         value: attributeValue
                     },
                     resultsOptions: core.deleteCustomData(options),
-                    customData:options.customData
+                    customData: options.customData
                 }, null, callback, userId, apiKey);
 
-            if (!callback) {
-                // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         },
 
         /**
          * Used for performing getEntities requests to the engine.
          */
         getEntities: function () {
-
             var args = core.getOptionsAndCallback(arguments, 0);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
             var options = args.options ? args.options : {};
@@ -204,13 +177,10 @@ function getLoop54Client (endpoint, userId, apiKey) {
 
             var req = core.call(this.endpoint, "/getEntities", {
                     resultsOptions: core.deleteCustomData(options),
-                    customData:options.customData
+                    customData: options.customData
                 }, null, callback, userId, apiKey);
 
-            if (!callback) {
-                // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         },
 
         /**
@@ -218,10 +188,9 @@ function getLoop54Client (endpoint, userId, apiKey) {
          * @param {string} query The query to search for
          */
         search: function (query) {
-
             var args = core.getOptionsAndCallback(arguments, 1);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
             var options = args.options ? args.options : {};
@@ -244,34 +213,29 @@ function getLoop54Client (endpoint, userId, apiKey) {
                         skip: options.skip,
                         facets: options.facets
                     },
-                    customData:options.customData
+                    customData: options.customData
                 }, null, callback, userId, apiKey);
 
-            if (!callback) { // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         },
-        
+
         /**
          * Used for telling the engine to re-sync the catalog.
          */
         sync: function () {
-
             var args = core.getOptionsAndCallback(arguments, 0);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
             var options = args.options ? args.options : {};
             var callback = args.callback ? args.callback : null;
-            
+
             var req = core.call(this.endpoint, "/sync", {
-                    customData:options.customData
+                    customData: options.customData
                 }, null, callback, userId, apiKey);
 
-            if (!callback) { // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         }
     }
 }

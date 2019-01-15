@@ -11,10 +11,10 @@ import createEvents from "./createEvents"
 import sync from "./sync"
 
 describe("Loop54", function () {
-	
+
 	describe("Loop54Global", loop54global);
 	describe("Loop54Client", loop54client);
-	
+
 	describe("client.search", search);
 	describe("client.autoComplete", autoComplete);
 	describe("client.getEntities", getEntities);
