@@ -24,7 +24,7 @@ module.exports = function () {
 	});
 	
 	it("Returns 200 OK and a valid response, with callback", function (done) {
-		return client.sync(response => common.testCallBack(response,syncOKFunc,done));
+		client.sync(response => common.testCallBack(response,syncOKFunc,done));
 	});
 
 	it("Accepts options as argument, without a callback", function () {
@@ -32,7 +32,7 @@ module.exports = function () {
 	});
 	
 	it("Accepts options as argument, with a callback", function (done) {
-		return client.sync({}, response => common.testCallBack(response,syncOKFunc,done));
+		client.sync({}, response => common.testCallBack(response,syncOKFunc,done));
 	});
 	
 	it("Returns error if it has too many arguments", function () {

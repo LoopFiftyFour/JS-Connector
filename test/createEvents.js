@@ -25,7 +25,7 @@ module.exports = function () {
 	});
 	
 	it("Returns 200 OK and a valid response, with callback", function (done) {
-		return client.createEvent("click",{type:"test",id:"pest"},null,null,null, response => common.testCallBack(response,okFunc,done));
+		client.createEvent("click",{type:"test",id:"pest"},null,null,null, response => common.testCallBack(response,okFunc,done));
 	});
 
 	it("Returns error if it's missing all parameters", function () {
@@ -37,7 +37,7 @@ module.exports = function () {
 	});
 	
 	it("Returns error for wrong typed event, with callback", function (done) {
-		return client.createEvent([],{type:"test",id:"pest"},null,null,null, response => common.testCallBack(response,common.includesError,done));
+		client.createEvent([],{type:"test",id:"pest"},null,null,null, response => common.testCallBack(response,common.includesError,done));
 	});
 	
 	it("Returns error for wrong length event, without callback", function () {
@@ -45,7 +45,7 @@ module.exports = function () {
 	});
 	
 	it("Returns error for wrong length event, with callback", function (done) {
-		return client.createEvent("",{type:"test",id:"pest"},null,null,null, response => common.testCallBack(response,common.includesError,done));
+		client.createEvent("",{type:"test",id:"pest"},null,null,null, response => common.testCallBack(response,common.includesError,done));
 	});
 	
 	it("Returns error for malformed entity, without callback", function () {
@@ -53,7 +53,7 @@ module.exports = function () {
 	});
 	
 	it("Returns error for malformed entity, with callback", function (done) {
-		return client.createEvent("click",{id:"pest"},null,null,null, response => common.testCallBack(response,common.includesError,done));
+		client.createEvent("click",{id:"pest"},null,null,null, response => common.testCallBack(response,common.includesError,done));
 	});
 	
 	//createEvents
@@ -62,7 +62,7 @@ module.exports = function () {
 	});
 	
 	it("Returns 200 OK and a valid response, with callback", function (done) {
-		return client.createEvents([{type:"click",entity:{type:"test",id:"pest"}},{type:"purchase",entity:{type:"test",id:"pest"}}], response => common.testCallBack(response,okFunc,done));
+		client.createEvents([{type:"click",entity:{type:"test",id:"pest"}},{type:"purchase",entity:{type:"test",id:"pest"}}], response => common.testCallBack(response,okFunc,done));
 	});
 
 	it("Returns error if it's missing all parameters", function () {
@@ -82,7 +82,7 @@ module.exports = function () {
 	});
 	
 	it("Returns error for wrong typed event, with callback", function (done) {
-		return client.createEvents([{type:"click",entity:{type:"test",id:"pest"}},{type:[],entity:{type:"test",id:"pest"}}], response => common.testCallBack(response,common.includesError,done));
+		client.createEvents([{type:"click",entity:{type:"test",id:"pest"}},{type:[],entity:{type:"test",id:"pest"}}], response => common.testCallBack(response,common.includesError,done));
 	});
 	
 	it("Returns error for wrong length event, without callback", function () {
@@ -90,7 +90,7 @@ module.exports = function () {
 	});
 	
 	it("Returns error for wrong length event, with callback", function (done) {
-		return client.createEvents([{type:"click",entity:{type:"test",id:"pest"}},{type:"",entity:{type:"test",id:"pest"}}], response => common.testCallBack(response,common.includesError,done));
+		client.createEvents([{type:"click",entity:{type:"test",id:"pest"}},{type:"",entity:{type:"test",id:"pest"}}], response => common.testCallBack(response,common.includesError,done));
 	});
 	
 	it("Returns error for malformed entity, without callback", function () {
@@ -98,6 +98,6 @@ module.exports = function () {
 	});
 	
 	it("Returns error for malformed entity, with callback", function (done) {
-		return client.createEvents([{type:"click",entity:{type:"test",id:"pest"}},{type:"click",entity:{id:"pest"}}], response => common.testCallBack(response,common.includesError,done));
+		client.createEvents([{type:"click",entity:{type:"test",id:"pest"}},{type:"click",entity:{id:"pest"}}], response => common.testCallBack(response,common.includesError,done));
 	});
 }

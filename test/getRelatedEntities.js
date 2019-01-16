@@ -25,7 +25,7 @@ module.exports = function () {
 	});
 	
 	it("Returns 200 OK and a valid response, with callback", function (done) {
-		return client.getRelatedEntities({type:"Product",id:"test"},response => common.testCallBack(response,okFunc,done));
+		client.getRelatedEntities({type:"Product",id:"test"},response => common.testCallBack(response,okFunc,done));
 	});
 
 	it("Accepts options as second argument, without a callback", function () {
@@ -33,7 +33,7 @@ module.exports = function () {
 	});
 	
 	it("Accepts options as second argument, with a callback", function (done) {
-		return client.getRelatedEntities({type:"Product",id:"test"},{}, response => common.testCallBack(response,okFunc,done));
+		client.getRelatedEntities({type:"Product",id:"test"},{}, response => common.testCallBack(response,okFunc,done));
 	});
 	
 	it("Returns error if it has too few arguments", function () {
@@ -49,7 +49,7 @@ module.exports = function () {
 	});
 	
 	it("Returns error if invalid entity, with callback", function (done) {
-		return client.getRelatedEntities("",response => common.testCallBack(response,common.includesError,done));
+		client.getRelatedEntities("",response => common.testCallBack(response,common.includesError,done));
 	});
 	
 	it("Returns error if invalid entity, without callback", function () {
@@ -57,6 +57,6 @@ module.exports = function () {
 	});
 	
 	it("Returns error if invalid entity, with callback", function (done) {
-		return client.getRelatedEntities({type:"Test"},response => common.testCallBack(response,common.includesError,done));
+		client.getRelatedEntities({type:"Test"},response => common.testCallBack(response,common.includesError,done));
 	});
 }
