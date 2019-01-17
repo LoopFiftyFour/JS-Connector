@@ -78,11 +78,29 @@ var callback = function(response){
 client.search("R2 droids", options, callback);
 ```
 
-The `options` and `callback` parameters are optional. As seen above, if the
-`callback` is omitted, `client.search` will return a Promise.
+The `options` and `callback` parameters are optional. As seen above,
+`client.search` will return a Promise.
 
 All API operations work the same way with regards to `options` and `callback`,
 except createEvent and createEvents which do not take `options`.
+
+__Cancelling a request__
+
+All requests can be cancelled, which is useful when the user types fast.
+
+Using promise:
+```
+const request = client.search("R2 droids", {}); //create request
+request.then(response => if(!response.cancelled) console.log('done')); //attach continuation
+request.cancel(); // cancel the request
+```
+
+Using callback:
+```
+var callback = function(response) { if(!response.cancelled) console.log('done'); } //create callback
+const request = client.search("R2 droids", {}, callback);  //create request
+request.cancel(); // cancel the request
+```
 
 __Create events example__
 
