@@ -25,7 +25,7 @@ module.exports = function () {
 	});
 	
 	it("Returns 200 OK and a valid response, with callback", function (done) {
-		return client.getEntities(response => common.testCallBack(response,okFunc,done));
+		client.getEntities(response => common.testCallBack(response,okFunc,done));
 	});
 
 	it("Accepts options as second argument, without a callback", function () {
@@ -33,7 +33,7 @@ module.exports = function () {
 	});
 	
 	it("Accepts options as second argument, with a callback", function (done) {
-		return client.getEntities({}, response => common.testCallBack(response,okFunc,done));
+		client.getEntities({}, response => common.testCallBack(response,okFunc,done));
 	});
 	
 	it("Returns error if it has too many arguments", function () {

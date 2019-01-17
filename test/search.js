@@ -12,7 +12,7 @@ module.exports = function () {
 
 	//mock all calls to the /search endpoint
 	beforeEach(() => {
-		nock(common.endpoint).post("/search").reply(200, searchResponse);
+		nock(common.endpoint).post("/search").delay(100).reply(200, searchResponse);
 	});
 	
 	var searchOKFunc = function(response) {
@@ -25,7 +25,7 @@ module.exports = function () {
 	});
 	
 	it("Returns 200 OK and a valid response, with callback", function (done) {
-		return client.search("meat", response => common.testCallBack(response,searchOKFunc,done));
+		client.search("meat", response => common.testCallBack(response,searchOKFunc,done));
 	});
 
 	it("Accepts options as second argument, without a callback", function () {
@@ -33,7 +33,7 @@ module.exports = function () {
 	});
 	
 	it("Accepts options as second argument, with a callback", function (done) {
-		return client.search("meat", {}, response => common.testCallBack(response,searchOKFunc,done));
+		client.search("meat", {}, response => common.testCallBack(response,searchOKFunc,done));
 	});
 	
 	it("Returns error if it has too few arguments", function () {
@@ -49,6 +49,41 @@ module.exports = function () {
 	});
 	
 	it("Returns error if invalid search query, with callback", function (done) {
-		return client.search("",response => common.testCallBack(response,common.includesError,done));
+		client.search("",response => common.testCallBack(response,common.includesError,done));
+	});
+	
+	[true,false].forEach(function(doCancel){
+		it("Cancellation (doCancel=" + doCancel + ") works, without callback", function () {
+			
+			var wasRun = false;
+			
+			var req = client.search("meat");
+			
+			var promiseToReturn = req
+				.then(function(response){ if(!response.cancelled) wasRun=true; })
+				.then(function() { expect(wasRun).to.equal(!doCancel); })
+			
+			if(doCancel)
+				req.cancel();
+			
+			return promiseToReturn;
+		});
+	
+	
+		it("Cancellation (doCancel=" + doCancel + ") works, with callback", function (done) {
+			
+			var wasRun = false;
+			
+			var req = client.search("meat",function(response){ if(!response.cancelled) wasRun = true; });
+			
+			if(doCancel)
+				req.cancel();
+			
+			setTimeout(function(){
+				expect(wasRun).to.equal(!doCancel);
+				done();
+			},1000);
+		});
+	
 	});
 }

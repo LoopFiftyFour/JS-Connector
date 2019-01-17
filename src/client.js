@@ -50,10 +50,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                     customData:options.customData
                 }, null, callback, userId, apiKey);
 
-            if (!callback) {
-                // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         },
 
         /**
@@ -91,10 +88,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                 events: [event]
             },null,callback, userId, apiKey);
             
-            if (!callback) {
-                // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         },
 
         /**
@@ -117,10 +111,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                 events: events
             },null,callback, userId, apiKey);
             
-            if (!callback) {
-                // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         },
 
         /**
@@ -148,10 +139,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                     customData:options.customData
                 }, null, callback, userId, apiKey);
 
-            if (!callback) {
-                // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         },
 
         /**
@@ -183,10 +171,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                     customData:options.customData
                 }, null, callback, userId, apiKey);
 
-            if (!callback) {
-                // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         },
 
         /**
@@ -207,10 +192,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                     customData:options.customData
                 }, null, callback, userId, apiKey);
 
-            if (!callback) {
-                // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         },
 
         /**
@@ -247,9 +229,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                     customData:options.customData
                 }, null, callback, userId, apiKey);
 
-            if (!callback) { // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         },
         
         /**
@@ -269,9 +249,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                     customData:options.customData
                 }, null, callback, userId, apiKey);
 
-            if (!callback) { // if callback is missing, return a promise
-                return req;
-            }
+            return req;
         }
     }
 }

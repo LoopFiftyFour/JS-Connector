@@ -25,7 +25,7 @@ module.exports = function () {
 	});
 	
 	it("Returns 200 OK and a valid response, with callback", function (done) {
-		return client.autoComplete("m", response => common.testCallBack(response,okFunc,done));
+		client.autoComplete("m", response => common.testCallBack(response,okFunc,done));
 	});
 
 	it("Accepts options as second argument, without a callback", function () {
@@ -33,7 +33,7 @@ module.exports = function () {
 	});
 	
 	it("Accepts options as second argument, with a callback", function (done) {
-		return client.autoComplete("m", {}, response => common.testCallBack(response,okFunc,done));
+		client.autoComplete("m", {}, response => common.testCallBack(response,okFunc,done));
 	});
 
 	it("Returns error if it has too few arguments", function () {
@@ -49,6 +49,6 @@ module.exports = function () {
 	});
 	
 	it("Returns error if invalid search query, with callback", function (done) {
-		return client.autoComplete("",response => common.testCallBack(response,common.includesError,done));
+		client.autoComplete("",response => common.testCallBack(response,common.includesError,done));
 	});
 }

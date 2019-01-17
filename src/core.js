@@ -45,12 +45,14 @@ let core = {
 		if(apiKey)
 			headers["Loop54-key"] = apiKey;
 
+		var cancellationSource = axios.CancelToken.source();
 		var request = axios({
 			method: method ? method : "post",
 			url: url,
 			headers: headers,
 			responseType: "json",
-			data: body
+			data: body,
+			cancelToken: cancellationSource.token
 		})
 		.then(function (response) {
 
@@ -62,6 +64,10 @@ let core = {
 		})
 		.catch(function (response) {
 
+			if (axios.isCancel(response)) {
+				return { cancelled:true };
+			}
+		
 			var ret = response;
 
 			//if there is no data, that means something went wrong before we got a response
@@ -77,14 +83,16 @@ let core = {
 			}
 			return Promise.reject(ret);
 		});
-
+		
+		request.cancel = () => cancellationSource.cancel();
+		
 		if (callback) {
 			request.then(callback).catch(function(response){
 				callback(response);
 			});
-		} else {
-			return request;
 		}
+			
+		return request;
 	},
 
 	ensureProtocol: function (url) {
