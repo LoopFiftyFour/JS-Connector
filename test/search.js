@@ -1,9 +1,6 @@
 import searchResponse from "./mocks/search-response-ok";
 import nock from "nock";
-import chai, {
-	assert,
-	expect
-} from "chai";
+import { expect } from "chai";
 import sinon from 'sinon';
 import common from "./common";
 
@@ -51,5 +48,27 @@ module.exports = function () {
 
 	it("Returns error if invalid search query, with callback", function (done) {
 		return client.search("",response => common.testCallBack(response,common.includesError,done));
+	});
+
+	it("Cancel request is working", function (done) {
+		// clear the previously nock setup,
+		nock.cleanAll();
+		// then delay the response for 20ms, so we can cancel the request.
+		nock(common.endpoint).post("/search").delay(20).reply(200, searchResponse);
+
+		const callback = sinon.spy();
+		const req = client.search("meat", callback);
+
+		// cancel the request after 10ms.
+		setTimeout(req.cancel, 10);
+
+		// check the result after 30ms, then finish the test.
+		setTimeout(() => {
+			// since the callback will be called anyway, we check if the response is undefined.
+			expect(callback.firstCall.lastArg).to.be.undefined;
+
+			// signal async test is done.
+			done();
+		}, 30);
 	});
 }
