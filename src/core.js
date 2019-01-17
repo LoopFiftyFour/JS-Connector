@@ -84,7 +84,10 @@ let core = {
 			return Promise.reject(ret);
 		});
 		
-		request.cancel = () => cancellationSource.cancel();
+		request.cancel = () => {
+			cancellationSource.cancel();
+			return request;
+		}
 		
 		if (callback) {
 			request.then(callback).catch(function(response){
