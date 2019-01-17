@@ -4,7 +4,6 @@ import chai, {
 	assert,
 	expect
 } from "chai";
-import sinon from "sinon";
 import common from "./common";
 
 module.exports = function () {
@@ -51,27 +50,5 @@ module.exports = function () {
 	
 	it("Returns error if invalid search query, with callback", function (done) {
 		client.search("",response => common.testCallBack(response,common.includesError,done));
-	});
-	
-	it("Check if cancel request is working", function (done) {
-		// clear the previously nock setup,
-		nock.cleanAll();
-		// ... then setup nock to delay the response for 20ms, so we can cancel the request.
-		nock(common.endpoint).post("/search").delay(20).reply(200, searchResponse);
-
-		const callback = sinon.spy();
-		const req = client.search("meat", callback);
-
-		// cancel the request after 10ms.
-		setTimeout(req.cancel, 10);
-
-		// finally, check the result after 30ms, then finish the test.
-		setTimeout(() => {
-			// since the callback will be called anyway, we check if the `cancelled` response flag is set.
-			expect(callback.firstCall.lastArg.cancelled).to.be.true;
-
-			// signal async test is done.
-			done();
-		}, 30);
 	});
 }
