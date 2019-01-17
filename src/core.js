@@ -45,14 +45,14 @@ let core = {
 		if(apiKey)
 			headers["Loop54-key"] = apiKey;
 
-		var source = axios.CancelToken.source();
+		var cancellationSource = axios.CancelToken.source();
 		var request = axios({
 			method: method ? method : "post",
 			url: url,
 			headers: headers,
 			responseType: "json",
 			data: body,
-			cancelToken: source.token
+			cancelToken: cancellationSource.token
 		})
 		.then(function (response) {
 
@@ -84,7 +84,7 @@ let core = {
 			return Promise.reject(ret);
 		});
 		
-		request.cancel = () => source.cancel();
+		request.cancel = () => cancellationSource.cancel();
 		
 		if (callback) {
 			request.then(callback).catch(function(response){
