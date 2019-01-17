@@ -4,6 +4,7 @@ import chai, {
 	assert,
 	expect
 } from "chai";
+import sinon from "sinon";
 import common from "./common";
 
 module.exports = function () {
@@ -12,7 +13,7 @@ module.exports = function () {
 
 	//mock all calls to the /search endpoint
 	beforeEach(() => {
-		nock(common.endpoint).post("/search").delay(100).reply(200, searchResponse);
+		nock(common.endpoint).post("/search").reply(200, searchResponse);
 	});
 	
 	var searchOKFunc = function(response) {
@@ -52,38 +53,25 @@ module.exports = function () {
 		client.search("",response => common.testCallBack(response,common.includesError,done));
 	});
 	
-	[true,false].forEach(function(doCancel){
-		it("Cancellation (doCancel=" + doCancel + ") works, without callback", function () {
-			
-			var wasRun = false;
-			
-			var req = client.search("meat");
-			
-			var promiseToReturn = req
-				.then(function(response){ if(!response.cancelled) wasRun=true; })
-				.then(function() { expect(wasRun).to.equal(!doCancel); })
-			
-			if(doCancel)
-				req.cancel();
-			
-			return promiseToReturn;
-		});
-	
-	
-		it("Cancellation (doCancel=" + doCancel + ") works, with callback", function (done) {
-			
-			var wasRun = false;
-			
-			var req = client.search("meat",function(response){ if(!response.cancelled) wasRun = true; });
-			
-			if(doCancel)
-				req.cancel();
-			
-			setTimeout(function(){
-				expect(wasRun).to.equal(!doCancel);
-				done();
-			},1000);
-		});
-	
+	it("Check if cancel request is working", function (done) {
+		// clear the previously nock setup,
+		nock.cleanAll();
+		// ... then setup nock to delay the response for 20ms, so we can cancel the request.
+		nock(common.endpoint).post("/search").delay(20).reply(200, searchResponse);
+
+		const callback = sinon.spy();
+		const req = client.search("meat", callback);
+
+		// cancel the request after 10ms.
+		setTimeout(req.cancel, 10);
+
+		// finally, check the result after 30ms, then finish the test.
+		setTimeout(() => {
+			// since the callback will be called anyway, we check if the `cancelled` response flag is set.
+			expect(callback.firstCall.lastArg.cancelled).to.be.true;
+
+			// signal async test is done.
+			done();
+		}, 30);
 	});
 }
