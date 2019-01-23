@@ -10,6 +10,7 @@ import getEntitiesByAttribute from "./getEntitiesByAttribute"
 import createEvents from "./createEvents"
 import sync from "./sync"
 import cancellation from "./cancellation";
+import core from "./core";
 
 describe("Loop54", function () {
 	
@@ -25,4 +26,6 @@ describe("Loop54", function () {
 	describe("client.sync", sync);
 
 	describe("request.cancel", cancellation);
+
+	describe("core", core);
 });
