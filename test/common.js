@@ -5,7 +5,7 @@ import chai, {
 
 module.exports = {
 	
-	endpoint: "http://test.loop54.se",
+	endpoint: "https://test.loop54.se",
 
 	testCallBack: function(response,testFunc,done){
 		setTimeout(function () {
