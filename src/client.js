@@ -6,8 +6,9 @@ import core from './core.js';
 */
 function getLoop54Client (endpoint, userId, apiKey) {
 
-    if(!endpoint || endpoint.Length==0)
+    if (typeof endpoint !== 'string' || endpoint.length === 0) {
         throw new Error("Parameter \"endpoint\" must be present and have a non-zero length.");
+    }
 
     return {
 
@@ -97,8 +98,9 @@ function getLoop54Client (endpoint, userId, apiKey) {
          */
         createEvents: function (events,callback) {
             
-            if(!Array.isArray(events) || events.Length==0)
+            if (!Array.isArray(events) || events.length === 0) {
                 return core.returnError("Events must be a non-empty array",callback);
+            }
 
             if (events.some(core.validateEvent)) {
                 return core.returnError(

@@ -106,7 +106,7 @@ let core = {
 
 		//make sure it doesnt end with slash
 		while (url.endsWith("/"))
-			url = url.substring(0, url.Length - 1);
+			url = url.substring(0, url.length - 1);
 
 		return url;
 
@@ -166,8 +166,10 @@ let core = {
 	},
 
 	validateEvent: function(event) {
-
-		if (!event.type || typeof(event.type) != "string" || event.type.Length == 0) {
+		if (typeof event !== 'object') {
+			return "event needs to be an object.";
+		}
+		if (typeof event.type !== "string" || event.type.length === 0) {
 			return "type needs to be set, standard events are \"click\", \"addtocart\" and \"purchase\".";
 		}
 		if(!event.entity) {
