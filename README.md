@@ -29,6 +29,12 @@ Javascript Wrapper for Loop54 JSON V3 API
 
 ## How to use
 
+### Transpilation
+
+If you're using NPM to include the connector in your build pipeline, (for instance using Rollup or Webpack),
+note that the module is exported as a pure ES6 module, and it is not bundled with dependencies, transpiled or otherwise prepared for live environment. 
+You will need to make those preparations as part of your own pipeline.
+
 ### Configure
 
 When creating a client, you will need to set the endpoint to match the one you will get from Loop54.
