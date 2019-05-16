@@ -9,7 +9,7 @@ function searchExample(client, query) {
 	var options = {
 		skip: 0,
 		take:10,
-		relatedResultOptions: {
+		relatedResultsOptions: {
 			skip:0,
 			take:9
 		}
