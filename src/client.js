@@ -223,7 +223,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                     relatedQueriesOptions: options.relatedQueriesOptions,
                     resultsOptions:{
                         sortBy: options.sortBy,
-                        filters: options.filters,
+                        filter: options.filter,
                         take: options.take,
                         skip: options.skip,
                         facets: options.facets
