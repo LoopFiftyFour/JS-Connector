@@ -13,19 +13,19 @@ import cancellation from "./cancellation";
 import core from "./core";
 
 describe("Loop54", function () {
-	
-	describe("Loop54Global", loop54global);
-	describe("Loop54Client", loop54client);
-	
-	describe("client.search", search);
-	describe("client.autoComplete", autoComplete);
-	describe("client.getEntities", getEntities);
-	describe("client.getRelatedEntities", getRelatedEntities);
-	describe("client.getEntitiesByAttribute", getEntitiesByAttribute);
-	describe("client.createEvents", createEvents);
-	describe("client.sync", sync);
+    
+    describe("Loop54Global", loop54global);
+    describe("Loop54Client", loop54client);
+    
+    describe("client.search", search);
+    describe("client.autoComplete", autoComplete);
+    describe("client.getEntities", getEntities);
+    describe("client.getRelatedEntities", getRelatedEntities);
+    describe("client.getEntitiesByAttribute", getEntitiesByAttribute);
+    describe("client.createEvents", createEvents);
+    describe("client.sync", sync);
 
-	describe("request.cancel", cancellation);
+    describe("request.cancel", cancellation);
 
-	describe("core", core);
+    describe("core", core);
 });
