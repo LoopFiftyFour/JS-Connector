@@ -7,7 +7,7 @@ const runopts = {
 
 console.log("Running clean");
 runAll(["clean"], runopts)
-	.then(() => {
+    .then(() => {
         console.log("Running build");
         runAll(["build-*"], runopts)
             .then(() => {
