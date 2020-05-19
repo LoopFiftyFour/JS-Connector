@@ -160,6 +160,8 @@ It also aids in developing a Loop54 integration by:
 
 ## Developing the library
 
+A Linux or MacOS environment is required. Windows is not supported and the npm commands below will fail on it.
+
 ### Development
 
 1. Git clone this repository
