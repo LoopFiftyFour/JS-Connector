@@ -104,7 +104,11 @@ function getLoop54Client (endpoint, userId, apiKey) {
 
             if (events.some(core.validateEvent)) {
                 return core.returnError(
-                    "Malformed event errors: [" + events.map(core.validateEvent).filter(e=>e).map(e=>"\"" + e + "\"").join(",") + "]",
+                    "Malformed event errors: [" + events.map(core.validateEvent).filter(function (e) {
+                            return e;
+                        }).map(function (e) {
+                                return "\"" + e + "\"";
+                            }).join(",") + "]",
                     callback
                 )
             }

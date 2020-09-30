@@ -31,9 +31,7 @@ let core = {
         if(!userId)
             userId = core.getUserId();
 
-        body = {
-            ...body
-        };
+        body = JSON.parse(JSON.stringify(body));
 
         var url = core.ensureProtocol(endpoint) + path;
 
@@ -84,7 +82,7 @@ let core = {
             return Promise.reject(ret);
         });
         
-        request.cancel = () => {
+        request.cancel = function () {
             cancellationSource.cancel();
             return request;
         }
@@ -186,9 +184,7 @@ let core = {
     },
 
     deleteCustomData: function(options){
-        let ret = {
-            ...options
-        };
+        let ret = JSON.parse(JSON.stringify(options));
         delete ret.customData;
 
         return ret;
