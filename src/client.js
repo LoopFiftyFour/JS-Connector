@@ -62,7 +62,15 @@ function getLoop54Client (endpoint, userId, apiKey) {
          * @param {number} quantity The quantity of this product in the order. Typically only used with purchase events.
          * @param {number} revenue The revenue for this product in the order. Typically only used with purchase events.
          */
-        createEvent: function (eventType, entity, orderId, quantity, revenue, callback) {
+        createEvent: function (eventType, entity, orderId, quantity, revenue) {
+
+            var args = core.getOptionsAndCallback(arguments, 2, 7);
+            if (args.error) {
+                return core.returnError(args.error,args.callback);
+            }
+
+            var options = args.options ? args.options : {};
+            var callback = args.callback ? args.callback : null;
 
             var event = {
                 type: eventType,
@@ -86,7 +94,8 @@ function getLoop54Client (endpoint, userId, apiKey) {
                 return core.returnError(error,callback);
 
             var req = core.call(this.endpoint, "/createEvents", {
-                events: [event]
+                events: [event],
+                customData:options.customData
             },null,callback, userId, apiKey);
             
             return req;
@@ -96,7 +105,15 @@ function getLoop54Client (endpoint, userId, apiKey) {
          * Used for tracking a multiple user interactions, for instance when purchasing multiple products at once.
          * @param {array} events The events to push. See createEvent for detailed information about events.
          */
-        createEvents: function (events,callback) {
+        createEvents: function (events) {
+            
+            var args = core.getOptionsAndCallback(arguments, 1);
+            if (args.error) {
+                return core.returnError(args.error,args.callback);
+            }
+
+            var options = args.options ? args.options : {};
+            var callback = args.callback ? args.callback : null;
             
             if (!Array.isArray(events) || events.length === 0) {
                 return core.returnError("Events must be a non-empty array",callback);
@@ -114,7 +131,8 @@ function getLoop54Client (endpoint, userId, apiKey) {
             }
 
             var req = core.call(this.endpoint, "/createEvents", {
-                events: events
+                events: events,
+                customData:options.customData
             },null,callback, userId, apiKey);
             
             return req;

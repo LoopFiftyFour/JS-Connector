@@ -4,7 +4,7 @@ import cookies from "./cookies.js";
 let core = {
 
     versions: {
-        libVersion: "1.0.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
+        libVersion: "1.2.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
         apiVersion: "V3"
     },
 
@@ -128,7 +128,7 @@ let core = {
         }
     },
 
-    getOptionsAndCallback: function (args, numRequiredParameters) {
+    getOptionsAndCallback: function (args, numRequiredParameters, maxNumParameters) {
 
         //too few parameters
         if (args.length < numRequiredParameters)
@@ -139,11 +139,14 @@ let core = {
         //no options or other extra parameter
         if (args.length == numRequiredParameters)
             return {};
+        
+        if(!maxNumParameters)
+            maxNumParameters = numRequiredParameters + 2;
 
         //too many parameters
-        if (args.length > numRequiredParameters + 2)
+        if (args.length > maxNumParameters)
             return {
-                error: "Expected at most " + (numRequiredParameters + 2) + " parameters."
+                error: "Expected at most " + (maxNumParameters) + " parameters."
             };
 
         var options;
