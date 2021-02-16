@@ -162,6 +162,14 @@
         }
     }
     
+    function getClient(){
+        var userId = document.getElementById('form').elements['userid'].value;
+        if(userId=="")
+            userId = null;
+        
+        return Loop54.getClient("http://helloworld.54proxy.com",userId);
+    }
+    
     function callLoop54(selectedFacets) {
         
         if(!selectedFacets)
@@ -194,11 +202,7 @@
         
         options.customData = {anything:"value"};
         
-        var userId = document.getElementById('form').elements['userid'].value;
-        if(userId=="")
-            userId = null;
-        
-        var client = Loop54.getClient("http://helloworld.54proxy.com",userId);
+        var client = getClient();
         
         var operation = location.hash;
     
@@ -238,6 +242,7 @@
     
     function trackEvent(type,entity)
     {
+        var client = getClient();
         client.createEvent(type,entity,null,null,null,function(response){
             console.log("response", response);
             if(response.data.error)
