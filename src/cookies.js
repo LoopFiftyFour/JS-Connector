@@ -25,7 +25,7 @@ let cookies = {
                 break;
             }
         }
-        document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+        document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + "; path=" + (sPath ? sPath : "/") + (bSecure ? "; secure" : "");
         return true;
     },
     
@@ -33,7 +33,7 @@ let cookies = {
         if (!this.hasItem(sKey)) {
             return false;
         }
-        document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
+        document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + "; path=" + (sPath ? sPath : "/");
         return true;
     },
     
