@@ -8,22 +8,29 @@ let core = {
         apiVersion: "V3"
     },
 
+    userIdCookieKey: "Loop54User",
+    userIdCookiePath: "/",
+
     setUserId: function () {
         var text = "";
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         for (var i = 0; i < 10; i++) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
-        cookies.setItem("Loop54User", text, 365 * 24 * 60 * 60, "/"); //365 days
+        cookies.setItem("Loop54User", text, 365 * 24 * 60 * 60, core.userIdCookiePath); //365 days
         return text;
     },
 
     getUserId: function () {
-        var existing = cookies.getItem("Loop54User");
+        var existing = cookies.getItem(core.userIdCookieKey);
         if (existing) {
             return existing;
         }
         return core.setUserId();
+    },
+
+    removeUserId: function () {
+        return cookies.removeItem(core.userIdCookieKey, core.userIdCookiePath);
     },
 
     call: function (endpoint, path, body, method, callback, userId, apiKey) {
