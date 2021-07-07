@@ -274,6 +274,15 @@ function getLoop54Client (endpoint, userId, apiKey) {
                 }, null, callback, userId, apiKey);
 
             return req;
+        },
+
+        /**
+         * Used for removing current userId cookie and setting a new one.
+         */
+        generateNewUserId: function () {
+
+            core.removeUserId();
+            return core.setUserId();
         }
     }
 }

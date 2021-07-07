@@ -4,9 +4,12 @@ import cookies from "./cookies.js";
 let core = {
 
     versions: {
-        libVersion: "1.3.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
+        libVersion: "1.4.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
         apiVersion: "V3"
     },
+
+    userIdCookieKey: "Loop54User",
+    userIdCookiePath: "/",
 
     setUserId: function () {
         var text = "";
@@ -14,16 +17,20 @@ let core = {
         for (var i = 0; i < 10; i++) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
-        cookies.setItem("Loop54User", text, 365 * 24 * 60 * 60, "/"); //365 days
+        cookies.setItem(core.userIdCookieKey, text, 365 * 24 * 60 * 60, core.userIdCookiePath); //365 days
         return text;
     },
 
     getUserId: function () {
-        var existing = cookies.getItem("Loop54User");
+        var existing = cookies.getItem(core.userIdCookieKey);
         if (existing) {
             return existing;
         }
         return core.setUserId();
+    },
+
+    removeUserId: function () {
+        return cookies.removeItem(core.userIdCookieKey, core.userIdCookiePath);
     },
 
     call: function (endpoint, path, body, method, callback, userId, apiKey) {
