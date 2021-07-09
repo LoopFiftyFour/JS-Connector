@@ -34,6 +34,12 @@ module.exports = function () {
             expect(client.userId).to.equal(id);
         });
 
+        it("Recieves and retains CustomHeaders", function () {
+            var header = { customHeaderKey: "customHeaderValue" };
+            var client = getClient(common.endpoint, null, null, header);
+            expect(client.customHeaders).to.eql(header);
+        });
+
         describe("createEvents", () => {
             let client, callStub, errStub;
 
