@@ -33,7 +33,7 @@ let core = {
         return cookies.removeItem(core.userIdCookieKey, core.userIdCookiePath);
     },
 
-    call: function (endpoint, path, body, method, callback, userId, apiKey) {
+    call: function (endpoint, path, body, method, callback, userId, apiKey, customHeaders) {
 
         if(!userId)
             userId = core.getUserId();
@@ -47,6 +47,13 @@ let core = {
             "lib-version": "JS:" + core.versions.libVersion,
             "api-version": core.versions.apiVersion,
         }
+
+        if(customHeaders){
+            for (const key in customHeaders) {
+                headers[key] = customHeaders[key];
+            }
+        }
+
         if(apiKey)
             headers["Loop54-key"] = apiKey;
 
