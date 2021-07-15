@@ -4,7 +4,7 @@ import cookies from "./cookies.js";
 let core = {
 
     versions: {
-        libVersion: "1.4.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
+        libVersion: "1.5.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
         apiVersion: "V3"
     },
 
@@ -33,7 +33,7 @@ let core = {
         return cookies.removeItem(core.userIdCookieKey, core.userIdCookiePath);
     },
 
-    call: function (endpoint, path, body, method, callback, userId, apiKey) {
+    call: function (endpoint, path, body, method, callback, userId, apiKey, customHeaders) {
 
         if(!userId)
             userId = core.getUserId();
@@ -47,6 +47,13 @@ let core = {
             "lib-version": "JS:" + core.versions.libVersion,
             "api-version": core.versions.apiVersion,
         }
+
+        if(customHeaders){
+            for (const key in customHeaders) {
+                headers[key] = customHeaders[key];
+            }
+        }
+
         if(apiKey)
             headers["Loop54-key"] = apiKey;
 

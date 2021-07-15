@@ -4,7 +4,7 @@ import core from './core.js';
  * Returns a client that can be used to communicate with the engine.
  * @param {string} endpoint The complete URL to the engine.
 */
-function getLoop54Client (endpoint, userId, apiKey) {
+function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
     if (typeof endpoint !== 'string' || endpoint.length === 0) {
         throw new Error("Parameter \"endpoint\" must be present and have a non-zero length.");
@@ -28,6 +28,11 @@ function getLoop54Client (endpoint, userId, apiKey) {
         apiKey: apiKey,
 
         /**
+         * Object of custom headers to be set with the calls.
+         */
+        customHeaders: customHeaders,
+
+        /**
          * Used for performing autocomplete requests to the engine.
          * @param {string} searchTerm The query to find suggestions.
          */
@@ -49,7 +54,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                     query: query,
                     queriesOptions: core.deleteCustomData(options),
                     customData:options.customData
-                }, null, callback, userId, apiKey);
+                }, null, callback, userId, apiKey, customHeaders);
 
             return req;
         },
@@ -96,7 +101,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
             var req = core.call(this.endpoint, "/createEvents", {
                 events: [event],
                 customData:options.customData
-            },null,callback, userId, apiKey);
+            },null,callback, userId, apiKey, customHeaders);
             
             return req;
         },
@@ -133,7 +138,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
             var req = core.call(this.endpoint, "/createEvents", {
                 events: events,
                 customData:options.customData
-            },null,callback, userId, apiKey);
+            },null,callback, userId, apiKey, customHeaders);
             
             return req;
         },
@@ -161,7 +166,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                     entity: entity,
                     resultsOptions: core.deleteCustomData(options),
                     customData:options.customData
-                }, null, callback, userId, apiKey);
+                }, null, callback, userId, apiKey, customHeaders);
 
             return req;
         },
@@ -193,7 +198,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                     },
                     resultsOptions: core.deleteCustomData(options),
                     customData:options.customData
-                }, null, callback, userId, apiKey);
+                }, null, callback, userId, apiKey, customHeaders);
 
             return req;
         },
@@ -214,7 +219,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
             var req = core.call(this.endpoint, "/getEntities", {
                     resultsOptions: core.deleteCustomData(options),
                     customData:options.customData
-                }, null, callback, userId, apiKey);
+                }, null, callback, userId, apiKey, customHeaders);
 
             return req;
         },
@@ -251,7 +256,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
                         facets: options.facets
                     },
                     customData:options.customData
-                }, null, callback, userId, apiKey);
+                }, null, callback, userId, apiKey, customHeaders);
 
             return req;
         },
@@ -271,7 +276,7 @@ function getLoop54Client (endpoint, userId, apiKey) {
             
             var req = core.call(this.endpoint, "/sync", {
                     customData:options.customData
-                }, null, callback, userId, apiKey);
+                }, null, callback, userId, apiKey, customHeaders);
 
             return req;
         },
