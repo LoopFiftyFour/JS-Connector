@@ -23,7 +23,7 @@ module.exports = function () {
     it("Returns 200 OK and a valid response, without callback", function () {
         return client.getRelatedEntities({type:"Product",id:"test"}).then(okFunc);
     });
-    
+
     it("Returns 200 OK and a valid response, with callback", function (done) {
         client.getRelatedEntities({type:"Product",id:"test"},response => common.testCallBack(response,okFunc,done));
     });
@@ -31,32 +31,44 @@ module.exports = function () {
     it("Accepts options as second argument, without a callback", function () {
         return client.getRelatedEntities({type:"Product",id:"test"},{}).then(okFunc);
     });
-    
+
     it("Accepts options as second argument, with a callback", function (done) {
         client.getRelatedEntities({type:"Product",id:"test"},{}, response => common.testCallBack(response,okFunc,done));
     });
-    
+
     it("Returns error if it has too few arguments", function () {
         return client.getRelatedEntities().catch(common.includesError);
     });
-    
+
     it("Returns error if it has too many arguments", function () {
         return client.getRelatedEntities({type:"Product",id:"test"},{},"asdasd","asasd","g42om4").catch(common.includesError);
     });
-    
+
     it("Returns error if invalid entity, without callback", function () {
         return client.getRelatedEntities("").catch(common.includesError);
     });
-    
+
     it("Returns error if invalid entity, with callback", function (done) {
         client.getRelatedEntities("",response => common.testCallBack(response,common.includesError,done));
     });
-    
+
     it("Returns error if invalid entity, without callback", function () {
         return client.getRelatedEntities({type:"Test"}).catch(common.includesError);
     });
-    
+
     it("Returns error if invalid entity, with callback", function (done) {
         client.getRelatedEntities({type:"Test"},response => common.testCallBack(response,common.includesError,done));
+    });
+    
+    it("Accepts 'complementary' relation kind, without callback", function() {
+        return client.getRelatedEntities({type:"Product",id:"test"}, "complementary").then(okFunc);
+    });
+
+    it("Accepts 'complementary' relation kind, with callback", function (done) {
+        client.getRelatedEntities({type:"Product",id:"test"}, response => common.testCallBack(response,okFunc,done), "complementary");
+    });
+
+    it("Accepts options and relation kind, with a callback", function (done) {
+        client.getRelatedEntities({type:"Product",id:"test"},{}, "complementary", response => common.testCallBack(response,okFunc,done));
     });
 }
