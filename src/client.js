@@ -164,9 +164,8 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                     relKind = arguments[i];
             }
             
-            if ((typeof(relKind) != "undefined") &&
-                (typeof(relKind) != "string" || (relKind !== "similar" && relKind !== "complementary")))
-                return core.returnError("relKind must be either undefined or 'similar' or 'complementary'");
+            if (!(relKind === undefined || relKind === "similar" || relKind === "complementary"))
+                return core.returnError("relKind must be either undefined or \"similar\" or \"complementary\".");
 
             //validate entity
             if (typeof(entity) != "object" || !entity.type || !entity.id) {
