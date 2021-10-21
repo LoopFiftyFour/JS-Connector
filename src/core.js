@@ -74,17 +74,17 @@ let core = {
                 return Promise.reject(response);
             }
         })
-        .catch(function (response) {
+        .catch(function (error) {
 
-            if (axios.isCancel(response)) {
+            if (axios.isCancel(error)) {
                 return { cancelled:true };
             }
         
-            var ret = response;
+            var ret = error;
 
             //if there is no data, that means something went wrong before we got a response
             //construct a "fake" response object with the same properties as an error from the engine
-            if(!ret.data) {
+            if(!ret.response.data) {
                 ret = {
                     data: {
                         error: {
