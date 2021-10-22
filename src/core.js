@@ -4,7 +4,7 @@ import cookies from "./cookies.js";
 let core = {
 
     versions: {
-        libVersion: "1.5.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
+        libVersion: "1.7.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
         apiVersion: "V3"
     },
 
@@ -74,17 +74,17 @@ let core = {
                 return Promise.reject(response);
             }
         })
-        .catch(function (response) {
+        .catch(function (error) {
 
-            if (axios.isCancel(response)) {
+            if (axios.isCancel(error)) {
                 return { cancelled:true };
             }
         
-            var ret = response;
+            var ret = error;
 
             //if there is no data, that means something went wrong before we got a response
             //construct a "fake" response object with the same properties as an error from the engine
-            if(!ret.data) {
+            if(!ret.response.data) {
                 ret = {
                     data: {
                         error: {
