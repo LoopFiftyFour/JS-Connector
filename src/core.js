@@ -84,11 +84,11 @@ let core = {
 
             //if there is no data, that means something went wrong before we got a response
             //construct a "fake" response object with the same properties as an error from the engine
-            if(!ret.response.data) {
+            if(!ret.response || !ret.response.data) {
                 ret = {
                     data: {
                         error: {
-                            title: response.message
+                            title: error.message
                         }
                     }
                 };
