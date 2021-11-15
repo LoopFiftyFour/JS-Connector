@@ -156,16 +156,6 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             var options = args.options ? args.options : {};
             var callback = args.callback ? args.callback : null;
-            
-            // read and validate relKind
-            var relKind;
-            for (var i = 1; i < arguments.length; i++) {
-                if (typeof(arguments[i]) === "string")
-                    relKind = arguments[i];
-            }
-            
-            if (!(relKind === undefined || relKind === "similar" || relKind === "complementary"))
-                return core.returnError("relKind must be either undefined or \"similar\" or \"complementary\".");
 
             //validate entity
             if (typeof(entity) != "object" || !entity.type || !entity.id) {
@@ -176,7 +166,34 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                     entity: entity,
                     resultsOptions: core.deleteCustomData(options),
                     customData: options.customData,
-                    relationKind: relKind         // because relKind is undefined, it'll be skipped during stringify, so older engines won't choke on it
+                }, null, callback, userId, apiKey, customHeaders);
+
+            return req;
+        },
+
+        /**
+         * Used for performing getComplementaryEntities requests to the engine.
+         * @param {object} entity The entity for which to find complmentary entities
+         */
+        getComplementaryEntities: function (entity) {
+
+            var args = core.getOptionsAndCallback(arguments, 1, 4);
+            if (args.error) {
+                return core.returnError(args.error,args.callback);
+            }
+
+            var options = args.options ? args.options : {};
+            var callback = args.callback ? args.callback : null;
+
+            //validate entity
+            if (typeof(entity) != "object" || !entity.type || !entity.id) {
+                return core.returnError("entity must be an object with properties \"type\" and \"id\".", callback);
+            }
+            
+            var req = core.call(this.endpoint, "/getComplementaryEntities", {
+                    entity: entity,
+                    resultsOptions: core.deleteCustomData(options),
+                    customData: options.customData,
                 }, null, callback, userId, apiKey, customHeaders);
 
             return req;

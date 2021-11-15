@@ -59,16 +59,4 @@ module.exports = function () {
     it("Returns error if invalid entity, with callback", function (done) {
         client.getRelatedEntities({type:"Test"},response => common.testCallBack(response,common.includesError,done));
     });
-    
-    it("Accepts 'complementary' relation kind, without callback", function() {
-        return client.getRelatedEntities({type:"Product",id:"test"}, "complementary").then(okFunc);
-    });
-
-    it("Accepts 'complementary' relation kind, with callback", function (done) {
-        client.getRelatedEntities({type:"Product",id:"test"}, response => common.testCallBack(response,okFunc,done), "complementary");
-    });
-
-    it("Accepts options and relation kind, with a callback", function (done) {
-        client.getRelatedEntities({type:"Product",id:"test"},{}, "complementary", response => common.testCallBack(response,okFunc,done));
-    });
 }
