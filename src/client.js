@@ -200,6 +200,34 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
         },
 
         /**
+         * Used for performing getBasketRecommendations requests to the engine.
+         * @param {object[]} entities The set of entities in the basket to get recommendations for.
+         */
+        getBasketRecommendations: function (entities) {
+
+            var args = core.getOptionsAndCallback(arguments, 1, 4);
+            if (args.error) {
+                return core.returnError(args.error,args.callback);
+            }
+
+            var options = args.options ? args.options : {};
+            var callback = args.callback ? args.callback : null;
+
+            //validate entities
+            if (!Array.isArray(entities) || entities.filter(entity => entity.type && entity.id).length !== entities.length) {
+                return core.returnError("entities must be an array with atleast one object with properties \"type\" and \"id\".", callback);
+            }
+
+            var req = core.call(this.endpoint, "/getBasketRecommendations", {
+                    entities: entities,
+                    resultsOptions: core.deleteCustomData(options),
+                    customData: options.customData,
+                }, null, callback, userId, apiKey, customHeaders);
+
+            return req;
+        },
+
+        /**
          * Used for performing getEntitiesByAttribute requests to the engine.
          * @param {string} attributeName The name of the attribute for which to get entities
          * @param {any} attributeValue The value of the attribute for which to get entitites

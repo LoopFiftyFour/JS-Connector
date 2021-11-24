@@ -8,6 +8,7 @@ import getEntities from "./getEntities"
 import getRelatedEntities from "./getRelatedEntities"
 import getEntitiesByAttribute from "./getEntitiesByAttribute"
 import getComplementaryEntities from "./getComplementaryEntities"
+import getBasketRecommendations from "./getBasketRecommendations"
 import createEvents from "./createEvents"
 import sync from "./sync"
 import cancellation from "./cancellation";
@@ -23,6 +24,7 @@ describe("Loop54", function () {
     describe("client.getEntities", getEntities);
     describe("client.getRelatedEntities", getRelatedEntities);
     describe("client.getComplementaryEntities", getComplementaryEntities);
+    describe("client.getBasketRecommendations", getBasketRecommendations);
     describe("client.getEntitiesByAttribute", getEntitiesByAttribute);
     describe("client.createEvents", createEvents);
     describe("client.sync", sync);
