@@ -1,6 +1,6 @@
 {
   "name": "loop54-js-connector",
-  "version": "1.8.5454545454-build-number",
+  "version": "1.9.5454545454-build-number",
   "description": "JS Wrapper for Loop54 JSON API",
   "license": "BSD-3-Clause",
   "main": "lib/loop54-js-connector-client.js",
