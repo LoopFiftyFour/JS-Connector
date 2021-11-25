@@ -215,7 +215,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             //validate entities
             if (!Array.isArray(entities) || entities.filter(entity => entity.type && entity.id).length !== entities.length) {
-                return core.returnError("entities must be an array with atleast one object with properties \"type\" and \"id\".", callback);
+                return core.returnError("entities must be a non-empty array where each item is an object with properties \"type\" and \"id\".", callback);
             }
 
             var req = core.call(this.endpoint, "/getBasketRecommendations", {
