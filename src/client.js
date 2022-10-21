@@ -356,6 +356,33 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             return req;
         },
+		
+		/**
+         * Used to perform a request to get a list of all unique values that are indexed for the provided attribute.
+         * @param {string} attributeName The name of the attribute for which to fetch indexed values.
+         */
+        getIndexedAttributeValues: function (attributeName) {
+
+            var args = core.getOptionsAndCallback(arguments, 1);
+            if (args.error) {
+                return core.returnError(args.error,args.callback);
+            }
+
+            var options = args.options ? args.options : {};
+            var callback = args.callback ? args.callback : null;
+
+            //validate input
+            if (typeof(attributeName) != "string" || attributeName.length == 0) {
+                return core.returnError("attributeName is either missing or not a string", callback);
+            }
+
+            var req = core.call(this.endpoint, "/getIndexedAttributeValues", {
+                    attributeName: attributeName,
+                    customData:options.customData
+                }, null, callback, userId, apiKey, customHeaders);
+
+            return req;
+        },
 
         /**
          * Used for removing current userId cookie and setting a new one.

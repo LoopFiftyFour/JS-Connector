@@ -17,8 +17,8 @@ module.exports = function () {
     
     var okFunc = function(response) {
         expect(response.status).to.equal(200);
-		expect(response.data.attributes.length).to.equal(13);
-		expect(response.data.indexedAttributes.length).to.equal(4);
+        expect(response.data.attributes.length).to.equal(13);
+        expect(response.data.indexedAttributes.length).to.equal(4);
     }
     
     it("Returns 200 OK and a valid response, without callback", function () {
