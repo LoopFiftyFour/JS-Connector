@@ -336,6 +336,26 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             return req;
         },
+		
+		/**
+         * Used to perform a request to get information about attributes, indexed and non-indexed.
+         */
+        getIndexedAttributes:  function () {
+
+            var args = core.getOptionsAndCallback(arguments, 0);
+            if (args.error) {
+                return core.returnError(args.error,args.callback);
+            }
+
+            var options = args.options ? args.options : {};
+            var callback = args.callback ? args.callback : null;
+            
+            var req = core.call(this.endpoint, "/getIndexedAttributes", {
+                    customData:options.customData
+                }, null, callback, userId, apiKey, customHeaders);
+
+            return req;
+        },
 
         /**
          * Used for removing current userId cookie and setting a new one.

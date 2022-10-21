@@ -147,6 +147,8 @@ The connector supports the following API operations:
 - GetRelatedEntities
 - CreateEvent
 - CreateEvents
+- GetIndexedAttributes
+- GetIndexedAttributeValues
 
 It also aids in developing a Loop54 integration by:
 
