@@ -11,6 +11,8 @@ import getComplementaryEntities from "./getComplementaryEntities"
 import getBasketRecommendations from "./getBasketRecommendations"
 import createEvents from "./createEvents"
 import sync from "./sync"
+import getIndexedAttributes from "./getIndexedAttributes"
+import getIndexedAttributeValues from "./getIndexedAttributeValues"
 import cancellation from "./cancellation";
 import core from "./core";
 
@@ -28,6 +30,8 @@ describe("Loop54", function () {
     describe("client.getEntitiesByAttribute", getEntitiesByAttribute);
     describe("client.createEvents", createEvents);
     describe("client.sync", sync);
+    describe("client.getIndexedAttributes", getIndexedAttributes);
+    describe("client.getIndexedAttributeValues", getIndexedAttributeValues);
 
     describe("request.cancel", cancellation);
 

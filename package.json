@@ -1,6 +1,6 @@
 {
   "name": "loop54-js-connector",
-  "version": "1.9.5454545454-build-number",
+  "version": "1.10.5454545454-build-number",
   "description": "JS Wrapper for Loop54 JSON API",
   "license": "BSD-3-Clause",
   "main": "lib/loop54-js-connector-client.js",
@@ -33,7 +33,7 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/register": "^7.12.13",
     "babelify": "^10.0.0",
-    "chai": "^3.4.1",
+    "chai": "^4.0.0",
     "chai-as-promised": "^7.1.1",
     "express": "^4.16.2",
     "http": "0.0.0",

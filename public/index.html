@@ -51,7 +51,9 @@
   <a href="#autocomplete">AutoComplete</a> | 
   <a href="#getentities">GetEntities</a> | 
   <a href="#getentitiesbyattribute">GetEntitiesByAttribute</a> | 
-  <a href="#getrelatedentities">GetRelatedEntities</a>
+  <a href="#getrelatedentities">GetRelatedEntities</a> | 
+  <a href="#getindexedattributes">GetIndexedAttributes</a> | 
+  <a href="#getindexedattributevalues">GetIndexedAttributeValues</a>
   
   <hr />
   
@@ -156,7 +158,7 @@
             document.getElementById('inputFacets').style.display='block';
             document.getElementById('outputFacets').style.display='block';
         }
-        else if(operation=="#autocomplete") {
+        else {
             document.getElementById('inputFacets').style.display='none';
             document.getElementById('outputFacets').style.display='none';
         }
@@ -167,7 +169,7 @@
         if(userId=="")
             userId = null;
         
-        return Loop54.getClient("http://helloworld.54proxy.com",userId);
+        return Loop54.getClient("http://helloworld.54proxy.com",userId, "TestApiKey");
     }
     
     function callLoop54(selectedFacets) {
@@ -232,6 +234,15 @@
         {
             var typeIdPair = document.getElementById('form').elements['query'].value.split(':');
             client.getRelatedEntities({type:typeIdPair[0],id:typeIdPair[1]}, options, printResponse);
+        }
+        else if(operation=="#getindexedattributes")
+        {
+            client.getIndexedAttributes({}, printResponse);
+        }
+        else if(operation=="#getindexedattributevalues")
+        {
+            var category = document.getElementById('form').elements['query'].value;
+            client.getIndexedAttributeValues(category, {}, printResponse);
         }
         else {
             console.warn("unknown operation " + operation);
@@ -316,6 +327,9 @@
             "queries":formatStringResults,
             "results":formatEntityResults,
             "relatedResults":formatEntityResults,
+            "attributes":formatStringList,
+            "indexedAttributes":formatStringList,
+            "values":formatStringList
         }
         
         for(var mapping in mappings)
@@ -332,6 +346,16 @@
         if(response.data.results && response.data.results.facets.length > 0) {
             renderFacets(response.data.results.facets);
         }
+    }
+    
+    function formatStringList(val)
+    {
+        let ret = "<b>Total number</b>:" + val.length + "<br/>";
+        
+        for(var i in val)
+            ret += val[i] + "<br />";
+            
+        return ret;
     }
     
     function formatStringResults(val)
