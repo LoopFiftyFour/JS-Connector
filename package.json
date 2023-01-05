@@ -9,7 +9,7 @@
     "dev": "node launch-dev.js",
     "watch": "watchify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --presets [ @babel/preset-env ] ]",
     "server": "node server.js",
-    "build-connector": "browserify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --presets [ @babel/preset-env ] ]",
+    "build-connector": "browserify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --global --ignore '[/node_modules/(?!axios/)]' --presets [ @babel/preset-env ] ]",
     "build-client": "rollup src/client.js -e axios -o lib/loop54-js-connector-client.js -f cjs",
     "uglify": "uglifyjs lib/loop54-js-connector.js -o lib/loop54-js-connector.min.js",
     "bundle": "node bundle.js",
