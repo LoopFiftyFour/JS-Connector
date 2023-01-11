@@ -1,4 +1,3 @@
-import "@babel/polyfill";
 import getClient from './client';
 
 /**

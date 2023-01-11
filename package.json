@@ -7,9 +7,9 @@
   "scripts": {
     "clean": "rm -rf ./lib",
     "dev": "node launch-dev.js",
-    "watch": "watchify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --presets [ @babel/preset-env ] ]",
+    "watch": "watchify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify ]",
     "server": "node server.js",
-    "build-connector": "browserify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --global --ignore '[/node_modules/(?!axios/)]' --presets [ @babel/preset-env ] ]",
+    "build-connector": "browserify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --global --ignore '[/node_modules/(?!axios/)]' ]",
     "build-client": "rollup src/client.js -e axios -o lib/loop54-js-connector-client.js -f cjs",
     "uglify": "uglifyjs lib/loop54-js-connector.js -o lib/loop54-js-connector.min.js",
     "bundle": "node bundle.js",
@@ -25,16 +25,16 @@
   ],
   "author": "Loop54",
   "dependencies": {
-    "@babel/polyfill": "^7.0.0",
     "axios": "^1"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-env": "^7.20.0",
     "@babel/register": "^7.12.13",
     "babelify": "^10.0.0",
     "chai": "^4.0.0",
     "chai-as-promised": "^7.1.1",
+    "core-js": "^3.27.1",
     "express": "^4.16.2",
     "http": "0.0.0",
     "mocha": "^8.3.0",
