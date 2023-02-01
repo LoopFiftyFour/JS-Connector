@@ -228,7 +228,10 @@
         else if(operation=="#getentitiesbyattribute")
         {
             var nameValuePair = document.getElementById('form').elements['query'].value.split(':');
-            client.getEntitiesByAttribute(nameValuePair[0],nameValuePair[1],options, printResponse);
+            var values = nameValuePair[1].split(',');
+            if(values.length == 1)
+                values = values[0];
+            client.getEntitiesByAttribute(nameValuePair[0],values,options, printResponse);
         }
         else if(operation=="#getrelatedentities")
         {

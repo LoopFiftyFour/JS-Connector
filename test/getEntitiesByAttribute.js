@@ -27,12 +27,20 @@ module.exports = function () {
     it("Returns 200 OK and a valid response, with callback", function (done) {
         client.getEntitiesByAttribute("title","test",response => common.testCallBack(response,okFunc,done));
     });
+    
+    it("Returns 200 OK and a valid response, multiple values, without callback", function () {
+        return client.getEntitiesByAttribute("title",["test", "west"]).then(okFunc);
+    });
+    
+    it("Returns 200 OK and a valid response, multiple values, with callback", function (done) {
+        client.getEntitiesByAttribute("title",["test", "west"],response => common.testCallBack(response,okFunc,done));
+    });
 
-    it("Accepts options as second argument, without a callback", function () {
+    it("Accepts options as third argument, without a callback", function () {
         return client.getEntitiesByAttribute("title","test",{}).then(okFunc);
     });
     
-    it("Accepts options as second argument, with a callback", function (done) {
+    it("Accepts options as third argument, with a callback", function (done) {
         client.getEntitiesByAttribute("title","test",{}, response => common.testCallBack(response,okFunc,done));
     });
     
