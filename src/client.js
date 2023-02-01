@@ -246,12 +246,18 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
             if (typeof(attributeName) != "string") {
                 return core.returnError("Missing argument attributeName or attributeName was not of type string.", callback);
             }
+            
+            //copy alias to separate variable and remove it from options
+            var alias = options.requestAlias;
+            if(alias)
+                delete options.requestAlias;
         
             var req = core.call(this.endpoint, "/getEntitiesByAttribute", {
                     attribute: {
                         name: attributeName,
                         value: attributeValues
                     },
+                    requestAlias: alias,
                     resultsOptions: core.deleteCustomData(options),
                     customData:options.customData
                 }, null, callback, userId, apiKey, customHeaders);

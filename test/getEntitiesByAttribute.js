@@ -9,7 +9,7 @@ import common from "./common";
 module.exports = function () {
 
     let client = Loop54.getClient(common.endpoint);
-
+    
     //mock all calls to the /getEntitiesByAttribute endpoint
     beforeEach(() => {
         nock(common.endpoint).post("/getEntitiesByAttribute").reply(200, getEntitiesByAttributeResponse);
@@ -34,6 +34,20 @@ module.exports = function () {
     
     it("Returns 200 OK and a valid response, multiple values, with callback", function (done) {
         client.getEntitiesByAttribute("title",["test", "west"],response => common.testCallBack(response,okFunc,done));
+    });
+    
+    var alias = {
+        name: "titleAlias",
+        value: "valueAlias",
+        details: "details"
+    };
+    
+    it("Returns 200 OK and a valid response, with alias, without callback", function () {
+        return client.getEntitiesByAttribute("title","test", {requestAlias:alias}).then(okFunc);
+    });
+    
+    it("Returns 200 OK and a valid response, with alias, with callback", function (done) {
+        client.getEntitiesByAttribute("title","test",{requestAlias:alias},response => common.testCallBack(response,okFunc,done));
     });
 
     it("Accepts options as third argument, without a callback", function () {
