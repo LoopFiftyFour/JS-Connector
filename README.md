@@ -32,31 +32,36 @@ Javascript Wrapper for Loop54 JSON V3 API
 ### Transpilation
 
 If you're using NPM to include the connector in your build pipeline, (for instance using Rollup or Webpack),
-note that the module is exported as a pure ES6 module, and it is not bundled with dependencies, transpiled or otherwise prepared for live environment. 
+note that the module is exported as a pure ES6 module, and it is not bundled with dependencies, transpiled or otherwise prepared for live environment.
 You will need to make those preparations as part of your own pipeline.
 
 ### Configure
 
 When creating a client, you will need to set the endpoint to match the one you will get from Loop54.
 
-If you included `loop54-js-connector.js` (or `loop54-js-connector.min.js`) in a script tag, 
+If you included `loop54-js-connector.js` (or `loop54-js-connector.min.js`) in a script tag,
 you can get a configured client from the global Loop54 object:
+
 __Get client from global Loop54 object__
-```
+
+```js
 var client = Loop54.getClient('URL_TO_YOUR_ENDPOINT');
 ```
 
-If you imported the connector as an ECMAScript module (with require('loop54-js-connector') or equivalent), 
+If you imported the connector as an ECMAScript module (with require('loop54-js-connector') or equivalent),
 you can call the getClient function directly:
+
 __Get client from imported function__
-```
+
+```js
 var client = getClient('URL_TO_YOUR_ENDPOINT');
 ```
 
 ### Making API requests
 
 __Search example with promise__
-```
+
+```js
 var options = {skip:0,take:20}; //this will take the first 20 results
 
 client.search("R2 droids", options)
@@ -70,7 +75,8 @@ client.search("R2 droids", options)
 ```
 
 __Search example with callback__
-```
+
+```js
 var options = {skip:0,take:20}; //this will take the first 20 results
 
 var callback = function(response){
@@ -94,14 +100,16 @@ __Cancelling a request__
 All requests can be cancelled, which is useful when the user types fast.
 
 Using promise:
-```
+
+```js
 const request = client.search("R2 droids", {}); //create request
 request.then(response => if(!response.cancelled) console.log('done')); //attach continuation
 request.cancel(); // cancel the request
 ```
 
 Using callback:
-```
+
+```js
 var callback = function(response) { if(!response.cancelled) console.log('done'); } //create callback
 const request = client.search("R2 droids", {}, callback);  //create request
 request.cancel(); // cancel the request
@@ -109,7 +117,7 @@ request.cancel(); // cancel the request
 
 __Create events example__
 
-```
+```js
 var entity = {type:"Product",id:"1234"};
 
 var callback = function(response){
@@ -132,7 +140,8 @@ Connector do it using cookies, you can set the user ID when retrieving a client
 like this:
 
 __Configuration example with custom user ID__
-```
+
+```js
 var client = Loop54.getClient('URL_TO_YOUR_ENDPOINT','YOUR_USER_ID');
 ```
 
