@@ -230,9 +230,9 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
         /**
          * Used for performing getEntitiesByAttribute requests to the engine.
          * @param {string} attributeName The name of the attribute for which to get entities
-         * @param {any} attributeValue The value of the attribute for which to get entitites
+         * @param {any} attributeValues The value of the attribute for which to get entitites. This can be a single value, or an array of values.
          */
-        getEntitiesByAttribute: function (attributeName, attributeValue) {
+        getEntitiesByAttribute: function (attributeName, attributeValues) {
 
             var args = core.getOptionsAndCallback(arguments, 2);
             if (args.error) {
@@ -247,11 +247,17 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 return core.returnError("Missing argument attributeName or attributeName was not of type string.", callback);
             }
             
+            //copy alias to separate variable and remove it from options
+            var alias = options.requestAlias;
+            if(alias)
+                delete options.requestAlias;
+        
             var req = core.call(this.endpoint, "/getEntitiesByAttribute", {
                     attribute: {
                         name: attributeName,
-                        value: attributeValue
+                        value: attributeValues
                     },
+                    requestAlias: alias,
                     resultsOptions: core.deleteCustomData(options),
                     customData:options.customData
                 }, null, callback, userId, apiKey, customHeaders);
@@ -336,8 +342,8 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             return req;
         },
-		
-		/**
+        
+        /**
          * Used to perform a request to get information about attributes, indexed and non-indexed.
          */
         getIndexedAttributes:  function () {
@@ -356,8 +362,8 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             return req;
         },
-		
-		/**
+        
+        /**
          * Used to perform a request to get a list of all unique values that are indexed for the provided attribute.
          * @param {string} attributeName The name of the attribute for which to fetch indexed values.
          */
