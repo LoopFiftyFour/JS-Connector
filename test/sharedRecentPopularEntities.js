@@ -78,11 +78,7 @@ export default (endpoint, functionName) => {
         ],
     ];
 
-    testCases.forEach((data) => {
-        const name = data[0];
-        const params = data[1];
-        const expected = data[2];
-
+    testCases.forEach(([name, params, expected]) => {
         const resultsOptions = { take: 5 };
 
         async function withPromise(actual, expected) {
@@ -91,12 +87,12 @@ export default (endpoint, functionName) => {
         }
 
         async function withCallback(actual, expected) {
-            // The promise will resolve with a reference to the callback when it's called 
+            // The promise will resolve with a reference to the callback when it's called
             const onCallback = new Promise((resolve, _reject) => {
                 const impl = spy(() => resolve(impl));
                 actual(impl);
             });
- 
+
             const cb = await expect(onCallback).to.eventually.be.fulfilled;
             expect(cb).have.been.calledOnceWith(match({ data: expected }));
         }
