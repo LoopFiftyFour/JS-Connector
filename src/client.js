@@ -322,27 +322,6 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
         },
 
         /**
-         * Used for performing getRecommendedEntities requests to the engine.
-         */
-        getRecommendedEntities: function () {
-
-            var args = core.getOptionsAndCallback(arguments, 0, 2);
-            if (args.error) {
-                return core.returnError(args.error,args.callback);
-            }
-
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
-
-            var req = core.call(this.endpoint, "/getRecommendedEntities", {
-                    resultsOptions: core.deleteCustomData(options),
-                    customData: options.customData,
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
-        },
-
-        /**
          * Used for performing getEntitiesByAttribute requests to the engine.
          * @param {string} attributeName The name of the attribute for which to get entities
          * @param {any} attributeValue The value of the attribute for which to get entitites
