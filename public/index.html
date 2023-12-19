@@ -60,9 +60,30 @@
   <div class="input">
   
       <form id="form">
-        <p>
-          Query: <input type="text" name="query" value="meat" />
-        </p>
+        <div id="query">
+            <p>
+              Query: <input type="text" name="query" value="meat" />
+            </p>
+        </div>
+        <div id="attribute">
+            <p>
+              Attribute name: <input type="text" name="attributeName" value="Category" />
+            </p>
+            <p>
+              Attribute values: <input type="text" name="attributeValues" value="meat,dairy" />
+            </p>
+        </div>
+        <div id="alias">
+            <p>
+              Alias name: <input type="text" name="aliasName" value="CategoryAlias" />
+            </p>
+            <p>
+              Alias values: <input type="text" name="aliasValue" value="MeatAlias" />
+            </p>
+            <p>
+              Details: <input type="text" name="aliasDetails" value="This alias was created by the JS Connector test application" />
+            </p>
+        </div>
         <h2>Options</h2>
         <p>
           Skip: <input type="text" name="skip" value="0" />
@@ -149,9 +170,9 @@
       selectedFacets: {}
     }
     
-    window.onhashchange = toggleFacets;
+    window.onhashchange = toggleFields;
     
-    function toggleFacets(){
+    function toggleFields(){
         var operation = location.hash;
     
         if(operation=="#search" || operation=="#getentities" || operation=="#getrelatedentities" || operation=="#getentitiesbyattribute") {
@@ -161,6 +182,22 @@
         else {
             document.getElementById('inputFacets').style.display='none';
             document.getElementById('outputFacets').style.display='none';
+        }
+        
+        if(operation=="#getentitiesbyattribute") {
+            document.getElementById('query').style.display='none';
+            document.getElementById('attribute').style.display='block';
+            document.getElementById('alias').style.display='block';
+        }
+        else if (operation=="#getindexedattributes") {
+            document.getElementById('query').style.display='none';
+            document.getElementById('attribute').style.display='none';
+            document.getElementById('alias').style.display='none';
+        }
+        else {
+            document.getElementById('query').style.display='block';
+            document.getElementById('attribute').style.display='none';
+            document.getElementById('alias').style.display='none';
         }
     }
     
@@ -227,8 +264,21 @@
         }
         else if(operation=="#getentitiesbyattribute")
         {
-            var nameValuePair = document.getElementById('form').elements['query'].value.split(':');
-            client.getEntitiesByAttribute(nameValuePair[0],nameValuePair[1],options, printResponse);
+            var name = document.getElementById('form').elements['attributeName'].value;
+            var values = document.getElementById('form').elements['attributeValues'].value.split(',');
+            if(values.length == 1)
+                values = values[0];
+                
+            var alias = {
+                name: document.getElementById('form').elements['aliasName'].value,
+                value: document.getElementById('form').elements['aliasValue'].value,
+                details: document.getElementById('form').elements['aliasDetails'].value,
+            }
+            
+            if(alias.name.length > 0 || alias.value.length > 0 || alias.details.length > 0)
+                options.requestAlias = alias;
+                
+            client.getEntitiesByAttribute(name, values, options, printResponse);
         }
         else if(operation=="#getrelatedentities")
         {
