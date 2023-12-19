@@ -228,6 +228,121 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
         },
 
         /**
+         * Used for performing getRecommendedEntities requests to the engine.
+         */
+        getRecommendedEntities: function () {
+            var args = core.getOptionsAndCallback(arguments, 0, 2);
+            if (args.error) {
+                return core.returnError(args.error,args.callback);
+            }
+
+            var options = args.options ? args.options : {};
+            var callback = args.callback ? args.callback : null;
+
+            var req = core.call(this.endpoint, "/getRecommendedEntities", {
+                    resultsOptions: core.deleteCustomData(options),
+                    customData: options.customData,
+                }, null, callback, userId, apiKey, customHeaders);
+
+            return req;
+        },
+
+        /**
+         * Used for performing getRecentEntities requests to the engine.
+         * @param {string} behaviorType The interaction or navigation type to include (such as "click", "purchase" or "search").
+         * @param {string} [forUserId] User ID (normally the same as the one in the User-Id header) to retrieve the most recent entities for that user, null or undefined to retrieve the globally most recent entities.
+         * @param {string[]} [entityType] The entity types to include (such as "Product" or "Query") or null for all.
+         */
+        getRecentEntities: function (behaviorType, forUserId, entityType) {
+            var argumentsArray = Array.prototype.slice.call(arguments);
+            
+            if (typeof forUserId !== "string" && forUserId !== null) {
+                argumentsArray.splice(1, 0, null);
+                forUserId = null;
+            }
+            if (!Array.isArray(entityType) && entityType !== null) {
+                argumentsArray.splice(2, 0, null);
+                entityType = null;
+            }
+
+            var args = core.getOptionsAndCallback(argumentsArray.slice(2), 1);
+            if (args.error) {
+                return core.returnError(args.error, args.callback);
+            }
+
+            var options = args.options ? args.options : {};
+            var callback = args.callback ? args.callback : null;
+
+            var req = core.call(this.endpoint, "/getRecentEntities", {
+                    behaviorType,
+                    forUserId,
+                    entityType,
+                    resultsOptions: core.deleteCustomData(options),
+                    customData: options.customData,
+                }, null, callback, userId, apiKey, customHeaders);
+
+            return req;
+        },
+
+        /**
+         * Used for performing getPopularEntities requests to the engine.
+         * @param {string} behaviorType The interaction or navigation type to include (such as "click", "purchase" or "search").
+         * @param {string} [forUserId] User ID (normally the same as the one in the User-Id header) to retrieve the most common entities for that user, null or undefined to retrieve the globally most common entities.
+         * @param {string[]} [entityType] The entity types to include (such as "Product" or "Query") or null for all.
+         */
+        getPopularEntities: function (behaviorType, forUserId, entityType) {
+            var argumentsArray = Array.prototype.slice.call(arguments);
+            
+            if (typeof forUserId !== "string" && forUserId !== null) {
+                argumentsArray.splice(1, 0, null);
+                forUserId = null;
+            }
+            if (!Array.isArray(entityType) && entityType !== null) {
+                argumentsArray.splice(2, 0, null);
+                entityType = null;
+            }
+            
+            var args = core.getOptionsAndCallback(argumentsArray.slice(2), 1);
+            if (args.error) {
+                return core.returnError(args.error, args.callback);
+            }
+
+            var options = args.options ? args.options : {};
+            var callback = args.callback ? args.callback : null;
+
+            var req = core.call(this.endpoint, "/getPopularEntities", {
+                    behaviorType,
+                    forUserId,
+                    entityType,
+                    resultsOptions: core.deleteCustomData(options),
+                    customData: options.customData,
+                }, null, callback, userId, apiKey, customHeaders);
+
+            return req;
+        },
+
+        /**
+         * Used for performing getRecommendedEntities requests to the engine.
+         */
+        getRecommendedEntities: function () {
+
+            var args = core.getOptionsAndCallback(arguments, 0, 2);
+            if (args.error) {
+                return core.returnError(args.error,args.callback);
+            }
+
+            var options = args.options ? args.options : {};
+            var callback = args.callback ? args.callback : null;
+
+            var req = core.call(this.endpoint, "/getRecommendedEntities", {
+                    resultsOptions: core.deleteCustomData(options),
+                    customData: options.customData,
+                }, null, callback, userId, apiKey, customHeaders);
+
+            return req;
+        },
+
+        /**
          * Used for performing getEntitiesByAttribute requests to the engine.
          * @param {string} attributeName The name of the attribute for which to get entities
          * @param {any} attributeValue The value of the attribute for which to get entitites
