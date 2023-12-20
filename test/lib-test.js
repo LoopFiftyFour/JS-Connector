@@ -9,6 +9,9 @@ import getRelatedEntities from "./getRelatedEntities"
 import getEntitiesByAttribute from "./getEntitiesByAttribute"
 import getComplementaryEntities from "./getComplementaryEntities"
 import getBasketRecommendations from "./getBasketRecommendations"
+import getRecommendedEntities from "./getRecommendedEntities"
+import getRecentEntities from "./getRecentEntities"
+import getPopularEntities from "./getPopularEntities"
 import createEvents from "./createEvents"
 import sync from "./sync"
 import getIndexedAttributes from "./getIndexedAttributes"
@@ -27,7 +30,10 @@ describe("Loop54", function () {
     describe("client.getRelatedEntities", getRelatedEntities);
     describe("client.getComplementaryEntities", getComplementaryEntities);
     describe("client.getBasketRecommendations", getBasketRecommendations);
+    describe("client.getRecommendedEntities", getRecommendedEntities);
     describe("client.getEntitiesByAttribute", getEntitiesByAttribute);
+    describe("client.getRecentEntities", getRecentEntities);
+    describe("client.getPopularEntities", getPopularEntities);
     describe("client.createEvents", createEvents);
     describe("client.sync", sync);
     describe("client.getIndexedAttributes", getIndexedAttributes);
