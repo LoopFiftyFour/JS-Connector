@@ -2,8 +2,8 @@
 <html lang="en">
   <head>
     <script type="text/javascript" src="https://static.loop54.com/lib/js/loop54-js-connector.js"> </script>
-    <script type="text/javascript" src="search.js"> </script>
-    <title>Loop54 search code examples</title>
+    <script type="text/javascript" src="eventtracking.js"> </script>
+    <title>Loop54 multi-event tracking code examples</title>
   </head>
   <body>
     <noscript>
@@ -19,15 +19,8 @@
     <script>
         var client = Loop54.getClient("http://helloworld.54proxy.com");
         
-        var searchQuery = "a";
-        var searchQuery2 = "b";
-        var searchQuery3 = "dfshdfjsdkhfsdjkf";
-        var searchQuery4 = "apple";
-        searchExample(client, searchQuery).then(() => 
-            searchExample(client, searchQuery2).then(() =>
-                searchExample(client, searchQuery3).then(() =>
-                    searchExample(client, searchQuery4)
-        )));
+        var productIds = ["1","2","3","5","7","11"];
+        createMultiEventsExample(client, productIds);
     </script>
   </body>
 </html>
