@@ -179,6 +179,10 @@ A Linux or MacOS environment is required. Windows is not supported and the npm c
 3. run `npm run dev` to start the webserver, open up
    http://localhost:3001/#search and try out the basic features
 
+Before merging a branch, create a commit that updates the package's version number in `package.json`.
+Also, update the version in `package-lock.json`, either manually or through NPM (e.g. `npm i`).
+The build pipeline is set up to automatically copy the version number from `package.json` into the bundled JS output.
+
 ### Build
 
 run `npm run bundle` to build the source code into /lib folder
