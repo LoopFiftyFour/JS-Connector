@@ -4,7 +4,9 @@ import cookies from "./cookies.js";
 let core = {
 
     versions: {
-        libVersion: "1.12.5454545454-build-number", //"5454545454-build-number" will be replaced by teamcity. also in package.json
+        // Do not change `libVersion` manually. See README.
+        // The "5454545454-build-number" part will be replaced automatically during the build process.
+        libVersion: "1.12.5454545454-build-number",
         apiVersion: "V3"
     },
 
