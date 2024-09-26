@@ -10,5 +10,5 @@ process.stdin.on(`data`, input => {
 process.stdin.on(`end`, () => {
     const replaced = chunks.join(``).replaceAll(`___REPLACED DURING BUILD JOB___`, version);
 
-    console.log(replaced);
+    process.stdout.end(replaced);
 });

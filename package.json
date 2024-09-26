@@ -5,7 +5,7 @@
   "license": "BSD-3-Clause",
   "main": "lib/loop54-js-connector-client.js",
   "scripts": {
-    "clean": "rm -rf ./lib",
+    "clean": "rm -rf ./lib && mkdir lib",
     "dev": "node launch-dev.js",
     "watch": "watchify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify ]",
     "server": "node server.js",
