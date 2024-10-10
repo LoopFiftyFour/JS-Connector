@@ -9,11 +9,11 @@
     "dev": "node launch-dev.js",
     "watch": "watchify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify ]",
     "server": "node server.js",
-    "build-connector": "browserify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --global --only [ src node_modules\/axios ] ]",
-    "build-client": "rollup src/client.js -e axios -o lib/loop54-js-connector-client.js -f cjs",
+    "build-connector": "node verifyVersion.js && browserify src/loop54.js -o lib/loop54-js-connector.js -t [ babelify --global --only [ src node_modules\/axios ] ]",
+    "build-client": "node verifyVersion.js && rollup src/client.js -e axios -o lib/loop54-js-connector-client.js -f cjs",
     "uglify": "uglifyjs lib/loop54-js-connector.js -o lib/loop54-js-connector.min.js",
     "bundle": "node bundle.js",
-    "sync-version": "node syncVersion.js && npm i",
+    "sync-version": "node verifyVersion --sync && npm i",
     "test": "mocha --require @babel/register ./test/lib-test.js"
   },
   "keywords": [
