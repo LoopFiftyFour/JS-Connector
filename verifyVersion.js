@@ -3,7 +3,7 @@ const { version } = require(`./package.json`);
 
 const argSyncVersions = process.argv[2] === `--sync`;
 
-const coreFile = `./src/core.js`;
+const coreFile = `src/core.js`;
 const placeholderRegex = /\d+\.\d+\.5454545454-build-number/;
 
 
