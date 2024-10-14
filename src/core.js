@@ -5,8 +5,8 @@ let core = {
 
     versions: {
         // Do not change `libVersion` manually. See README.
-        // The "5454545454-build-number" part here and in package.json will be replaced by teamcity.
-        libVersion: "1.14.5454545454-build-number",  // ## Version ## This comment is required by the version verification script. Do not change!
+        // The "5454545454-build-number" part will be replaced automatically during the build process.
+        libVersion: "1.14.5454545454-build-number",
         apiVersion: "V3"
     },
 
