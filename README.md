@@ -179,6 +179,19 @@ A Linux or MacOS environment is required. Windows is not supported and the npm c
 3. run `npm run dev` to start the webserver, open up
    http://localhost:3001/#search and try out the basic features
 
+### Pull requests
+
+Before creating a pull request:
+- commit your changes
+- update the package's version number in `package.json`
+- run `npm run sync-version`
+  - This synchronises the versions in `package.json`, `package-lock.json` and `core.js`.
+- commit the version related changes with the new version number as the commit message, e.g. `1.14`.
+- push to remote and open pull request
+
+Committing version related changes separately from implementation makes it easier to cherry-pick specific changes.
+Also, spotting version increments in the git history is much quicker.
+
 ### Build
 
 run `npm run bundle` to build the source code into /lib folder
