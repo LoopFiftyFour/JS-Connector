@@ -6,7 +6,7 @@ let core = {
     versions: {
         // Do not change `libVersion` manually. See README.
         // The "5454545454-build-number" part will be replaced automatically during the build process.
-        libVersion: "1.14.5454545454-build-number",
+        libVersion: "1.15.5454545454-build-number",
         apiVersion: "V3"
     },
 
