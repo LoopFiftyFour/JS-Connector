@@ -10,6 +10,8 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
         throw new Error("Parameter \"endpoint\" must be present and have a non-zero length.");
     }
 
+    const currentUserPlaceholder = "(CurrentUser)";
+
     return {
 
         /**
@@ -248,6 +250,15 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
         },
 
         /**
+         * Used for performing getRecentEntities requests to the engine for the current user.
+         * @param {string} behaviorType The interaction or navigation type to include (such as "click", "purchase" or "search").
+         * @param {string[]} [entityType] The entity types to include (such as "Product" or "Query") or null for all.
+         */
+        getRecentEntitiesForCurrentUser: function (behaviorType, entityType) {
+            return this.getRecentEntities(behaviorType, currentUserPlaceholder, entityType);
+        },
+
+        /**
          * Used for performing getRecentEntities requests to the engine.
          * @param {string} behaviorType The interaction or navigation type to include (such as "click", "purchase" or "search").
          * @param {string} [forUserId] User ID (normally the same as the one in the User-Id header) to retrieve the most recent entities for that user, null or undefined to retrieve the globally most recent entities.
@@ -282,6 +293,15 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 }, null, callback, userId, apiKey, customHeaders);
 
             return req;
+        },
+
+        /**
+         * Used for performing getPopularEntities requests to the engine for the current user.
+         * @param {string} behaviorType The interaction or navigation type to include (such as "click", "purchase" or "search").
+         * @param {string[]} [entityType] The entity types to include (such as "Product" or "Query") or null for all.
+         */
+        getPopularEntitiesForCurrentUser: function (behaviorType, entityType) {
+            return this.getPopularEntities(behaviorType, currentUserPlaceholder, entityType);
         },
 
         /**
