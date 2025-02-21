@@ -7,7 +7,7 @@ import core from './core.js';
 function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
     if (typeof endpoint !== 'string' || endpoint.length === 0) {
-        throw new Error("Parameter \"endpoint\" must be present and have a non-zero length.");
+        throw new Error('Parameter "endpoint" must be present and have a non-zero length.');
     }
 
     const currentUserPlaceholder = "(CurrentUser)";
@@ -18,12 +18,12 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          * The engine endpoint this client communicates with.
          */
         endpoint: endpoint,
-        
+
         /**
          * The user ID to use for communications. If left falsy, cookies will be used to track user ID.
          */
         userId: userId,
-        
+
         /**
          * The api key to use for communications. This is required for administrative operations.
          */
@@ -42,13 +42,13 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             var args = core.getOptionsAndCallback(arguments, 1);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
+            var options = args.options || {};
+            var callback = args.callback || null;
 
-            if (typeof(query) != "string" || query.length == 0) {
+            if (typeof(query) !== "string" || query.length === 0) {
                 return core.returnError("query is either missing or not a string", callback);
             }
 
@@ -62,9 +62,9 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
         },
 
         /**
-         * Used for tracking a user interaction
-         * @param {string} eventType The type of event. Typically "click", "addtocart" or "purchase"
-         * @param {object} entity The entity that was interacted with. Must have properties "type" and "id"
+         * Used for tracking a user interaction.
+         * @param {string} eventType The type of event. Typically "click", "addtocart" or "purchase".
+         * @param {object} entity The entity that was interacted with. Must have properties "type" and "id".
          * @param {string} orderId The id of the order. Typically only used with purchase events.
          * @param {number} quantity The quantity of this product in the order. Typically only used with purchase events.
          * @param {number} revenue The revenue for this product in the order. Typically only used with purchase events.
@@ -73,11 +73,11 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             var args = core.getOptionsAndCallback(arguments, 2, 7);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
+            var options = args.options || {};
+            var callback = args.callback || null;
 
             var event = {
                 type: eventType,
@@ -94,17 +94,17 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
             if (revenue) {
                 event.revenue = parseFloat(revenue);
             }
-            
-            var error = core.validateEvent(event,callback);
-            
+
+            var error = core.validateEvent(event, callback);
+
             if(error)
-                return core.returnError(error,callback);
+                return core.returnError(error, callback);
 
             var req = core.call(this.endpoint, "/createEvents", {
                 events: [event],
                 customData:options.customData
-            },null,callback, userId, apiKey, customHeaders);
-            
+            }, null, callback, userId, apiKey, customHeaders);
+
             return req;
         },
 
@@ -113,17 +113,17 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          * @param {array} events The events to push. See createEvent for detailed information about events.
          */
         createEvents: function (events) {
-            
+
             var args = core.getOptionsAndCallback(arguments, 1);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
-            
+            var options = args.options || {};
+            var callback = args.callback || null;
+
             if (!Array.isArray(events) || events.length === 0) {
-                return core.returnError("Events must be a non-empty array",callback);
+                return core.returnError("Events must be a non-empty array", callback);
             }
 
             if (events.some(core.validateEvent)) {
@@ -131,7 +131,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                     "Malformed event errors: [" + events.map(core.validateEvent).filter(function (e) {
                             return e;
                         }).map(function (e) {
-                                return "\"" + e + "\"";
+                                return '"' + e + '"';
                             }).join(",") + "]",
                     callback
                 )
@@ -140,30 +140,30 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
             var req = core.call(this.endpoint, "/createEvents", {
                 events: events,
                 customData:options.customData
-            },null,callback, userId, apiKey, customHeaders);
-            
+            }, null, callback, userId, apiKey, customHeaders);
+
             return req;
         },
 
         /**
          * Used for performing getRelatedEntities requests to the engine.
-         * @param {object} entity The entity for which to find related entities
+         * @param {object} entity The entity for which to find related entities.
          */
         getRelatedEntities: function (entity) {
 
             var args = core.getOptionsAndCallback(arguments, 1, 4);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
+            var options = args.options || {};
+            var callback = args.callback || null;
 
             //validate entity
-            if (typeof(entity) != "object" || !entity.type || !entity.id) {
-                return core.returnError("entity must be an object with properties \"type\" and \"id\".", callback);
+            if (typeof(entity) !== "object" || !entity.type || !entity.id) {
+                return core.returnError('entity must be an object with properties "type" and "id".', callback);
             }
-            
+
             var req = core.call(this.endpoint, "/getRelatedEntities", {
                     entity: entity,
                     resultsOptions: core.deleteCustomData(options),
@@ -175,23 +175,23 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
         /**
          * Used for performing getComplementaryEntities requests to the engine.
-         * @param {object} entity The entity for which to find complmentary entities
+         * @param {object} entity The entity for which to find complementary entities.
          */
         getComplementaryEntities: function (entity) {
 
             var args = core.getOptionsAndCallback(arguments, 1, 4);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
+            var options = args.options || {};
+            var callback = args.callback || null;
 
             //validate entity
-            if (typeof(entity) != "object" || !entity.type || !entity.id) {
-                return core.returnError("entity must be an object with properties \"type\" and \"id\".", callback);
+            if (typeof(entity) !== "object" || !entity.type || !entity.id) {
+                return core.returnError('entity must be an object with properties "type" and "id".', callback);
             }
-            
+
             var req = core.call(this.endpoint, "/getComplementaryEntities", {
                     entity: entity,
                     resultsOptions: core.deleteCustomData(options),
@@ -209,15 +209,15 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             var args = core.getOptionsAndCallback(arguments, 1, 4);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
+            var options = args.options || {};
+            var callback = args.callback || null;
 
             //validate entities
             if (!Array.isArray(entities) || entities.filter(entity => entity.type && entity.id).length !== entities.length) {
-                return core.returnError("entities must be a non-empty array where each item is an object with properties \"type\" and \"id\".", callback);
+                return core.returnError('entities must be a non-empty array where each item is an object with properties "type" and "id".', callback);
             }
 
             var req = core.call(this.endpoint, "/getBasketRecommendations", {
@@ -235,11 +235,11 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
         getRecommendedEntities: function () {
             var args = core.getOptionsAndCallback(arguments, 0, 2);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
+            var options = args.options || {};
+            var callback = args.callback || null;
 
             var req = core.call(this.endpoint, "/getRecommendedEntities", {
                     resultsOptions: core.deleteCustomData(options),
@@ -266,7 +266,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          */
         getRecentEntities: function (behaviorType, forUserId, entityType) {
             var argumentsArray = Array.prototype.slice.call(arguments);
-            
+
             if (typeof forUserId !== "string" && forUserId !== null) {
                 argumentsArray.splice(1, 0, null);
                 forUserId = null;
@@ -281,8 +281,8 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
+            var options = args.options || {};
+            var callback = args.callback || null;
 
             var req = core.call(this.endpoint, "/getRecentEntities", {
                     behaviorType,
@@ -312,7 +312,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          */
         getPopularEntities: function (behaviorType, forUserId, entityType) {
             var argumentsArray = Array.prototype.slice.call(arguments);
-            
+
             if (typeof forUserId !== "string" && forUserId !== null) {
                 argumentsArray.splice(1, 0, null);
                 forUserId = null;
@@ -321,14 +321,14 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 argumentsArray.splice(2, 0, null);
                 entityType = null;
             }
-            
+
             var args = core.getOptionsAndCallback(argumentsArray.slice(2), 1);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
+            var options = args.options || {};
+            var callback = args.callback || null;
 
             var req = core.call(this.endpoint, "/getPopularEntities", {
                     behaviorType,
@@ -343,29 +343,29 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
         /**
          * Used for performing getEntitiesByAttribute requests to the engine.
-         * @param {string} attributeName The name of the attribute for which to get entities
-         * @param {any} attributeValues The value of the attribute for which to get entitites. This can be a single value, or an array of values.
+         * @param {string} attributeName The name of the attribute for which to get entities.
+         * @param {any} attributeValues The value of the attribute for which to get entities. This can be a single value, or an array of values.
          */
         getEntitiesByAttribute: function (attributeName, attributeValues) {
 
             var args = core.getOptionsAndCallback(arguments, 2);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
+            var options = args.options || {};
+            var callback = args.callback || null;
 
             //validate arguments
-            if (typeof(attributeName) != "string") {
+            if (typeof(attributeName) !== "string") {
                 return core.returnError("Missing argument attributeName or attributeName was not of type string.", callback);
             }
-            
+
             //copy alias to separate variable and remove it from options
             var alias = options.requestAlias;
-            if(alias)
+            if (alias)
                 delete options.requestAlias;
-        
+
             var req = core.call(this.endpoint, "/getEntitiesByAttribute", {
                     attribute: {
                         name: attributeName,
@@ -386,11 +386,11 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             var args = core.getOptionsAndCallback(arguments, 0);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
+            var options = args.options || {};
+            var callback = args.callback || null;
 
             var req = core.call(this.endpoint, "/getEntities", {
                     resultsOptions: core.deleteCustomData(options),
@@ -408,14 +408,14 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             var args = core.getOptionsAndCallback(arguments, 1);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
+            var options = args.options || {};
+            var callback = args.callback || null;
 
             //validate input
-            if (typeof(query) != "string" || query.length == 0) {
+            if (typeof(query) !== "string" || query.length === 0) {
                 return core.returnError("query is either missing or not a string", callback);
             }
 
@@ -424,7 +424,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                     relatedResultsOptions: options.relatedResultsOptions,
                     spellingSuggestionsOptions: options.spellingSuggestionsOptions,
                     relatedQueriesOptions: options.relatedQueriesOptions,
-                    resultsOptions:{
+                    resultsOptions: {
                         sortBy: options.sortBy,
                         filter: options.filter,
                         take: options.take,
@@ -436,7 +436,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             return req;
         },
-        
+
         /**
          * Used for telling the engine to re-sync the catalog.
          */
@@ -444,19 +444,19 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             var args = core.getOptionsAndCallback(arguments, 0);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
-            
+            var options = args.options || {};
+            var callback = args.callback || null;
+
             var req = core.call(this.endpoint, "/sync", {
                     customData:options.customData
                 }, null, callback, userId, apiKey, customHeaders);
 
             return req;
         },
-        
+
         /**
          * Used to perform a request to get information about attributes, indexed and non-indexed.
          */
@@ -464,19 +464,19 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             var args = core.getOptionsAndCallback(arguments, 0);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
-            
+            var options = args.options || {};
+            var callback = args.callback || null;
+
             var req = core.call(this.endpoint, "/getIndexedAttributes", {
                     customData:options.customData
                 }, null, callback, userId, apiKey, customHeaders);
 
             return req;
         },
-        
+
         /**
          * Used to perform a request to get a list of all unique values that are indexed for the provided attribute.
          * @param {string} attributeName The name of the attribute for which to fetch indexed values.
@@ -485,14 +485,14 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             var args = core.getOptionsAndCallback(arguments, 1);
             if (args.error) {
-                return core.returnError(args.error,args.callback);
+                return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options ? args.options : {};
-            var callback = args.callback ? args.callback : null;
+            var options = args.options || {};
+            var callback = args.callback || null;
 
             //validate input
-            if (typeof(attributeName) != "string" || attributeName.length == 0) {
+            if (typeof(attributeName) !== "string" || attributeName.length === 0) {
                 return core.returnError("attributeName is either missing or not a string", callback);
             }
 
