@@ -176,7 +176,8 @@ A Linux or MacOS environment is required. Windows is not supported and the npm c
 
 1. Git clone this repository
 2. in the folder, run `npm install` to install all dependencies
-3. run `npm run dev` to start the webserver, open up
+3. run `nvm use`, to use the pinned Node version in `.nvmrc`. (Requires https://github.com/nvm-sh/nvm)
+4. run `npm run dev` to start the webserver, open up
    http://localhost:3001/#search and try out the basic features
 
 ### Pull requests
