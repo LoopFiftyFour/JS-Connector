@@ -1,6 +1,6 @@
 # JS-Connector
 
-Javascript Wrapper for Loop54 JSON V3 API
+JavaScript Wrapper for Loop54 JSON V3 API
 
 ## How to install
 
@@ -93,7 +93,7 @@ client.search("R2 droids", options, callback);
 The `options` and `callback` parameters are optional. As seen above,
 `client.search` will return a Promise.
 
-All API operations work the same way with regards to `options` and `callback`.
+All API operations handle `options` and `callback` the same way.
 
 __Cancelling a request__
 
@@ -103,7 +103,7 @@ Using promise:
 
 ```js
 const request = client.search("R2 droids", {}); //create request
-request.then(response => if(!response.cancelled) console.log('done')); //attach continuation
+request.then(response => { if (!response.cancelled) console.log('done'); }); //attach continuation
 request.cancel(); // cancel the request
 ```
 
