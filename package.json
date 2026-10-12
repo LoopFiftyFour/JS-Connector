@@ -1,6 +1,6 @@
 {
   "name": "loop54-js-connector",
-  "version": "1.16.5454545454-build-number",
+  "version": "1.17.5454545454-build-number",
   "description": "JS Wrapper for Loop54 JSON API",
   "license": "BSD-3-Clause",
   "main": "lib/loop54-js-connector-client.js",
@@ -40,14 +40,16 @@
     "chai-as-promised": "^7.1.1",
     "core-js": "^3.27.1",
     "express": "^4.21.2",
-    "http": "0.0.0",
-    "mocha": "^8.3.0",
+    "mocha": "^12.0.3",
     "nock": "^13.0.7",
     "npm-run-all": "^4.1.1",
-    "rollup": "^0.67.4",
+    "rollup": "^4.64.3",
     "sinon": "^9.2.4",
     "sinon-chai": "^3.5.0",
     "uglify-js": "^3.1.7",
     "watchify": "^4.0.0"
+  },
+  "overrides": {
+    "crypto-browserify": "^3.12.1"
   }
 }
