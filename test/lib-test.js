@@ -4,6 +4,7 @@ import loop54global from "./loop54global"
 import loop54client from "./loop54client"
 import search from "./search"
 import autoComplete from "./autoComplete"
+import suggest from "./suggest"
 import getEntities from "./getEntities"
 import getRelatedEntities from "./getRelatedEntities"
 import getEntitiesByAttribute from "./getEntitiesByAttribute"
@@ -26,6 +27,7 @@ describe("Loop54", function () {
     
     describe("client.search", search);
     describe("client.autoComplete", autoComplete);
+    describe("client.suggest", suggest);
     describe("client.getEntities", getEntities);
     describe("client.getRelatedEntities", getRelatedEntities);
     describe("client.getComplementaryEntities", getComplementaryEntities);

@@ -401,6 +401,42 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
         },
 
         /**
+         * Used for performing suggest requests to the engine.
+         * @param {string} query The query to search for
+         */
+        suggest: function (query) {
+
+            var args = core.getOptionsAndCallback(arguments, 1);
+            if (args.error) {
+                return core.returnError(args.error, args.callback);
+            }
+
+            var options = args.options || {};
+            var callback = args.callback || null;
+
+            //validate input
+            if (typeof(query) !== "string" || query.length === 0) {
+                return core.returnError("query is either missing or not a string", callback);
+            }
+
+            var req = core.call(this.endpoint, "/suggest", {
+                query: query,
+                queriesOptions: options.queriesOptions,
+                useTopSuggestionForSearch: options.useTopSuggestionForSearch,
+                resultsOptions: {
+                    sortBy: options.sortBy,
+                    filter: options.filter,
+                    take: options.take,
+                    skip: options.skip,
+                    facets: options.facets
+                },
+                customData:options.customData
+            }, null, callback, userId, apiKey, customHeaders);
+
+            return req;
+        },
+
+        /**
          * Used for performing search requests to the engine.
          * @param {string} query The query to search for
          */
