@@ -3,6 +3,9 @@ import core from './core.js';
 /**
  * Returns a client that can be used to communicate with the engine.
  * @param {string} endpoint The complete URL to the engine.
+ * @param {string} userId A unique identifier of the end user that initiated the action. If left falsy, cookies will be used to track user ID.
+ * @param {string} apiKey Your API key. This is required for administrative operations.
+ * @param {object} customHeaders Object of custom headers to be set with the calls.
 */
 function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
@@ -36,7 +39,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
         /**
          * Used for performing autocomplete requests to the engine.
-         * @param {string} searchTerm The query to find suggestions.
+         * @param {string} query The query to find suggestions.
          */
         autoComplete: function (query) {
 
@@ -61,11 +64,11 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
         /**
          * Used for tracking a user interaction.
-         * @param {string} eventType The type of event. Typically "click", "addtocart" or "purchase".
+         * @param {string} eventType The type of event, typically "click", "addtocart" or "purchase".
          * @param {object} entity The entity that was interacted with. Must have properties "type" and "id".
          * @param {string} orderId The id of the order. Typically only used with purchase events.
-         * @param {number} quantity The quantity of this product in the order. Typically only used with purchase events.
-         * @param {number} revenue The revenue for this product in the order. Typically only used with purchase events.
+         * @param {number|string} quantity The quantity of this product in the order. Typically only used with purchase events.
+         * @param {number|string} revenue The revenue for this product in the order. Typically only used with purchase events.
          */
         createEvent: function (eventType, entity, orderId, quantity, revenue) {
 
@@ -95,7 +98,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             const error = core.validateEvent(event, callback);
 
-            if(error)
+            if (error)
                 return core.returnError(error, callback);
 
             return core.call(this.endpoint, "/createEvents", {
