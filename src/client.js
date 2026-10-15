@@ -59,7 +59,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 query: query,
                 queriesOptions: core.deleteCustomData(options),
                 customData: options.customData
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -104,7 +104,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
             return core.call(this.endpoint, "/createEvents", {
                 events: [event],
                 customData: options.customData
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -139,7 +139,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
             return core.call(this.endpoint, "/createEvents", {
                 events: events,
                 customData: options.customData
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -165,7 +165,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 entity: entity,
                 resultsOptions: core.deleteCustomData(options),
                 customData: options.customData,
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -191,7 +191,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 entity: entity,
                 resultsOptions: core.deleteCustomData(options),
                 customData: options.customData,
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -217,7 +217,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 entities: entities,
                 resultsOptions: core.deleteCustomData(options),
                 customData: options.customData,
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -235,7 +235,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
             return core.call(this.endpoint, "/getRecommendedEntities", {
                 resultsOptions: core.deleteCustomData(options),
                 customData: options.customData,
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -279,7 +279,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 entityType,
                 resultsOptions: core.deleteCustomData(options),
                 customData: options.customData,
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -323,7 +323,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 entityType,
                 resultsOptions: core.deleteCustomData(options),
                 customData: options.customData,
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -359,7 +359,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 requestAlias: alias,
                 resultsOptions: core.deleteCustomData(options),
                 customData: options.customData
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -378,7 +378,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
             return core.call(this.endpoint, "/getEntities", {
                 resultsOptions: core.deleteCustomData(options),
                 customData: options.customData
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -412,7 +412,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                     facets: options.facets
                 },
                 customData: options.customData
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -458,7 +458,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                         facets: options.facets
                     },
                     customData:options.customData
-                }, null, callback, userId, apiKey, customHeaders);
+                }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -476,7 +476,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             return core.call(this.endpoint, "/sync", {
                 customData: options.customData
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -494,7 +494,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
             return core.call(this.endpoint, "/getIndexedAttributes", {
                 customData: options.customData
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -519,7 +519,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
             return core.call(this.endpoint, "/getIndexedAttributeValues", {
                 attributeName: attributeName,
                 customData: options.customData
-            }, null, callback, userId, apiKey, customHeaders);
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**

@@ -40,6 +40,47 @@ module.exports = function () {
             expect(client.customHeaders).to.eql(header);
         });
 
+        describe("Changing properties after creation", () => {
+            let callStub;
+
+            before(() => {
+                callStub = sinon.stub(core, 'call');
+            });
+
+            after(() => {
+                callStub.restore();
+            });
+
+            afterEach(() => {
+                callStub.resetHistory();
+            });
+
+            it("Uses the values passed on creation", function () {
+                const client = getClient(common.endpoint, "initialUserId", "initialApiKey", { foo: "bar" });
+                client.search("meat");
+                expect(callStub).calledOnceWith(sinon.match.any, sinon.match.any, sinon.match.any, sinon.match.any, sinon.match.any,
+                                                "initialUserId", "initialApiKey", { foo: "bar" });
+            });
+
+            it("Uses userId, apiKey and customHeaders assigned after creation", function () {
+                const client = getClient(common.endpoint, "initialUserId", "initialApiKey", { foo: "bar" });
+                client.userId = "newUserId";
+                client.apiKey = "newApiKey";
+                client.customHeaders = { baz: "qux" };
+                client.search("meat");
+                expect(callStub).calledOnceWith(sinon.match.any, sinon.match.any, sinon.match.any, sinon.match.any, sinon.match.any,
+                                                "newUserId", "newApiKey", { baz: "qux" });
+            });
+
+            it("Falls back to cookie tracking when userId is cleared", function () {
+                const client = getClient(common.endpoint, "initialUserId");
+                client.userId = null;
+                client.search("meat");
+                expect(callStub).calledOnceWith(sinon.match.any, sinon.match.any, sinon.match.any, sinon.match.any, sinon.match.any,
+                                                null);
+            });
+        });
+
         describe("createEvents", () => {
             let client, callStub, errStub;
 
