@@ -1,6 +1,6 @@
 # JS-Connector
 
-Javascript Wrapper for Loop54 JSON V3 API
+JavaScript Wrapper for Loop54 JSON V3 API
 
 ## How to install
 
@@ -93,7 +93,7 @@ client.search("R2 droids", options, callback);
 The `options` and `callback` parameters are optional. As seen above,
 `client.search` will return a Promise.
 
-All API operations work the same way with regards to `options` and `callback`.
+All API operations handle `options` and `callback` the same way.
 
 __Cancelling a request__
 
@@ -103,7 +103,7 @@ Using promise:
 
 ```js
 const request = client.search("R2 droids", {}); //create request
-request.then(response => if(!response.cancelled) console.log('done')); //attach continuation
+request.then(response => { if (!response.cancelled) console.log('done'); }); //attach continuation
 request.cancel(); // cancel the request
 ```
 
@@ -176,7 +176,8 @@ A Linux or MacOS environment is required. Windows is not supported and the npm c
 
 1. Git clone this repository
 2. in the folder, run `npm install` to install all dependencies
-3. run `npm run dev` to start the webserver, open up
+3. run `nvm use`, to use the pinned Node version in `.nvmrc`. (Requires https://github.com/nvm-sh/nvm)
+4. run `npm run dev` to start the webserver, open up
    http://localhost:3001/#search and try out the basic features
 
 ### Pull requests
