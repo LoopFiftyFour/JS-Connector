@@ -1,9 +1,6 @@
 import getIndexedAttributeValuesResponse from "./mocks/getIndexedAttributeValues-response-ok";
 import nock from "nock";
-import chai, {
-    assert,
-    expect
-} from "chai";
+import { expect } from "chai";
 import common from "./common";
 
 module.exports = function () {

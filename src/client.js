@@ -3,6 +3,9 @@ import core from './core.js';
 /**
  * Returns a client that can be used to communicate with the engine.
  * @param {string} endpoint The complete URL to the engine.
+ * @param {string} userId A unique identifier of the end user that initiated the action. If left falsy, cookies will be used to track user ID.
+ * @param {string} apiKey Your API key. This is required for administrative operations.
+ * @param {object} customHeaders Object of custom headers to be set with the calls.
 */
 function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
@@ -36,50 +39,48 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
 
         /**
          * Used for performing autocomplete requests to the engine.
-         * @param {string} searchTerm The query to find suggestions.
+         * @param {string} query The query to find suggestions.
          */
         autoComplete: function (query) {
 
-            var args = core.getOptionsAndCallback(arguments, 1);
+            const args = core.getOptionsAndCallback(arguments, 1);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
             if (typeof(query) !== "string" || query.length === 0) {
                 return core.returnError("query is either missing or not a string", callback);
             }
 
-            var req = core.call(this.endpoint, "/autoComplete", {
-                    query: query,
-                    queriesOptions: core.deleteCustomData(options),
-                    customData:options.customData
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+            return core.call(this.endpoint, "/autoComplete", {
+                query: query,
+                queriesOptions: core.deleteCustomData(options),
+                customData: options.customData
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
          * Used for tracking a user interaction.
-         * @param {string} eventType The type of event. Typically "click", "addtocart" or "purchase".
+         * @param {string} eventType The type of event, typically "click", "addtocart" or "purchase".
          * @param {object} entity The entity that was interacted with. Must have properties "type" and "id".
          * @param {string} orderId The id of the order. Typically only used with purchase events.
-         * @param {number} quantity The quantity of this product in the order. Typically only used with purchase events.
-         * @param {number} revenue The revenue for this product in the order. Typically only used with purchase events.
+         * @param {number|string} quantity The quantity of this product in the order. Typically only used with purchase events.
+         * @param {number|string} revenue The revenue for this product in the order. Typically only used with purchase events.
          */
         createEvent: function (eventType, entity, orderId, quantity, revenue) {
 
-            var args = core.getOptionsAndCallback(arguments, 2, 7);
+            const args = core.getOptionsAndCallback(arguments, 2, 7);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
-            var event = {
+            const event = {
                 type: eventType,
                 entity: entity
             };
@@ -95,17 +96,15 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 event.revenue = parseFloat(revenue);
             }
 
-            var error = core.validateEvent(event, callback);
+            const error = core.validateEvent(event, callback);
 
-            if(error)
+            if (error)
                 return core.returnError(error, callback);
 
-            var req = core.call(this.endpoint, "/createEvents", {
+            return core.call(this.endpoint, "/createEvents", {
                 events: [event],
-                customData:options.customData
-            }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+                customData: options.customData
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -114,13 +113,13 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          */
         createEvents: function (events) {
 
-            var args = core.getOptionsAndCallback(arguments, 1);
+            const args = core.getOptionsAndCallback(arguments, 1);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
             if (!Array.isArray(events) || events.length === 0) {
                 return core.returnError("Events must be a non-empty array", callback);
@@ -137,12 +136,10 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 )
             }
 
-            var req = core.call(this.endpoint, "/createEvents", {
+            return core.call(this.endpoint, "/createEvents", {
                 events: events,
-                customData:options.customData
-            }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+                customData: options.customData
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -151,26 +148,24 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          */
         getRelatedEntities: function (entity) {
 
-            var args = core.getOptionsAndCallback(arguments, 1, 4);
+            const args = core.getOptionsAndCallback(arguments, 1, 4);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
             //validate entity
             if (typeof(entity) !== "object" || !entity.type || !entity.id) {
                 return core.returnError('entity must be an object with properties "type" and "id".', callback);
             }
 
-            var req = core.call(this.endpoint, "/getRelatedEntities", {
-                    entity: entity,
-                    resultsOptions: core.deleteCustomData(options),
-                    customData: options.customData,
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+            return core.call(this.endpoint, "/getRelatedEntities", {
+                entity: entity,
+                resultsOptions: core.deleteCustomData(options),
+                customData: options.customData,
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -179,26 +174,24 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          */
         getComplementaryEntities: function (entity) {
 
-            var args = core.getOptionsAndCallback(arguments, 1, 4);
+            const args = core.getOptionsAndCallback(arguments, 1, 4);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
             //validate entity
             if (typeof(entity) !== "object" || !entity.type || !entity.id) {
                 return core.returnError('entity must be an object with properties "type" and "id".', callback);
             }
 
-            var req = core.call(this.endpoint, "/getComplementaryEntities", {
-                    entity: entity,
-                    resultsOptions: core.deleteCustomData(options),
-                    customData: options.customData,
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+            return core.call(this.endpoint, "/getComplementaryEntities", {
+                entity: entity,
+                resultsOptions: core.deleteCustomData(options),
+                customData: options.customData,
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -207,46 +200,42 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          */
         getBasketRecommendations: function (entities) {
 
-            var args = core.getOptionsAndCallback(arguments, 1, 4);
+            const args = core.getOptionsAndCallback(arguments, 1, 4);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
             //validate entities
             if (!Array.isArray(entities) || entities.filter(entity => entity.type && entity.id).length !== entities.length) {
                 return core.returnError('entities must be a non-empty array where each item is an object with properties "type" and "id".', callback);
             }
 
-            var req = core.call(this.endpoint, "/getBasketRecommendations", {
-                    entities: entities,
-                    resultsOptions: core.deleteCustomData(options),
-                    customData: options.customData,
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+            return core.call(this.endpoint, "/getBasketRecommendations", {
+                entities: entities,
+                resultsOptions: core.deleteCustomData(options),
+                customData: options.customData,
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
          * Used for performing getRecommendedEntities requests to the engine.
          */
         getRecommendedEntities: function () {
-            var args = core.getOptionsAndCallback(arguments, 0, 2);
+            const args = core.getOptionsAndCallback(arguments, 0, 2);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
-            var req = core.call(this.endpoint, "/getRecommendedEntities", {
-                    resultsOptions: core.deleteCustomData(options),
-                    customData: options.customData,
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+            return core.call(this.endpoint, "/getRecommendedEntities", {
+                resultsOptions: core.deleteCustomData(options),
+                customData: options.customData,
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -265,7 +254,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          * @param {string[]} [entityType] The entity types to include (such as "Product" or "Query") or null for all.
          */
         getRecentEntities: function (behaviorType, forUserId, entityType) {
-            var argumentsArray = Array.prototype.slice.call(arguments);
+            const argumentsArray = Array.prototype.slice.call(arguments);
 
             if (typeof forUserId !== "string" && forUserId !== null) {
                 argumentsArray.splice(1, 0, null);
@@ -276,23 +265,21 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 entityType = null;
             }
 
-            var args = core.getOptionsAndCallback(argumentsArray.slice(2), 1);
+            const args = core.getOptionsAndCallback(argumentsArray.slice(2), 1);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
-            var req = core.call(this.endpoint, "/getRecentEntities", {
-                    behaviorType,
-                    forUserId,
-                    entityType,
-                    resultsOptions: core.deleteCustomData(options),
-                    customData: options.customData,
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+            return core.call(this.endpoint, "/getRecentEntities", {
+                behaviorType,
+                forUserId,
+                entityType,
+                resultsOptions: core.deleteCustomData(options),
+                customData: options.customData,
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -311,7 +298,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          * @param {string[]} [entityType] The entity types to include (such as "Product" or "Query") or null for all.
          */
         getPopularEntities: function (behaviorType, forUserId, entityType) {
-            var argumentsArray = Array.prototype.slice.call(arguments);
+            const argumentsArray = Array.prototype.slice.call(arguments);
 
             if (typeof forUserId !== "string" && forUserId !== null) {
                 argumentsArray.splice(1, 0, null);
@@ -322,23 +309,21 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 entityType = null;
             }
 
-            var args = core.getOptionsAndCallback(argumentsArray.slice(2), 1);
+            const args = core.getOptionsAndCallback(argumentsArray.slice(2), 1);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
-            var req = core.call(this.endpoint, "/getPopularEntities", {
-                    behaviorType,
-                    forUserId,
-                    entityType,
-                    resultsOptions: core.deleteCustomData(options),
-                    customData: options.customData,
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+            return core.call(this.endpoint, "/getPopularEntities", {
+                behaviorType,
+                forUserId,
+                entityType,
+                resultsOptions: core.deleteCustomData(options),
+                customData: options.customData,
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -348,13 +333,13 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          */
         getEntitiesByAttribute: function (attributeName, attributeValues) {
 
-            var args = core.getOptionsAndCallback(arguments, 2);
+            const args = core.getOptionsAndCallback(arguments, 2);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
             //validate arguments
             if (typeof(attributeName) !== "string") {
@@ -362,21 +347,19 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
             }
 
             //copy alias to separate variable and remove it from options
-            var alias = options.requestAlias;
+            const alias = options.requestAlias;
             if (alias)
                 delete options.requestAlias;
 
-            var req = core.call(this.endpoint, "/getEntitiesByAttribute", {
-                    attribute: {
-                        name: attributeName,
-                        value: attributeValues
-                    },
-                    requestAlias: alias,
-                    resultsOptions: core.deleteCustomData(options),
-                    customData:options.customData
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+            return core.call(this.endpoint, "/getEntitiesByAttribute", {
+                attribute: {
+                    name: attributeName,
+                    value: attributeValues
+                },
+                requestAlias: alias,
+                resultsOptions: core.deleteCustomData(options),
+                customData: options.customData
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -384,20 +367,52 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          */
         getEntities: function () {
 
-            var args = core.getOptionsAndCallback(arguments, 0);
+            const args = core.getOptionsAndCallback(arguments, 0);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
-            var req = core.call(this.endpoint, "/getEntities", {
-                    resultsOptions: core.deleteCustomData(options),
-                    customData:options.customData
-                }, null, callback, userId, apiKey, customHeaders);
+            return core.call(this.endpoint, "/getEntities", {
+                resultsOptions: core.deleteCustomData(options),
+                customData: options.customData
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
+        },
 
-            return req;
+        /**
+         * Used for performing suggest requests to the engine.
+         * @param {string} query The query to search for
+         */
+        suggest: function (query) {
+
+            const args = core.getOptionsAndCallback(arguments, 1);
+            if (args.error) {
+                return core.returnError(args.error, args.callback);
+            }
+
+            const options = args.options || {};
+            const callback = args.callback || null;
+
+            //validate input
+            if (typeof(query) !== "string" || query.length === 0) {
+                return core.returnError("query is either missing or not a string", callback);
+            }
+
+            return core.call(this.endpoint, "/suggest", {
+                query: query,
+                queriesOptions: options.queriesOptions,
+                useTopSuggestionForSearch: options.useTopSuggestionForSearch,
+                resultsOptions: {
+                    sortBy: options.sortBy,
+                    filter: options.filter,
+                    take: options.take,
+                    skip: options.skip,
+                    facets: options.facets
+                },
+                customData: options.customData
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -406,13 +421,13 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          */
         search: function (query) {
 
-            var args = core.getOptionsAndCallback(arguments, 1);
+            const args = core.getOptionsAndCallback(arguments, 1);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
             //validate input
             if (typeof(query) !== "string" || query.length === 0) {
@@ -420,7 +435,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
             }
 
             //null and undefined both mean "no content search"
-            var contentResultsOptions = options.contentResultsOptions != null ? options.contentResultsOptions : undefined;
+            const contentResultsOptions = options.contentResultsOptions != null ? options.contentResultsOptions : undefined;
 
             if (contentResultsOptions !== undefined) {
                 if (!Array.isArray(contentResultsOptions))
@@ -429,7 +444,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                     return core.returnError("every contentResultsOptions entry needs an entityType", callback);
             }
 
-            var req = core.call(this.endpoint, "/search", {
+            return core.call(this.endpoint, "/search", {
                     query: query,
                     relatedResultsOptions: options.relatedResultsOptions,
                     spellingSuggestionsOptions: options.spellingSuggestionsOptions,
@@ -443,9 +458,7 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                         facets: options.facets
                     },
                     customData:options.customData
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+                }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -453,19 +466,17 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          */
         sync: function () {
 
-            var args = core.getOptionsAndCallback(arguments, 0);
+            const args = core.getOptionsAndCallback(arguments, 0);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
-            var req = core.call(this.endpoint, "/sync", {
-                    customData:options.customData
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+            return core.call(this.endpoint, "/sync", {
+                customData: options.customData
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -473,19 +484,17 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          */
         getIndexedAttributes:  function () {
 
-            var args = core.getOptionsAndCallback(arguments, 0);
+            const args = core.getOptionsAndCallback(arguments, 0);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
-            var req = core.call(this.endpoint, "/getIndexedAttributes", {
-                    customData:options.customData
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+            return core.call(this.endpoint, "/getIndexedAttributes", {
+                customData: options.customData
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
@@ -494,25 +503,23 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
          */
         getIndexedAttributeValues: function (attributeName) {
 
-            var args = core.getOptionsAndCallback(arguments, 1);
+            const args = core.getOptionsAndCallback(arguments, 1);
             if (args.error) {
                 return core.returnError(args.error, args.callback);
             }
 
-            var options = args.options || {};
-            var callback = args.callback || null;
+            const options = args.options || {};
+            const callback = args.callback || null;
 
             //validate input
             if (typeof(attributeName) !== "string" || attributeName.length === 0) {
                 return core.returnError("attributeName is either missing or not a string", callback);
             }
 
-            var req = core.call(this.endpoint, "/getIndexedAttributeValues", {
-                    attributeName: attributeName,
-                    customData:options.customData
-                }, null, callback, userId, apiKey, customHeaders);
-
-            return req;
+            return core.call(this.endpoint, "/getIndexedAttributeValues", {
+                attributeName: attributeName,
+                customData: options.customData
+            }, null, callback, this.userId, this.apiKey, this.customHeaders);
         },
 
         /**
