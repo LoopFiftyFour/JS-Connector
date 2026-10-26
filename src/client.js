@@ -400,10 +400,21 @@ function getLoop54Client (endpoint, userId, apiKey, customHeaders) {
                 return core.returnError("query is either missing or not a string", callback);
             }
 
+            //null and undefined both mean "no content search"
+            const contentResultsOptions = options.contentResultsOptions != null ? options.contentResultsOptions : undefined;
+
+            if (contentResultsOptions !== undefined) {
+                if (!Array.isArray(contentResultsOptions))
+                    return core.returnError("contentResultsOptions must be an array", callback);
+                if (contentResultsOptions.some(o => !o || typeof o.entityType !== "string" || o.entityType.length === 0))
+                    return core.returnError("every contentResultsOptions entry needs an entityType", callback);
+            }
+
             return core.call(this.endpoint, "/suggest", {
                 query: query,
                 queriesOptions: options.queriesOptions,
                 useTopSuggestionForSearch: options.useTopSuggestionForSearch,
+                contentResultsOptions: contentResultsOptions,
                 resultsOptions: {
                     sortBy: options.sortBy,
                     filter: options.filter,
