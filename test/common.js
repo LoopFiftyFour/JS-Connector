@@ -1,7 +1,4 @@
-import chai, {
-    assert,
-    expect
-} from "chai";
+import { expect } from "chai";
 
 module.exports = {
     
